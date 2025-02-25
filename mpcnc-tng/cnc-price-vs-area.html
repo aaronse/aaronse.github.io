@@ -1,0 +1,597 @@
+<!-- 
+Survey of CNC price vs Cutting area 
+
+Related Chat: https://chatgpt.com/c/67b444ad-642c-800b-ace2-9af5bfa62a71 
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CNC Machines: Cost vs. Cutting Area (with Company Icons)</title>
+  <!-- Load D3 from a CDN -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <style>
+    /* Basic Dark-Mode Layout */
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%;
+      background-color: #2d2d2d; /* Dark background */
+      color: #ddd;              /* Light text */
+      font-family: sans-serif;
+      overflow: hidden;         /* We'll handle scroll in the left panel */
+    }
+    #container {
+      display: flex;
+      flex-direction: row;
+      height: 100vh; /* Full viewport height */
+      width: 100vw;
+    }
+
+    /* Left Panel: CNC List */
+    #machine-list {
+      width: 25%;
+      overflow-y: auto;   /* Scrollable if needed */
+      overflow-x: hidden;
+      border-right: 1px solid #444;
+      padding: 10px;
+      background-color: #2d2d2d;
+    }
+    #machine-list h2 {
+      margin: 0 0 10px;
+      color: #fff;
+      text-align: center;
+    }
+
+    /* Each row in the left panel (two columns: name, cost) */
+    .machine-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px;
+      margin-bottom: 5px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background-color 0.2s, border 0.2s;
+    }
+    .machine-item:hover {
+      background-color: #444;
+    }
+    .machine-highlight {
+      border-color: #fff;
+    }
+    .machine-item-name {
+      flex: 1;
+      padding-right: 8px;
+    }
+    .machine-item-price {
+      white-space: nowrap;
+    }
+
+    /* Right Panel: The Chart */
+    #chart-panel {
+      flex: 1;
+      position: relative;
+    }
+    svg {
+      background-color: #2d2d2d;
+    }
+
+    /* Tooltip styling */
+    .tooltip {
+      position: absolute;
+      background: #333;
+      color: #fff;
+      border: 1px solid #666;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      pointer-events: none;
+      opacity: 0;
+      border-radius: 4px;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+
+    /* Axis styles */
+    .axis line, .axis path {
+      stroke: #aaa;
+    }
+    .axis text {
+      fill: #ccc;
+      font-size: 12px;
+    }
+
+    /* Circles and lines */
+    .machine-line, .machine-circle {
+      cursor: pointer;
+    }
+
+    /* We'll add a "pulse" animation for circle hover from the list */    
+    @keyframes pulse {
+      0%   { r: 5; }
+      50%  { r: 9; }
+      100% { r: 5; }
+    }
+    .pulse-animation {
+      animation: pulse 1s infinite;
+    }
+    .machine-highlight-chart {
+      stroke: #fff;
+      stroke-width: 2px;
+    }
+
+    /* The small company icon on the chart */
+    .company-icon {
+      pointer-events: none; /* Let the circle handle events. Or set to auto if needed. */
+    }
+
+    /* Optional: style the reset zoom button */
+    .reset-zoom {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #333;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+<div id="container">
+  <!-- LEFT: CNC list -->
+  <div id="machine-list">
+    <h2>CNC Machines</h2>
+    <!-- CNC list items will be inserted dynamically -->
+  </div>
+
+  <!-- RIGHT: Chart -->
+  <div id="chart-panel">
+    <svg id="chart"></svg>
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip"></div>
+  </div>
+</div>
+
+<!-- 1) Load the external CNC Data -->
+<script src="cnc-data.js"></script>
+
+<script>
+  // ---------------------------------------------------------------------------
+  // 1) Chart Setup
+  // ---------------------------------------------------------------------------
+  var chartPanel = document.getElementById("chart-panel");
+  var containerWidth = chartPanel.clientWidth;
+  var containerHeight = chartPanel.clientHeight;
+
+  var opacityOnHover = 0.5;
+  var opacityOnHide = 0.1;
+  var opacityDashOnHover = 0.6;
+  var opacityDashOnHide = 0.3;
+  
+  var margin = { top: 40, right: 30, bottom: 60, left: 60 },
+      width  = containerWidth  - margin.left - margin.right,
+      height = containerHeight - margin.top  - margin.bottom;
+
+  // Select the outer SVG element and set its dimensions
+  var baseSVG = d3.select("#chart")
+    .attr("width", containerWidth)
+    .attr("height", containerHeight);
+
+  // This layer is translated according to the margins.
+  var zoomLayer = baseSVG.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  // Group for all chart content (lines, circles, icons, etc.) which will be zoomed.
+  var contentGroup = zoomLayer.append("g")
+    .attr("class", "content");
+
+  // Groups for the axes (these will be updated on zoom so that the lines/ticks remain “pinned”).
+  var xAxisGroup = zoomLayer.append("g")
+    .attr("class", "axis x-axis")
+    .attr("transform", `translate(0,${height})`);
+  var yAxisGroup = zoomLayer.append("g")
+    .attr("class", "axis y-axis");
+
+  // Determine cost range and cutting area range
+  var minCost = d3.min(cncData, d => d.minCost);
+  var maxCost = d3.max(cncData, d => d.maxCost);
+  var maxArea = d3.max(cncData, d => d.maxArea);
+
+  // X scale (Cost) and Y scale (Cutting Area)
+  var x = d3.scaleLinear()
+    .domain([0, maxCost])
+    .range([0, width]);
+
+  var y = d3.scaleLinear()
+    .domain([0, maxArea])
+    .range([height, 0]);
+
+  // We'll define a piecewise color scale from Purple => Indigo => Blue => Green => Yellow => Orange => Red
+  var colorDomain = [0, 0.16, 0.32, 0.48, 0.64, 0.80, 1];
+  var colorRange = [
+    "#8B40FF", // violet
+    "#4B4082", // indigo
+    "#4040FF", // blue
+    "#408040", // green
+    "#FFFF00", // yellow
+    "#FFA500", // orange
+    "#FF0000"  // red
+  ];
+
+  // ratioScale: [minCost..maxCost] -> [0..1]
+  var ratioScale = d3.scaleLinear()
+    .domain([minCost, maxCost])
+    .range([0, 1]);
+  var colorScale = d3.scaleLinear()
+    .domain(colorDomain)
+    .range(colorRange)
+    .interpolate(d3.interpolateRgb);
+
+  // Axes
+  var xAxis = d3.axisBottom(x).tickFormat(d3.format("$~s"));
+  var yAxis = d3.axisLeft(y).tickFormat(d3.format(".1f"));
+
+  // Render initial axes.
+  xAxisGroup.call(xAxis);
+  yAxisGroup.call(yAxis);
+  
+  // Axis Labels
+  zoomLayer.append("text")
+     .attr("x", width / 2)
+     .attr("y", height + 40)
+     .attr("fill", "#ccc")
+     .attr("text-anchor", "middle")
+     .style("font-size", "14px")
+     .text("Approx. Cost (USD)");
+
+  zoomLayer.append("text")
+     .attr("transform", "rotate(-90)")
+     .attr("x", -height / 2)
+     .attr("y", -45)
+     .attr("fill", "#ccc")
+     .attr("text-anchor", "middle")
+     .style("font-size", "14px")
+     .text("Cutting Area (sq ft)");
+
+  // Tooltip
+  var tooltip = d3.select("#tooltip");
+
+
+  // ---------------------------------------------------------------------------
+  // 2) Left Panel List
+  // ---------------------------------------------------------------------------
+  // Sort by avgCost ascending (optional)
+  cncData.sort((a, b) => a.avgCost - b.avgCost);
+
+  var listContainer = d3.select("#machine-list");
+
+  var listItems = listContainer.selectAll(".machine-item")
+    .data(cncData)
+    .enter()
+    .append("div")
+      .attr("class", "machine-item")
+      .attr("id", (d, i) => "list-item-" + i)
+      .style("border-color", d => colorScale(ratioScale(d.avgCost)))
+      .on("mouseover", function(event, d) {
+        var i = cncData.indexOf(d);
+        // Highlight the circle on the chart (pulse, stroke)
+        d3.select("#chart-circle-" + i)
+          .classed("pulse-animation", true)
+          .classed("machine-highlight-chart", true);
+
+        // Highlight this list item
+        d3.select(this)
+          .style("background-color", colorScale(ratioScale(d.avgCost)))
+          .style("color", "#111");
+                
+        // Highlight the corresponding rectangle
+        d3.select("#chart-range-" + i)
+          .attr("opacity", opacityOnHover);
+
+        showToolTip(d);
+        setToolTipPos(event, d);
+      })
+      .on("mouseout", function(event, d) {
+        var i = cncData.indexOf(d);
+        d3.select("#chart-circle-" + i)
+          .classed("pulse-animation", false)
+          .classed("machine-highlight-chart", false);
+        
+        // Revert the list item's background and text color
+        d3.select(this)
+          .style("background-color", "#2d2d2d")
+          .style("color", "#fff");        
+
+        // Hide the corresponding rectangle
+        d3.select("#chart-range-" + i)
+          .attr("opacity", opacityOnHide);
+
+        // Hide tooltip
+        tooltip.style("opacity", 0);
+      })
+      .on("click", function(event, d) {
+        window.open(d.url, "_blank");
+      });
+
+  // Each list item row has two columns: name, price
+  listItems.append("div")
+    .attr("class", "machine-item-name")
+    .text(d => d.name);
+
+  listItems.append("div")
+    .attr("class", "machine-item-price")
+    .text(d => {
+      if (d.minCost === d.maxCost) {
+        return `$${d.minCost}`;
+      } else {
+        return `$${d.minCost} - $${d.maxCost}`;
+      }
+    });
+    
+    function showToolTip(d) {
+        // Show tooltip      
+        tooltip.style("opacity", 1);
+        tooltip.html(`
+          <strong>${d.name}</strong><br/>
+          Cost Range: $${d.minCost} - $${d.maxCost}<br/>
+          Cutting Area: ${d.minArea} - ${d.maxArea} sq ft<br/>
+          <em>${d.features}</em>
+        `);
+      }
+    
+      function setToolTipPos(event, d) {
+        // Position tooltip relative to chart panel
+        var chartRect = chartPanel.getBoundingClientRect();
+        var offsetX = event.clientX - chartRect.left;
+        var offsetY = event.clientY - chartRect.top;
+        tooltip.style("left", (offsetX + 10) + "px")
+               .style("top",  (offsetY - 110) + "px");
+      }
+
+  // ---------------------------------------------------------------------------
+  // 3) Chart: lines + rectangles + circles + icons (drawn in gZoom)
+  // ---------------------------------------------------------------------------
+  var chartGroups = contentGroup.selectAll(".machine-group")
+    .data(cncData)
+    .enter()
+    .append("g")
+      .attr("class", "machine-group")
+      .attr("id", (d, i) => "chart-group-" + i);
+
+  // Vertical line from minArea to maxArea
+  chartGroups.append("line")
+    .attr("class", "machine-line")
+    .attr("x1", d => x(d.avgCost))
+    .attr("x2", d => x(d.avgCost))
+    .attr("y1", d => y(d.minArea))
+    .attr("y2", d => y(d.maxArea))
+    .attr("stroke-width", 2)
+    .attr("stroke", d => colorScale(ratioScale(d.avgCost)))
+    .attr("opacity", opacityOnHide);
+
+  // Rectangle for cost-area range (hidden by default)
+  chartGroups.append("rect")
+    .attr("class", "machine-range")
+    .attr("id", (d, i) => "chart-range-" + i)
+    // Map the data values using your scales:
+    // x position: left side (using d.minCost)
+    .attr("x", d => x(d.minCost))
+    // y position: note that in many D3 charts y=0 is at the top.
+    // If d.maxArea is the “top” of the range (i.e. higher value appears higher on the chart)
+    // you might use y(d.maxArea)
+    .attr("y", d => y(d.maxArea))
+    // Width based on cost range
+    .attr("width", d => Math.max(2, x(d.maxCost) - x(d.minCost)))
+    // Height based on area range; ensure the calculation matches your y-scale orientation
+    .attr("height", d => Math.max(2, y(d.minArea) - y(d.maxArea)))
+    // Use a fill that’s similar to your circle color, but you might also want to use a fixed color and lower opacity.
+    .attr("fill", d => colorScale(ratioScale(d.avgCost)))
+    .attr("opacity", opacityOnHide);  // Hidden by default
+
+  // Append four dashed lines per machine group using a data join.
+  // This reduces code duplication.
+  chartGroups.each(function(d) {
+    var dashedTypes = ["topleft", "topright", "bottomright", "bottomleft"];
+    d3.select(this)
+      .selectAll(".dashed-line")
+      .data(dashedTypes)
+      .enter()
+      .append("line")
+        .attr("class", "dashed-line")
+        .attr("data-type", dt => dt)
+        // The starting point (x1,y1) is the circle's center.
+        .attr("x1", x(d.avgCost))
+        .attr("y1", y((d.minArea + d.maxArea) / 2))
+        // The end point (x2,y2) depends on the type:
+        .attr("x2", function(dt) {
+          return (dt === "topleft" || dt === "bottomleft") ? x(d.minCost) : x(d.maxCost);
+        })
+        .attr("y2", function(dt) {
+          return (dt === "topleft" || dt === "topright") ? y(d.maxArea) : y(d.minArea);
+        })
+        .attr("stroke", colorScale(ratioScale(d.avgCost)))
+        .attr("stroke-width", 1)
+        .attr("stroke-dasharray", "4 2")
+        .attr("stroke-opacity", opacityDashOnHide);
+  });
+
+  // Circle at midpoint
+  chartGroups.append("circle")
+    .attr("class", "machine-circle")
+    .attr("id", (d, i) => "chart-circle-" + i)
+    .attr("cx", d => x(d.avgCost))
+    .attr("cy", d => y((d.minArea + d.maxArea) / 2))
+    .attr("r", 5)
+    .attr("fill", d => colorScale(ratioScale(d.avgCost)))
+    .on("mouseover", function(event, d) {
+      showToolTip(d);
+      // Highlight circle
+      d3.select(this).classed("machine-highlight-chart", true);
+
+      // Highlight the corresponding rectangle
+      var i = cncData.indexOf(d);
+      d3.select("#chart-range-" + i)
+        .transition().duration(250)
+        .attr("opacity", opacityOnHover);
+
+      // Increase opacity for dashed lines in the same group.
+      d3.select(this.parentNode)
+        .selectAll(".dashed-line")
+        .transition().duration(250)
+        .attr("stroke-opacity", opacityDashOnHover);
+        
+      // Find index, highlight the list item & scroll into view
+      var listItem = d3.select("#list-item-" + i);
+      document.getElementById("list-item-" + i)
+              .scrollIntoView({ behavior: "smooth", block: "center" });
+      listItem.style("background-color", colorScale(ratioScale(d.avgCost)))
+              .style("color", "#111");
+    })
+    .on("mousemove", function(event, d) {
+      setToolTipPos(event, d);
+    })
+    .on("mouseout", function(event, d) {
+      // Hide tooltip
+      tooltip.style("opacity", 0);
+      // Remove circle highlight
+      d3.select(this).classed("machine-highlight-chart", false);
+      var i = cncData.indexOf(d);
+
+      // Hide the corresponding rectangle
+      d3.select("#chart-range-" + i)
+      .transition().duration(750)  
+      .attr("opacity", opacityOnHide);
+
+      // Reset dashed lines opacity back to default.
+      d3.select(this.parentNode)
+        .selectAll(".dashed-line")
+        .transition().duration(750)
+        .attr("stroke-opacity", opacityDashOnHide);
+
+      // Revert the list item's background and text color
+      d3.select("#list-item-" + i)
+        .style("background-color", "#2d2d2d")
+        .style("color", "#fff");
+    })
+    .on("click", function(event, d) {
+      window.open(d.url, "_blank");
+    });
+
+  // Add a small 16×16 icon near each circle
+  // Typically we offset the icon a bit so it doesn't cover the circle entirely
+  chartGroups.append("image")   
+    .attr("class", "company-icon")
+    .attr("xlink:href", d => d.iconUrl)
+    .attr("width", 16)
+    .attr("height", 16)
+    .attr("x", d => x(d.avgCost) - 8)  // center around circle
+    .attr("y", d => y((d.minArea + d.maxArea) / 2) - 24);  // place icon above circle
+    // If you'd prefer to the left or right, you can adjust x or y.
+  
+  // ---------------------------------------------------------------------------
+  // 4) Zoom Behavior
+  // ---------------------------------------------------------------------------
+  var zoom = d3.zoom()
+    .scaleExtent([0.75, 10])  // Adjust min/max zoom as desired.
+    // Limit panning so that the view does not leave [0,∞) in cost or area.
+    // For x, the left boundary is x(10) (i.e. cost 10), and the right boundary is x(maxCost)
+    // For y, since the scale is reversed, the top is y(maxArea) and the bottom is y(1)
+    // .translateExtent([
+    //   [ x(10), y(maxArea) ],   // top-left (cost=10, area=maxArea)
+    //   [ x(maxCost), y(1) ]      // bottom-right (cost=maxCost, area=1)
+    // ])
+    .on("zoom", zoomed);
+
+  // Attach the zoom behavior to the base SVG so the mouse wheel works over the chart.
+  baseSVG.call(zoom);
+
+  function zoomed(event) {
+    var transform = event.transform;
+
+    // TODO: Limit Y axis to 0 or greate
+    //console.debug(transform + " " + height);
+    transform.x = Math.min(0, transform.x);
+
+    // // Apply transform to the content group (all your circles, lines, etc.)
+    // contentGroup.attr("transform", transform);
+    // // Update axes with rescaled x and y scales.
+    // var newXScale = transform.rescaleX(x);
+    // var newYScale = transform.rescaleY(y);
+    // xAxisGroup.call(xAxis.scale(newXScale));
+    // yAxisGroup.call(yAxis.scale(newYScale));
+  
+    // Compute new scales (these map data → pixel positions for the current zoom)
+    var newXScale = transform.rescaleX(x);
+    //var newYScale = transform.rescaleY(y);
+    var newYScale = y;
+    
+    // Update axes so ticks stay "pinned"
+    xAxisGroup.call(xAxis.scale(newXScale));
+    yAxisGroup.call(yAxis.scale(newYScale));
+    
+    // For lines and rectangles, update positions and dimensions:
+    contentGroup.selectAll(".machine-line")
+      .attr("x1", d => newXScale(d.avgCost))
+      .attr("x2", d => newXScale(d.avgCost))
+      .attr("y1", d => newYScale(d.minArea))
+      .attr("y2", d => newYScale(d.maxArea));
+    
+    contentGroup.selectAll(".machine-range")
+      .attr("x", d => newXScale(d.minCost))
+      .attr("width", d => Math.max(2, newXScale(d.maxCost) - newXScale(d.minCost)))
+      .attr("y", d => newYScale(d.maxArea))
+      .attr("height", d => Math.max(2, newYScale(d.minArea) - newYScale(d.maxArea)));
+    
+    // Update dashed lines within each machine group.
+    contentGroup.selectAll(".machine-group").each(function(d) {
+      var group = d3.select(this);
+      group.selectAll(".dashed-line")
+        .attr("x1", newXScale(d.avgCost))
+        .attr("y1", newYScale((d.minArea + d.maxArea) / 2))
+        .attr("x2", function() {
+          var type = d3.select(this).attr("data-type");
+          return (type === "topleft" || type === "bottomleft") ? newXScale(d.minCost) : newXScale(d.maxCost);
+        })
+        .attr("y2", function() {
+          var type = d3.select(this).attr("data-type");
+          return (type === "topleft" || type === "topright") ? newYScale(d.maxArea) : newYScale(d.minArea);
+        });
+    });
+          
+    // For circles and icons, update positions only – keep their size fixed.
+    contentGroup.selectAll(".machine-circle")
+      .attr("cx", d => newXScale(d.avgCost))
+      .attr("cy", d => newYScale((d.minArea + d.maxArea) / 2));
+    
+    contentGroup.selectAll(".company-icon")
+      .attr("x", d => newXScale(d.avgCost) - 8)  // still center icon on new position
+      .attr("y", d => newYScale((d.minArea + d.maxArea) / 2) - 24);
+  }
+
+  // ---------------------------------------------------------------------------
+  // 5) Reset Zoom Button (Floating at Bottom-Right)
+  // ---------------------------------------------------------------------------
+  function resetZoom() {
+    baseSVG.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+  }
+
+  d3.select("#chart-panel")
+    .append("div")
+    .attr("class", "reset-zoom")
+    .text("Reset Zoom")
+    .on("click", resetZoom);
+
+
+  // ---------------------------------------------------------------------------
+  // End of Script
+  // ---------------------------------------------------------------------------
+</script>
+
+</body>
+</html>
