@@ -1,0 +1,521 @@
+{
+  "tabs": [
+    {
+      "label": "Quality",
+      "id": "custom-gcode_quality",
+      "groups": [
+        {
+          "label": "Layer height",
+          "id": "param_layer_height",
+          "options": [
+            { "key": "layer_height" },
+            { "key": "initial_layer_print_height" }
+          ]
+        },
+        {
+          "label": "Line width",
+          "id": "param_line_width",
+          "options": [
+            { "key": "line_width" },
+            { "key": "initial_layer_line_width" },
+            { "key": "outer_wall_line_width" },
+            { "key": "inner_wall_line_width" },
+            { "key": "top_surface_line_width" },
+            { "key": "sparse_infill_line_width" },
+            { "key": "internal_solid_infill_line_width" },
+            { "key": "support_line_width" }
+          ]
+        },
+        {
+          "label": "Seam",
+          "id": "param_seam",
+          "options": [
+            { "key": "seam_position" },
+            { "key": "staggered_inner_seams" },
+            { "key": "seam_gap" },
+            { "key": "seam_slope_type" },
+            { "key": "seam_slope_conditional" },
+            { "key": "scarf_angle_threshold" },
+            { "key": "scarf_overhang_threshold" },
+            { "key": "scarf_joint_speed" },
+            { "key": "seam_slope_start_height" },
+            { "key": "seam_slope_entire_loop" },
+            { "key": "seam_slope_min_length" },
+            { "key": "seam_slope_steps" },
+            { "key": "scarf_joint_flow_ratio" },
+            { "key": "seam_slope_inner_walls" },
+            { "key": "role_based_wipe_speed" },
+            { "key": "wipe_speed" },
+            { "key": "wipe_on_loops" },
+            { "key": "wipe_before_external_loop" }
+          ]
+        },
+        {
+          "label": "Precision",
+          "id": "param_precision",
+          "options": [
+            { "key": "slice_closing_radius" },
+            { "key": "resolution" },
+            { "key": "enable_arc_fitting" },
+            { "key": "xy_hole_compensation" },
+            { "key": "xy_contour_compensation" },
+            { "key": "elefant_foot_compensation" },
+            { "key": "elefant_foot_compensation_layers" },
+            { "key": "precise_outer_wall" },
+            { "key": "precise_z_height" },
+            { "key": "hole_to_polyhole" },
+            { "key": "hole_to_polyhole_threshold" },
+            { "key": "hole_to_polyhole_twisted" }
+          ]
+        },
+        {
+          "label": "Ironing",
+          "id": "param_ironing",
+          "options": [
+            { "key": "ironing_type" },
+            { "key": "ironing_pattern" },
+            { "key": "ironing_speed" },
+            { "key": "ironing_flow" },
+            { "key": "ironing_spacing" },
+            { "key": "ironing_inset" },
+            { "key": "ironing_angle" }
+          ]
+        },
+        {
+          "label": "Wall generator",
+          "id": "param_wall_generator",
+          "options": [
+            { "key": "wall_generator" },
+            { "key": "wall_transition_angle" },
+            { "key": "wall_transition_filter_deviation" },
+            { "key": "wall_transition_length" },
+            { "key": "wall_distribution_count" },
+            { "key": "initial_layer_min_bead_width" },
+            { "key": "min_bead_width" },
+            { "key": "min_feature_size" },
+            { "key": "min_length_factor" }
+          ]
+        },
+        {
+          "label": "Walls and surfaces",
+          "id": "param_wall_surface",
+          "options": [
+            { "key": "wall_sequence" },
+            { "key": "is_infill_first" },
+            { "key": "wall_direction" },
+            { "key": "print_flow_ratio" },
+            { "key": "top_solid_infill_flow_ratio" },
+            { "key": "bottom_solid_infill_flow_ratio" },
+            { "key": "only_one_wall_top" },
+            { "key": "min_width_top_surface" },
+            { "key": "only_one_wall_first_layer" },
+            { "key": "reduce_crossing_wall" },
+            { "key": "max_travel_detour_distance" },
+            { "key": "small_area_infill_flow_compensation" },
+            {
+              "key": "small_area_infill_flow_compensation_model",
+              "full_width": true,
+              "is_code": true,
+              "height": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Strength",
+      "id": "custom-gcode_strength",
+      "groups": [
+        {
+          "label": "Walls",
+          "id": "param_wall",
+          "options": [
+            { "key": "wall_loops" },
+            { "key": "alternate_extra_wall" },
+            { "key": "detect_thin_wall" }
+          ]
+        },
+        {
+          "label": "Top/bottom shells",
+          "id": "param_shell",
+          "options": [
+            { "key": "top_shell_layers" },
+            { "key": "top_shell_thickness" },
+            { "key": "top_surface_pattern" },
+            { "key": "bottom_shell_layers" },
+            { "key": "bottom_shell_thickness" },
+            { "key": "bottom_shell_pattern" },
+            { "key": "top_bottom_infill_wall_overlap" }
+          ]
+        },
+        {
+          "label": "Infill",
+          "id": "param_infill",
+          "options": [
+            { "key": "sparse_infill_density" },
+            { "key": "sparse_infill_pattern" },
+            { "key": "lattice_angle_1" },
+            { "key": "lattice_angle_2" },
+            { "key": "infill_anchor_max" },
+            { "key": "infill_anchor" },
+            { "key": "internal_solid_infill_pattern" },
+            { "key": "gap_fill_target" },
+            { "key": "filter_out_gap_fill" },
+            { "key": "infill_wall_overlap" }
+          ]
+        },
+        {
+          "label": "Advanced",
+          "id": "param_advanced",
+          "options": [
+            { "key": "infill_direction" },
+            { "key": "solid_infill_direction" },
+            { "key": "rotate_solid_infill_direction" },
+            { "key": "bridge_angle" },
+            { "key": "internal_bridge_angle" },
+            { "key": "minimum_sparse_infill_area" },
+            { "key": "infill_combination" },
+            { "key": "infill_combination_max_layer_height" },
+            { "key": "detect_narrow_internal_solid_infill" },
+            { "key": "ensure_vertical_shell_thickness" }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Speed",
+      "id": "custom-gcode_speed",
+      "groups": [
+        {
+          "label": "Initial layer speed",
+          "id": "param_speed_first",
+          "options": [
+            { "key": "initial_layer_speed" },
+            { "key": "initial_layer_infill_speed" },
+            { "key": "initial_layer_travel_speed" },
+            { "key": "slow_down_layers" }
+          ]
+        },
+        {
+          "label": "Other layers speed",
+          "id": "param_speed",
+          "options": [
+            { "key": "outer_wall_speed" },
+            { "key": "inner_wall_speed" },
+            { "key": "small_perimeter_speed" },
+            { "key": "small_perimeter_threshold" },
+            { "key": "sparse_infill_speed" },
+            { "key": "internal_solid_infill_speed" },
+            { "key": "top_surface_speed" },
+            { "key": "gap_infill_speed" },
+            { "key": "support_speed" },
+            { "key": "support_interface_speed" }
+          ]
+        },
+        {
+          "label": "Overhang speed",
+          "id": "param_overhang_speed",
+          "options": [
+            { "key": "enable_overhang_speed" },
+            { "key": "slowdown_for_curled_perimeters" }
+          ],
+          "lines": [
+            {
+              "label": "Overhang speed",
+              "description": "This is the speed for various overhang degrees. Overhang degrees are expressed as a percentage of line width. 0 speed means no slowing down for the overhang range and wall speed is used",
+              "options": [
+                { "key": "overhang_1_4_speed" },
+                { "key": "overhang_2_4_speed" },
+                { "key": "overhang_3_4_speed" },
+                { "key": "overhang_4_4_speed" }
+              ]
+            },
+            {
+              "label": "Bridge",
+              "description": "Set speed for external and internal bridges",
+              "options": [
+                { "key": "bridge_speed" },
+                { "key": "internal_bridge_speed" }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Travel speed",
+          "id": "param_travel_speed",
+          "options": [
+            { "key": "travel_speed" }
+          ]
+        },
+        {
+          "label": "Acceleration",
+          "id": "param_acceleration",
+          "options": [
+            { "key": "default_acceleration" },
+            { "key": "outer_wall_acceleration" },
+            { "key": "inner_wall_acceleration" },
+            { "key": "bridge_acceleration" },
+            { "key": "sparse_infill_acceleration" },
+            { "key": "internal_solid_infill_acceleration" },
+            { "key": "initial_layer_acceleration" },
+            { "key": "top_surface_acceleration" },
+            { "key": "travel_acceleration" },
+            { "key": "accel_to_decel_enable" },
+            { "key": "accel_to_decel_factor" }
+          ]
+        },
+        {
+          "label": "Jerk(XY)",
+          "id": "param_jerk",
+          "options": [
+            { "key": "default_jerk" },
+            { "key": "outer_wall_jerk" },
+            { "key": "inner_wall_jerk" },
+            { "key": "infill_jerk" },
+            { "key": "top_surface_jerk" },
+            { "key": "initial_layer_jerk" },
+            { "key": "travel_jerk" }
+          ]
+        },
+        {
+          "label": "Advanced",
+          "id": "param_advanced",
+          "options": [
+            { "key": "max_volumetric_extrusion_rate_slope" },
+            { "key": "max_volumetric_extrusion_rate_slope_segment_length" },
+            { "key": "extrusion_rate_smoothing_external_perimeter_only" }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Support",
+      "id": "custom-gcode_support",
+      "groups": [
+        {
+          "label": "Support",
+          "id": "param_support",
+          "options": [
+            { "key": "enable_support" },
+            { "key": "support_type" },
+            { "key": "support_style" },
+            { "key": "support_threshold_angle" },
+            { "key": "support_threshold_overlap" },
+            { "key": "raft_first_layer_density" },
+            { "key": "raft_first_layer_expansion" },
+            { "key": "support_on_build_plate_only" },
+            { "key": "support_critical_regions_only" },
+            { "key": "support_remove_small_overhang" }
+          ]
+        },
+        {
+          "label": "Raft",
+          "id": "param_raft",
+          "options": [
+            { "key": "raft_layers" },
+            { "key": "raft_contact_distance" }
+          ]
+        },
+        {
+          "label": "Support filament",
+          "id": "param_support_filament",
+          "options": [
+            { "key": "support_filament" },
+            { "key": "support_interface_filament" },
+            { "key": "support_interface_not_for_body" }
+          ]
+        },
+        {
+          "label": "Advanced",
+          "id": "param_advanced",
+          "options": [
+            { "key": "support_top_z_distance" },
+            { "key": "support_bottom_z_distance" },
+            { "key": "tree_support_wall_count" },
+            { "key": "support_base_pattern" },
+            { "key": "support_base_pattern_spacing" },
+            { "key": "support_angle" },
+            { "key": "support_interface_top_layers" },
+            { "key": "support_interface_bottom_layers" },
+            { "key": "support_interface_pattern" },
+            { "key": "support_interface_spacing" },
+            { "key": "support_bottom_interface_spacing" },
+            { "key": "support_expansion" },
+            { "key": "support_object_xy_distance" },
+            { "key": "support_object_first_layer_gap" },
+            { "key": "bridge_no_support" },
+            { "key": "max_bridge_length" },
+            { "key": "independent_support_layer_height" }
+          ]
+        },
+        {
+          "label": "Tree supports",
+          "id": "param_support_tree",
+          "options": [
+            { "key": "tree_support_tip_diameter" },
+            { "key": "tree_support_branch_distance" },
+            { "key": "tree_support_branch_distance_organic" },
+            { "key": "tree_support_top_rate" },
+            { "key": "tree_support_branch_diameter" },
+            { "key": "tree_support_branch_diameter_organic" },
+            { "key": "tree_support_branch_diameter_angle" },
+            { "key": "tree_support_branch_angle" },
+            { "key": "tree_support_branch_angle_organic" },
+            { "key": "tree_support_angle_slow" },
+            { "key": "tree_support_adaptive_layer_height" },
+            { "key": "tree_support_auto_brim" },
+            { "key": "tree_support_brim_width" }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Multimaterial",
+      "id": "custom-gcode_multi_material",
+      "groups": [
+        {
+          "label": "Prime tower",
+          "id": "param_tower",
+          "options": [
+            { "key": "enable_prime_tower" },
+            { "key": "prime_tower_width" },
+            { "key": "prime_volume" },
+            { "key": "prime_tower_brim_width" },
+            { "key": "wipe_tower_rotation_angle" },
+            { "key": "wipe_tower_bridging" },
+            { "key": "wipe_tower_cone_angle" },
+            { "key": "wipe_tower_extra_spacing" },
+            { "key": "wipe_tower_extra_flow" },
+            { "key": "wipe_tower_max_purge_speed" },
+            { "key": "wipe_tower_no_sparse_layers" },
+            { "key": "single_extruder_multi_material_priming" }
+          ]
+        },
+        {
+          "label": "Filament for Features",
+          "id": "filament_for_features",
+          "options": [
+            { "key": "wall_filament" },
+            { "key": "sparse_infill_filament" },
+            { "key": "solid_infill_filament" },
+            { "key": "wipe_tower_filament" }
+          ]
+        },
+        {
+          "label": "Ooze prevention",
+          "id": "ooze_prevention",
+          "options": [
+            { "key": "ooze_prevention" },
+            { "key": "standby_temperature_delta" },
+            { "key": "preheat_time" },
+            { "key": "preheat_steps" }
+          ]
+        },
+        {
+          "label": "Flush options",
+          "id": "param_flush",
+          "options": [
+            { "key": "flush_into_infill" },
+            { "key": "flush_into_objects" },
+            { "key": "flush_into_support" }
+          ]
+        },
+        {
+          "label": "Advanced",
+          "id": "advanced",
+          "options": [
+            { "key": "interlocking_beam" },
+            { "key": "interface_shells" },
+            { "key": "mmu_segmented_region_max_width" },
+            { "key": "mmu_segmented_region_interlocking_depth" },
+            { "key": "interlocking_beam_width" },
+            { "key": "interlocking_orientation" },
+            { "key": "interlocking_beam_layer_count" },
+            { "key": "interlocking_depth" },
+            { "key": "interlocking_boundary_avoidance" }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Others",
+      "id": "custom-gcode_other",
+      "groups": [
+        {
+          "label": "Skirt",
+          "id": "param_skirt",
+          "options": [
+            { "key": "skirt_loops" },
+            { "key": "skirt_type" },
+            { "key": "min_skirt_length" },
+            { "key": "skirt_distance" },
+            { "key": "skirt_start_angle" },
+            { "key": "skirt_height" },
+            { "key": "skirt_speed" },
+            { "key": "draft_shield" }
+          ]
+        },
+        {
+          "label": "Brim",
+          "id": "param_adhension",
+          "options": [
+            { "key": "brim_type" },
+            { "key": "brim_width" },
+            { "key": "brim_object_gap" },
+            { "key": "brim_ears_max_angle" },
+            { "key": "brim_ears_detection_length" }
+          ]
+        },
+        {
+          "label": "Special mode",
+          "id": "param_special",
+          "options": [
+            { "key": "slicing_mode" },
+            { "key": "print_sequence" },
+            { "key": "print_order" },
+            { "key": "spiral_mode" },
+            { "key": "spiral_mode_smooth" },
+            { "key": "spiral_mode_max_xy_smoothing" },
+            { "key": "spiral_starting_flow_ratio" },
+            { "key": "spiral_finishing_flow_ratio" },
+            { "key": "timelapse_type" },
+            { "key": "fuzzy_skin" },
+            { "key": "fuzzy_skin_noise_type" },
+            { "key": "fuzzy_skin_point_distance" },
+            { "key": "fuzzy_skin_thickness" },
+            { "key": "fuzzy_skin_scale" },
+            { "key": "fuzzy_skin_octaves" },
+            { "key": "fuzzy_skin_persistence" },
+            { "key": "fuzzy_skin_first_layer" }
+          ]
+        },
+        {
+          "label": "G-code output",
+          "id": "param_gcode",
+          "options": [
+            { "key": "reduce_infill_retraction" },
+            { "key": "gcode_add_line_number" },
+            { "key": "gcode_comments" },
+            { "key": "gcode_label_objects" },
+            { "key": "exclude_object" },
+            { "key": "filename_format" }
+          ]
+        },
+        {
+          "label": "Post-processing Scripts",
+          "id": "param_gcode_post",
+          "options": [
+            { "key": "post_process" }
+          ]
+        },
+        {
+          "label": "Notes",
+          "id": "note",
+          "options": [
+            { "key": "notes" }
+          ]
+        }
+      ]
+    }
+  ]
+}
