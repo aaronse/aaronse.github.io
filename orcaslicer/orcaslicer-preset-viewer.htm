@@ -228,6 +228,12 @@ RESOURCES:
             li.classList.add('selected');
             loadFileContent(li.dataset.filePath);
           });
+
+          // Auto select, load and render project_settings.config containing setting values...
+          if (key == "project_settings.config") {
+            li.classList.add('selected');
+            loadFileContent(li.dataset.filePath);
+          }
         }
 
         if (isFolder) {
