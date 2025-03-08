@@ -47,6 +47,11 @@ RESOURCES:
       position: relative; /* needed for absolutely positioned tooltip */
     }
 
+    #drop-area:hover {
+      border-color: #6ec8d6;
+      background-color: #f1fafc;
+    }
+
     /* Tooltip element hidden by default */
     #drop-area .tooltip-content {
       display: none;
@@ -56,10 +61,9 @@ RESOURCES:
       background: #E5F8FB;/* rgba(0, 0, 0, 0.75);*/
       color: #000;
       padding: 5px;
-      border-radius: 6px;
+      border-radius: 0.5em;
       z-index: 1000;
       border: 2px solid #00B8D4;
-      border-radius: 0.5em;
       /*white-space: nowrap;*/
       font-size: 0.9em; /* adjust font size if needed */
     }
@@ -136,6 +140,9 @@ RESOURCES:
       text-decoration-thickness: 0.2em;  /* Medium thickness */
       text-underline-offset: 0.35em;      /* Adjust this value to lower the underline */
     }
+    .zip-root {
+      list-style-type: none;
+    }
   </style>
 </head>
 <body>
@@ -148,6 +155,7 @@ RESOURCES:
           Drop .3mf file(s), or Preset Bundle(s) here.  Export Presets from OrcaSlicer via <i>File</i> menu => <i>Export</i> => <i>Export Preset Bundle</i>
         </div>
       </div>
+      <input type="file" id="fileInput" accept=".3mf,.zip,.orca_printer,.orca_filament" style="display:none;" multiple>
       <div id="file-tree"></div>
     </div>
     <!-- Main content area -->
@@ -172,6 +180,7 @@ RESOURCES:
     const dropArea = document.getElementById('drop-area');
     const fileTreeDiv = document.getElementById('file-tree');
     const fileContentDiv = document.getElementById('file-content');
+    const fileInput = document.getElementById('fileInput');
 
     // Prevent default behaviors for drag events.
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -187,6 +196,11 @@ RESOURCES:
     });
     dropArea.addEventListener('dragleave', () => {
       dropArea.style.backgroundColor = '';
+    });
+
+    // When the drop area is clicked, trigger the file input.
+    dropArea.addEventListener('click', function() {
+      fileInput.click();
     });
 
     // Handle file drop.
@@ -215,6 +229,32 @@ RESOURCES:
                 let zipRootNode = renderZipRoot(zip, zipId, file.name);
                 fileTreeDiv.appendChild(zipRootNode);
                 // Automatically select and check project_settings.config if found.
+                autoSelectProjectSettings(tree, zipId);
+              })
+              .catch(err => {
+                alert("Error reading ZIP file: " + err);
+              });
+          };
+          reader.readAsArrayBuffer(file);
+        }
+      }
+    });
+
+    // Handle file selection from the file input.
+    fileInput.addEventListener('change', function(e) {
+      const files = e.target.files;
+      if (files.length) {
+        // Process each selected file (using the same logic as the drop event)
+        for (let file of files) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            JSZip.loadAsync(evt.target.result)
+              .then(zip => {
+                let zipId = zipIdCounter++; // Unique id for the zip
+                let tree = buildFileTree(zip);
+                zipFiles.push({ id: zipId, name: file.name, zip: zip, tree: tree });
+                let zipRootNode = renderZipRoot(zip, zipId, file.name);
+                fileTreeDiv.appendChild(zipRootNode);
                 autoSelectProjectSettings(tree, zipId);
               })
               .catch(err => {
@@ -571,6 +611,7 @@ RESOURCES:
                   cell.style.whiteSpace = "nowrap";
                   cell.style.overflow = "hidden";
                   cell.style.textOverflow = "ellipsis";
+                  cell.style.textAlign = "center";
 
                   cell.textContent = val;
                   if (!allSame) {
@@ -621,6 +662,7 @@ RESOURCES:
                     cell.style.whiteSpace = "nowrap";
                     cell.style.overflow = "hidden";
                     cell.style.textOverflow = "ellipsis";
+                    cell.style.textAlign = "center";
 
                     cell.textContent = val;
                     if (!allSame) {
