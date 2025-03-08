@@ -13,7 +13,7 @@ RESOURCES:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Zip File Explorer with Split View</title>
+  <title>OrcaSlicer Preset View 'n Diff</title>
   <!-- Load Roboto font from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
       
@@ -31,7 +31,7 @@ RESOURCES:
     /* Sidebar styles */
     #sidebar {
       width: 300px;
-      min-width: 25%;
+      min-width: 20%;
       border-right: 1px solid #ccc;
       padding: 10px;
       box-sizing: border-box;
@@ -39,12 +39,36 @@ RESOURCES:
     }
     #drop-area {
       border: 2px dashed #aaa;
-      border-radius: 5px;
+      border-radius: 0.5em;
       padding: 20px;
       text-align: center;
       color: #666;
       margin-bottom: 10px;
+      position: relative; /* needed for absolutely positioned tooltip */
     }
+
+    /* Tooltip element hidden by default */
+    #drop-area .tooltip-content {
+      display: none;
+      position: absolute;
+      top: 100%; /* position below the drop area */
+      left: 0%;
+      background: #E5F8FB;/* rgba(0, 0, 0, 0.75);*/
+      color: #000;
+      padding: 5px;
+      border-radius: 6px;
+      z-index: 1000;
+      border: 2px solid #00B8D4;
+      border-radius: 0.5em;
+      /*white-space: nowrap;*/
+      font-size: 0.9em; /* adjust font size if needed */
+    }
+
+    /* Show tooltip on hover */
+    #drop-area:hover .tooltip-content {
+      display: block;
+    }
+
     /* File tree styles */
     #file-tree ul {
       list-style-type: none;
@@ -55,11 +79,12 @@ RESOURCES:
       cursor: pointer;
       margin: 4px 0;
     }
-    #file-tree li.folder::before {
-      content: "📁 ";
+    /* Default folder and file icons (if not using new icons) */
+    #file-tree li.folder > span:first-child {
+      /* Folder icon already provided below */
     }
-    #file-tree li.file::before {
-      content: "📄 ";
+    #file-tree li.file > span:nth-child(2) {
+      /* File icon already provided below */
     }
     #file-tree li.collapsed > ul {
       display: none;
@@ -110,14 +135,19 @@ RESOURCES:
       text-decoration-color: #009688;
       text-decoration-thickness: 0.2em;  /* Medium thickness */
       text-underline-offset: 0.35em;      /* Adjust this value to lower the underline */
-    }    
+    }
   </style>
 </head>
 <body>
   <div id="container">
     <!-- Sidebar: Drop area and file tree -->
     <div id="sidebar">
-      <div id="drop-area">Drag &amp; drop a .zip or .3mf here.<br/>Within OrcaSlicer, select <i>File</i> menu => <i>Export</i> => <i>Export Preset Bundle</i></div>
+      <div id="drop-area">
+        Drag &amp; drop a .zip or .3mf here.
+        <div class="tooltip-content">
+          Drop .3mf file(s), or Preset Bundle(s) here.  Export Presets from OrcaSlicer via <i>File</i> menu => <i>Export</i> => <i>Export Preset Bundle</i>
+        </div>
+      </div>
       <div id="file-tree"></div>
     </div>
     <!-- Main content area -->
@@ -131,7 +161,12 @@ RESOURCES:
   <!-- Include JSZip from CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
   <script>
-    let currentZip = null;
+    // Global variables (modified)
+    // Removed currentZip and replaced with an array of zipFiles, plus selected and checked file state.
+    let zipFiles = []; // Array of { id, name, zip, tree }
+    let selectedFile = null; // Object: { zipId, filePath }
+    let checkedFiles = {}; // Keyed by "zipId:filePath"
+    let zipIdCounter = 1; // Unique id for each dropped zip
 
     // DOM references.
     const dropArea = document.getElementById('drop-area');
@@ -159,28 +194,35 @@ RESOURCES:
       dropArea.style.backgroundColor = '';
       const files = e.dataTransfer.files;
       if (files.length) {
-        const file = files[0];
-        /* Enable non .zip named files like orca_printer and .3mf
-        if (!file.name.endsWith('.zip')) {
-          alert("Please drop a ZIP file.");
-          return;
+        // Process each dropped file (append new zip files instead of replacing)
+        for (let file of files) {
+          /* Enable non .zip named files like orca_printer and .3mf
+          if (!file.name.endsWith('.zip')) {
+            alert("Please drop a ZIP file.");
+            continue;
+          }
+          */
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            JSZip.loadAsync(evt.target.result)
+              .then(zip => {
+                // Create unique id and build tree.
+                let zipId = zipIdCounter++;
+                let tree = buildFileTree(zip);
+                // Store in global array.
+                zipFiles.push({ id: zipId, name: file.name, zip: zip, tree: tree });
+                // Append new zip root node to the file tree without clearing existing nodes.
+                let zipRootNode = renderZipRoot(zip, zipId, file.name);
+                fileTreeDiv.appendChild(zipRootNode);
+                // Automatically select and check project_settings.config if found.
+                autoSelectProjectSettings(tree, zipId);
+              })
+              .catch(err => {
+                alert("Error reading ZIP file: " + err);
+              });
+          };
+          reader.readAsArrayBuffer(file);
         }
-        */
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          JSZip.loadAsync(evt.target.result)
-            .then(zip => {
-              currentZip = zip;
-              // Build the file tree.
-              const tree = buildFileTree(zip);
-              fileTreeDiv.innerHTML = ""; // Clear existing tree
-              renderTree(tree, fileTreeDiv, '');
-            })
-            .catch(err => {
-              alert("Error reading ZIP file: " + err);
-            });
-        };
-        reader.readAsArrayBuffer(file);
       }
     });
 
@@ -203,42 +245,143 @@ RESOURCES:
       return tree;
     }
 
-    // Render the tree object as a nested list.
-    function renderTree(tree, container, pathPrefix) {
+    // New function: Automatically select and check project_settings.config in a newly dropped zip.
+    function autoSelectProjectSettings(tree, zipId, pathPrefix = "") {
+      Object.keys(tree).forEach(key => {
+        let node = tree[key];
+        let fullPath = (pathPrefix ? pathPrefix : "") + key;
+        if (key === "project_settings.config" && node.__file && !node.__file.dir) {
+          // Find the corresponding li element and auto-check/select it.
+          // Because the tree is rendered asynchronously, delay the lookup.
+          setTimeout(() => {
+            let selector = `li.file[data-zip-id="${zipId}"][data-file-path="${fullPath}"]`;
+            let li = document.querySelector(selector);
+            if (li) {
+              // Check the checkbox.
+              let checkbox = li.querySelector('input[type="checkbox"]');
+              if (checkbox && !checkbox.checked) {
+                checkbox.checked = true;
+                let fileId = zipId + ":" + fullPath;
+                checkedFiles[fileId] = { zipId: zipId, filePath: fullPath };
+              }
+              // Also mark as selected.
+              document.querySelectorAll('#file-tree li.selected').forEach(el => el.classList.remove('selected'));
+              li.classList.add('selected');
+              selectedFile = { zipId: zipId, filePath: fullPath };
+              updateContentView();
+            }
+          }, 100);
+        }
+        // Recurse into folders.
+        if (node.__children && Object.keys(node.__children).length > 0) {
+          autoSelectProjectSettings(node.__children, zipId, fullPath + "/");
+        }
+      });
+    }
+
+    // New function: Render zip file root node with delete button and zip icon.
+    function renderZipRoot(zipObj, zipId, zipName) {
+      let li = document.createElement('li');
+      li.classList.add('zip-root');
+      li.dataset.zipId = zipId;
+      // Delete emoji button.
+      let deleteBtn = document.createElement('span');
+      deleteBtn.textContent = "❌"; // delete button
+      deleteBtn.style.cursor = "pointer";
+      deleteBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        removeZip(zipId);
+      });
+      li.appendChild(deleteBtn);
+      // Zip/package icon for collapse/expand.
+      let zipIcon = document.createElement('span');
+      zipIcon.textContent = "📦"; // zip icon
+      zipIcon.style.cursor = "pointer";
+      zipIcon.addEventListener('click', function(e) {
+        e.stopPropagation();
+        let ul = li.querySelector('ul');
+        if (ul) {
+          ul.style.display = (ul.style.display === 'none') ? 'block' : 'none';
+        }
+      });
+      li.appendChild(zipIcon);
+      // Zip file name.
+      let nameSpan = document.createElement('span');
+      nameSpan.textContent = " " + zipName;
+      li.appendChild(nameSpan);
+      // Append the file tree for this zip.
+      let treeUL = renderTree(zipObj ? zipFiles.find(z => z.id === zipId).tree : {}, null, "", zipId);
+      li.appendChild(treeUL);
+      return li;
+    }
+
+    // Modified renderTree: now accepts an extra parameter "zipId" and adds checkboxes for file nodes.
+    function renderTree(tree, container, pathPrefix, zipId) {
       const ul = document.createElement('ul');
       Object.keys(tree).forEach(key => {
         const li = document.createElement('li');
-        li.textContent = key;
+
+        // New styles to force nowrap and ellipsis for folder and file items
+        li.style.whiteSpace = "nowrap";
+        li.style.overflow = "hidden";
+        li.style.textOverflow = "ellipsis";
+        li.title = key; // Set title attribute for native tooltip
+
         const node = tree[key];
         const isFolder = Object.keys(node.__children).length > 0;
-
         if (isFolder) {
           li.classList.add('folder');
-          li.addEventListener('click', function(e) {
+          // Folder icon.
+          let folderIcon = document.createElement('span');
+          folderIcon.textContent = "📁 ";
+          folderIcon.style.cursor = "pointer";
+          folderIcon.addEventListener('click', function(e) {
             e.stopPropagation();
             li.classList.toggle('collapsed');
           });
+          li.appendChild(folderIcon);
+          // Folder name.
+          let nameSpan = document.createElement('span');
+          nameSpan.textContent = key;
+          li.appendChild(nameSpan);
         } else if (node.__file && !node.__file.dir) {
           li.classList.add('file');
           li.dataset.filePath = (pathPrefix ? pathPrefix : "") + key;
-          li.addEventListener('click', function(e) {
+          li.dataset.zipId = zipId;
+          // Add checkbox for file selection.
+          let checkbox = document.createElement('input');
+          checkbox.type = "checkbox";
+          checkbox.addEventListener('click', function(e) {
             e.stopPropagation();
-            document.querySelectorAll('#file-tree li.selected')
-              .forEach(el => el.classList.remove('selected'));
-            li.classList.add('selected');
-            loadFileContent(li.dataset.filePath);
+            let fileId = zipId + ":" + li.dataset.filePath;
+            if (checkbox.checked) {
+              checkedFiles[fileId] = { zipId: zipId, filePath: li.dataset.filePath };
+            } else {
+              delete checkedFiles[fileId];
+            }
+            updateContentView();
           });
-
-          // Auto select, load and render project_settings.config containing setting values...
-          if (key == "project_settings.config") {
+          li.insertBefore(checkbox, li.firstChild);
+          // File icon.
+          let fileIcon = document.createElement('span');
+          fileIcon.textContent = "📄 ";
+          li.appendChild(fileIcon);
+          // File name clickable for single file view.
+          let nameSpan = document.createElement('span');
+          nameSpan.textContent = key;
+          nameSpan.addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.querySelectorAll('#file-tree li.selected').forEach(el => el.classList.remove('selected'));
             li.classList.add('selected');
-            loadFileContent(li.dataset.filePath);
-          }
+            selectedFile = { zipId: zipId, filePath: li.dataset.filePath };
+            updateContentView();
+          });
+          li.appendChild(nameSpan);
         }
-
+        // Recurse for children.
         if (isFolder) {
-          const childUl = renderTree(node.__children, null, (pathPrefix ? pathPrefix : "") + key + '/');
-          li.appendChild(childUl);
+          let childUL = renderTree(node.__children, null, (pathPrefix ? pathPrefix : "") + key + '/', zipId);
+          li.appendChild(childUL);
         }
         ul.appendChild(li);
       });
@@ -249,84 +392,23 @@ RESOURCES:
       }
     }
 
-
- // Create a split view container with a draggable horizontal splitter.
- function createSplitView(topContent, bottomContent) {
-      const container = document.createElement('div');
-      container.id = "split-view";
-
-      // Top pane.
-      const topPane = document.createElement('div');
-      topPane.id = "top-pane";
-      topPane.style.flex = "1";
-      topPane.style.overflow = "auto";
-      // If topContent is a string, set it as innerHTML so it renders as HTML.
-      if (typeof topContent === 'string') {
-        topPane.innerHTML = topContent;
-      } else {
-        topPane.appendChild(topContent);
+    // Modified loadFileContent: now accepts fileRef object {zipId, filePath}
+    function loadFileContent(fileRef) {
+      let zipObj = zipFiles.find(z => z.id == fileRef.zipId);
+      if (!zipObj) {
+        fileContentDiv.textContent = "Zip file not found!";
+        return;
       }
-
-      // Splitter.
-      const splitter = document.createElement('div');
-      splitter.id = "splitter";
-
-      // Bottom pane.
-      const bottomPane = document.createElement('div');
-      bottomPane.id = "bottom-pane";
-      bottomPane.style.flex = "1";
-      bottomPane.style.overflow = "auto";
-      // For bottom pane, keep using a <pre> element for prettified text.
-      if (typeof bottomContent === 'string') {
-        const pre = document.createElement('pre');
-        pre.textContent = bottomContent;
-        bottomPane.appendChild(pre);
-      } else {
-        bottomPane.appendChild(bottomContent);
-      }
-
-      container.appendChild(topPane);
-      container.appendChild(splitter);
-      container.appendChild(bottomPane);
-
-      // Drag functionality for the splitter.
-      splitter.addEventListener('mousedown', function(e) {
-        e.preventDefault();
-        let startY = e.clientY;
-        let startTopHeight = topPane.getBoundingClientRect().height;
-        function onMouseMove(e) {
-          let dy = e.clientY - startY;
-          let newTopHeight = startTopHeight + dy;
-          if (newTopHeight < 50) newTopHeight = 50; // minimum height
-          topPane.style.flex = "0 0 " + newTopHeight + "px";
-        }
-        function onMouseUp() {
-          document.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', onMouseUp);
-        }
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-      });
-
-      return container;
-    }
-
-    // Load and display the content of the selected file.
-    function loadFileContent(filePath) {
-      if (!currentZip) return;
-      const fileObj = currentZip.file(filePath);
+      const fileObj = zipObj.zip.file(fileRef.filePath);
       if (!fileObj) {
         fileContentDiv.textContent = "File not found!";
         return;
       }
-
       // Clear previous content.
       fileContentDiv.innerHTML = "";
-
       // Determine file type.
-      const ext = filePath.split('.').pop().toLowerCase();
+      const ext = fileRef.filePath.split('.').pop().toLowerCase();
       if (["jpg", "jpeg", "png", "gif"].includes(ext)) {
-        // For images: load as base64 and render an <img>.
         fileObj.async("base64").then(data => {
           const img = document.createElement("img");
           img.src = "data:" + getMimeType(ext) + ";base64," + data;
@@ -335,7 +417,6 @@ RESOURCES:
           fileContentDiv.textContent = "Error loading image: " + err;
         });
       } else {
-        // For JSON or other string content: load as string.
         fileObj.async("string").then(text => {
           var isParsed = false;
           if (ext === "json" || ext === "config") {
@@ -351,9 +432,7 @@ RESOURCES:
               fileContentDiv.textContent = "Invalid JSON: " + e;
             }
           }
-
           if (!isParsed) {
-            // For plain text files, show the same split view with raw text.
             const transformed = render(text);
             const splitView = createSplitView(transformed, text);
             fileContentDiv.innerHTML = "";
@@ -365,6 +444,206 @@ RESOURCES:
       }
     }
 
+    // New function: update content view based on checked vs. selected files.
+    function updateContentView() {
+      if (Object.keys(checkedFiles).length >= 2) {
+        renderComparisonView();
+      } else if (selectedFile) {
+        loadFileContent(selectedFile);
+      } else {
+        fileContentDiv.textContent = "File content will appear here when you select a file.";
+      }
+    }
+
+    // New function: Render comparison view for 2 or more checked files.
+    function renderComparisonView() {
+      const filesToCompare = Object.values(checkedFiles);
+      let promises = filesToCompare.map(fileRef => {
+        let zipObj = zipFiles.find(z => z.id == fileRef.zipId);
+        if (!zipObj) return Promise.resolve(null);
+        let fileObj = zipObj.zip.file(fileRef.filePath);
+        if (!fileObj) return Promise.resolve(null);
+        return fileObj.async("string").then(text => {
+          try {
+            return JSON.parse(text);
+          } catch(e) {
+            return null;
+          }
+        });
+      });
+
+      let fileColWidth;
+      if (filesToCompare.length === 2) {
+        fileColWidth = "30%";
+      } else if (filesToCompare.length === 3) {
+        fileColWidth = "25%";
+      } else if (filesToCompare.length >= 4) {
+        fileColWidth = "20%";
+      } else {
+        fileColWidth = "50%";
+      }
+
+      Promise.all(promises).then(contents => {
+        // Create table for comparison.
+        let table = document.createElement('table');
+        table.style.borderCollapse = "collapse";
+        ///table.style.width = "100%";
+        table.style.tableLayout = "fixed";
+        table.style.width = "100%";
+
+        // Header row with file names.
+        let headerRow = document.createElement('tr');
+        let headerCell = document.createElement('th');
+        headerCell.style.border = "1px solid #ccc";
+        headerCell.style.padding = "4px";
+        headerCell.textContent = "";
+        headerRow.appendChild(headerCell);
+        filesToCompare.forEach(fileRef => {
+          let zipObj = zipFiles.find(z => z.id == fileRef.zipId);
+          let th = document.createElement('th');
+          th.style.border = "1px solid #ccc";
+          th.style.padding = "4px";
+          th.innerHTML = zipObj.name + "<br/>" + fileRef.filePath.split('/').pop();
+          th.style.width = fileColWidth;
+          th.style.whiteSpace = "nowrap";
+          th.style.overflow = "hidden";
+          th.style.textOverflow = "ellipsis";
+          headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+        // Iterate over OrcaSlicer UI structure.
+        window.orcaSlicerUI.tabs.forEach(tab => {
+          // Tab row.
+          let tabRow = document.createElement('tr');
+          let tabCell = document.createElement('td');
+          tabCell.colSpan = filesToCompare.length + 1;
+          tabCell.style.border = "1px solid #ccc";
+          tabCell.style.padding = "4px";
+          tabCell.style.fontWeight = "bold";
+          tabCell.style.textDecoration = "underline";
+          tabCell.style.textDecorationColor = "#009688";
+          tabCell.textContent = tab.label;
+          tabRow.appendChild(tabCell);
+          table.appendChild(tabRow);
+          // Process groups.
+          tab.groups.forEach(group => {
+            // Group row.
+            let groupRow = document.createElement('tr');
+            let groupCell = document.createElement('td');
+            groupCell.colSpan = filesToCompare.length + 1;
+            groupCell.style.border = "1px solid #ccc";
+            groupCell.style.padding = "4px";
+            groupCell.style.fontWeight = "bold";
+            
+            groupCell.style.paddingLeft = "1.5em";
+            
+            groupCell.textContent = group.label;
+            groupRow.appendChild(groupCell);
+            table.appendChild(groupRow);
+            // Options in group.
+            if (group.options && Array.isArray(group.options)) {
+              group.options.forEach(option => {
+                let key = option.key;
+                let row = document.createElement('tr');
+                let keyCell = document.createElement('td');
+                keyCell.style.border = "1px solid #ccc";
+                keyCell.style.padding = "4px";
+                
+                keyCell.style.paddingLeft = "3em";
+                keyCell.style.width = "10em"; // fixed width for setting label
+                keyCell.style.whiteSpace = "nowrap";
+                keyCell.style.overflow = "hidden";
+                keyCell.style.textOverflow = "ellipsis";
+
+                keyCell.textContent = key;
+                row.appendChild(keyCell);
+                let values = filesToCompare.map(() => "");
+                // Collect values from each file.
+                values = filesToCompare.map((fileRef, index) => {
+                  return contents[index] ? contents[index][key] : "";
+                });
+                let allSame = values.every(v => v === values[0]);
+                values.forEach(val => {
+                  let cell = document.createElement('td');
+                  cell.style.border = "1px solid #ccc";
+                  cell.style.padding = "4px";
+                  
+                  cell.style.whiteSpace = "nowrap";
+                  cell.style.overflow = "hidden";
+                  cell.style.textOverflow = "ellipsis";
+
+                  cell.textContent = val;
+                  if (!allSame) {
+                    cell.style.color = "orange";
+                  }
+                  row.appendChild(cell);
+                });
+                table.appendChild(row);
+              });
+            }
+            // Process group lines if present.
+            if (group.lines && Array.isArray(group.lines)) {
+              group.lines.forEach(line => {
+                let lineHeaderRow = document.createElement('tr');
+                let lineHeaderCell = document.createElement('td');
+                lineHeaderCell.colSpan = filesToCompare.length + 1;
+                lineHeaderCell.style.border = "1px solid #ccc";
+                lineHeaderCell.style.padding = "4px";
+                lineHeaderCell.style.fontWeight = "bold";
+                
+                ///lineHeaderCell.style.paddingLeft = "8em";
+                lineHeaderCell.style.paddingLeft = "3em";
+                lineHeaderCell.style.whiteSpace = "nowrap";
+                lineHeaderCell.style.overflow = "hidden";
+                lineHeaderCell.style.textOverflow = "ellipsis";
+               
+                lineHeaderCell.textContent = line.label + (line.description ? " - " + line.description : "");
+                lineHeaderRow.appendChild(lineHeaderCell);
+                table.appendChild(lineHeaderRow);
+                line.options.forEach(option => {
+                  let key = option.key;
+                  let row = document.createElement('tr');
+                  let keyCell = document.createElement('td');
+                  keyCell.style.border = "1px solid #ccc";
+                  keyCell.style.padding = "4px";
+                  keyCell.style.paddingLeft = "10em";
+                  keyCell.textContent = key;
+                  row.appendChild(keyCell);
+                  let values = filesToCompare.map((fileRef, index) => {
+                    return contents[index] ? contents[index][key] : "";
+                  });
+                  let allSame = values.every(v => v === values[0]);
+                  values.forEach(val => {
+                    let cell = document.createElement('td');
+                    cell.style.border = "1px solid #ccc";
+                    cell.style.padding = "4px";
+                    
+                    cell.style.whiteSpace = "nowrap";
+                    cell.style.overflow = "hidden";
+                    cell.style.textOverflow = "ellipsis";
+
+                    cell.textContent = val;
+                    if (!allSame) {
+                      cell.style.color = "orange";
+                    }
+                    row.appendChild(cell);
+                  });
+                  table.appendChild(row);
+                });
+              });
+            }
+          });
+        });
+        // Render table with scrollbars.
+        fileContentDiv.innerHTML = "";
+        let containerDiv = document.createElement('div');
+        containerDiv.style.overflow = "auto";
+        containerDiv.style.maxHeight = "100%";
+        containerDiv.appendChild(table);
+        fileContentDiv.appendChild(containerDiv);
+      });
+    }
+
     // Helper: return appropriate MIME type.
     function getMimeType(ext) {
       if (ext === "jpg" || ext === "jpeg") return "image/jpeg";
@@ -373,6 +652,65 @@ RESOURCES:
       return "application/octet-stream";
     }
 
+    // Create a split view container with a draggable horizontal splitter.
+    function createSplitView(topContent, bottomContent) {
+      const container = document.createElement('div');
+      container.id = "split-view";
+
+      // Top pane.
+      const topPane = document.createElement('div');
+      topPane.id = "top-pane";
+      topPane.style.flex = "1";
+      topPane.style.overflow = "auto";
+      if (typeof topContent === 'string') {
+        topPane.innerHTML = topContent;
+      } else {
+        topPane.appendChild(topContent);
+      }
+
+      // Splitter.
+      const splitter = document.createElement('div');
+      splitter.id = "splitter";
+
+      // Bottom pane.
+      const bottomPane = document.createElement('div');
+      bottomPane.id = "bottom-pane";
+      bottomPane.style.flex = "1";
+      bottomPane.style.overflow = "auto";
+      if (typeof bottomContent === 'string') {
+        const pre = document.createElement('pre');
+        pre.textContent = bottomContent;
+        bottomPane.appendChild(pre);
+      } else {
+        bottomPane.appendChild(bottomContent);
+      }
+
+      container.appendChild(topPane);
+      container.appendChild(splitter);
+      container.appendChild(bottomPane);
+
+      splitter.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        let startY = e.clientY;
+        let startTopHeight = topPane.getBoundingClientRect().height;
+        function onMouseMove(e) {
+          let dy = e.clientY - startY;
+          let newTopHeight = startTopHeight + dy;
+          if (newTopHeight < 50) newTopHeight = 50;
+          topPane.style.flex = "0 0 " + newTopHeight + "px";
+        }
+        function onMouseUp() {
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        }
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+
+      return container;
+    }
+
+    // Modified load: fetch UI definition remains the same.
     document.addEventListener("DOMContentLoaded", () => {
       fetch("orcaslicer-ui.json")
         .then(response => {
@@ -390,6 +728,23 @@ RESOURCES:
         });
     });
 
+    // New function: remove a zip file from the tree and memory.
+    function removeZip(zipId) {
+      zipFiles = zipFiles.filter(z => z.id != zipId);
+      let node = document.querySelector(`li.zip-root[data-zip-id='${zipId}']`);
+      if (node && node.parentNode) {
+        node.parentNode.removeChild(node);
+      }
+      Object.keys(checkedFiles).forEach(key => {
+        if (key.startsWith(zipId + ":")) {
+          delete checkedFiles[key];
+        }
+      });
+      if (selectedFile && selectedFile.zipId == zipId) {
+        selectedFile = null;
+      }
+      updateContentView();
+    }
 
     // New render function that transforms data (for now, returns same content).
     function render(data) {
@@ -404,32 +759,21 @@ RESOURCES:
         data = JSON.stringify(data, null, 2);
       }
       
-      // Parse the configuration JSON (flat key/value pairs)
       const configData = JSON.parse(data);
-
-      // Assume the UI definition is loaded globally (from orcaslicer-ui.json)
-      // For example, window.orcaSlicerUI = { tabs: [...] }
       if (!window.orcaSlicerUI || !window.orcaSlicerUI.tabs) {
         console.error("UI definition (orcaSlicerUI) not loaded.");
         return "<div>Error: UI definition not available.</div>";
       }
       
       let html = '';
-
-      // Iterate over each tab in the UI definition
       window.orcaSlicerUI.tabs.forEach(tab => {
         let tabContent = '';
-
-        // Process each group (or option group) in the tab
         tab.groups.forEach(group => {
           let groupContent = '';
-
-          // Process the group's plain options
           if (group.options && Array.isArray(group.options)) {
             group.options.forEach(option => {
               const key = option.key;
               if (configData.hasOwnProperty(key)) {
-                // Render option key and value; additional UI properties (e.g., full_width, is_code) can be used to alter styling.
                 groupContent += `<div class="option">
                   <span class="option-key">${key}:</span>
                   <span class="option-value">${configData[key]}</span>
@@ -437,8 +781,6 @@ RESOURCES:
               }
             });
           }
-
-          // Process grouped "lines" if they exist (e.g. Overhang speed groupings)
           if (group.lines && Array.isArray(group.lines)) {
             group.lines.forEach(line => {
               let lineContent = '';
@@ -461,8 +803,6 @@ RESOURCES:
               }
             });
           }
-
-          // Only add the group if at least one option was rendered
           if (groupContent) {
             tabContent += `<div class="group">
               <h3>${group.label}</h3>
@@ -470,8 +810,6 @@ RESOURCES:
             </div>`;
           }
         });
-
-        // Only add the tab if at least one group was rendered
         if (tabContent) {
           html += `<div class="tab">
             <h2 class="underline">${tab.label}</h2>
@@ -479,11 +817,8 @@ RESOURCES:
           </div>`;
         }
       });
-
       return html;
     }
-
-
-</script>
+  </script>
 </body>
 </html>
