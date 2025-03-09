@@ -44,7 +44,7 @@ RESOURCES:
       text-align: center;
       color: #666;
       margin-bottom: 10px;
-      position: relative; /* needed for absolutely positioned tooltip */
+      position: relative;
     }
 
     #drop-area:hover {
@@ -143,6 +143,48 @@ RESOURCES:
     .zip-root {
       list-style-type: none;
     }
+
+    @keyframes pulsate {
+      0% {
+        /* transform: scale(1) rotate(0deg); */
+        box-shadow: 0 0 0 0 rgba(0,150,136, 0.7);
+        filter: hue-rotate(0deg) brightness(1);
+        background: rgba(0,150,136,0.1);
+        font-weight: bold;
+      }
+      25% {
+        /* transform: scale(1.05) rotate(1deg); */
+        box-shadow: 0 0 15px 5px rgba(0,150,136, 0.5);
+        filter: hue-rotate(30deg) brightness(1.3);
+        background: rgba(0,150,136,0.15);
+        font-weight: bold;
+      }
+      50% {
+        /* transform: scale(0.95) rotate(-1deg); */
+        box-shadow: 0 0 30px 10px rgba(0,150,136, 0.3);
+        filter: hue-rotate(60deg) brightness(0.9);
+        background: rgba(0,150,136,0.05);
+        font-weight: bold;
+      }
+      75% {
+        /* transform: scale(1.05) rotate(1deg); */
+        box-shadow: 0 0 15px 5px rgba(0,150,136, 0.5);
+        filter: hue-rotate(30deg) brightness(1.3);
+        background: rgba(0,150,136,0.15);
+        font-weight: bold;
+      }
+      100% {
+        /* transform: scale(1) rotate(0deg); */
+        box-shadow: 0 0 0 0 rgba(0,150,136, 0.7);
+        filter: hue-rotate(0deg) brightness(1);
+        background: rgba(0,150,136,0.1);
+        font-weight: bold;
+      }
+    }
+    .pulsate {
+      animation: pulsate 3s infinite ease-in-out;
+    } 
+
   </style>
 </head>
 <body>
@@ -150,7 +192,7 @@ RESOURCES:
     <!-- Sidebar: Drop area and file tree -->
     <div id="sidebar">
       <div id="drop-area">
-        Drag &amp; drop a .zip or .3mf here.
+        Click, or Drag &amp; Drop .3mf or .zip.
         <div class="tooltip-content">
           Drop .3mf file(s), or Preset Bundle(s) here.  Export Presets from OrcaSlicer via <i>File</i> menu => <i>Export</i> => <i>Export Preset Bundle</i>
         </div>
@@ -169,6 +211,8 @@ RESOURCES:
   <!-- Include JSZip from CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
   <script>
+    let _pulseAnimation = "pulsate"; // "pulsate";
+
     // Global variables (modified)
     // Removed currentZip and replaced with an array of zipFiles, plus selected and checked file state.
     let zipFiles = []; // Array of { id, name, zip, tree }
@@ -230,6 +274,9 @@ RESOURCES:
                 fileTreeDiv.appendChild(zipRootNode);
                 // Automatically select and check project_settings.config if found.
                 autoSelectProjectSettings(tree, zipId);
+                
+                // Remove glow once a file is added
+                updateDropAreaGlow(); 
               })
               .catch(err => {
                 alert("Error reading ZIP file: " + err);
@@ -256,6 +303,9 @@ RESOURCES:
                 let zipRootNode = renderZipRoot(zip, zipId, file.name);
                 fileTreeDiv.appendChild(zipRootNode);
                 autoSelectProjectSettings(tree, zipId);
+
+                // Remove glow once a file is added
+                updateDropAreaGlow();                 
               })
               .catch(err => {
                 alert("Error reading ZIP file: " + err);
@@ -768,6 +818,8 @@ RESOURCES:
         .catch(error => {
           console.error("Error loading orcaslicer-ui.json:", error);
         });
+
+      updateDropAreaGlow();
     });
 
     // New function: remove a zip file from the tree and memory.
@@ -786,6 +838,7 @@ RESOURCES:
         selectedFile = null;
       }
       updateContentView();
+      updateDropAreaGlow();
     }
 
     // New render function that transforms data (for now, returns same content).
@@ -861,6 +914,16 @@ RESOURCES:
       });
       return html;
     }
+
+    function updateDropAreaGlow() {
+      if (zipFiles.length === 0) {
+        dropArea.classList.add(_pulseAnimation);
+      } else {
+        dropArea.classList.remove(_pulseAnimation);
+      }
+
+      console.log(zipFiles.length);
+    }    
   </script>
 </body>
 </html>
