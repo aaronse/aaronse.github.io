@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>QR Code Explosion Demo – Refined with Rate Limiting & Project Image Adjustments</title>
+  <title>QR Code Explosion Demo – Final Refinement</title>
   <style>
     body { margin: 0; overflow: hidden; background: #fff; }
     canvas { display: block; }
@@ -22,28 +22,28 @@
 
     // Physics constants:
     const GRAVITY = 0.3;                // Gravity acceleration per frame
-    const BOUNCE_DAMPING = 0.6;         // Dampening on bounce
+    const BOUNCE_DAMPING = 0.5;         // Dampening on bounce (reduced from 0.7)
     const HORIZONTAL_FRICTION = 0.98;   // Friction applied to horizontal velocity each frame
     const VELOCITY_THRESHOLD = 0.5;     // Below this velocity, consider the tile stopped
 
     // Tessellation:
     const TILE_BASE_SIZE = 8;           // Size of each tile block (in pixels)
-    const ALPHA_THRESHOLD = 50;         // Minimum alpha (0-255) needed from the block for a tile
+    const ALPHA_THRESHOLD = 20;         // Minimum alpha (0-255) needed from the block for a tile
 
     // QR Tile Sizing:
     const BASE_MAX_QR_SIZE = 30;        // Base max size (old value)
     const FINAL_QR_MULTIPLIER = 4;      // Multiplier used to interpolate QR tile size
     const FINAL_QR_SIZE = BASE_MAX_QR_SIZE * FINAL_QR_MULTIPLIER; // Final size before scaling project image
-    const FINAL_QR_MULTIPLIER_NEW = 4;  // Increase final size of QR tiles by 4x (as requested)
+    const FINAL_QR_MULTIPLIER_NEW = 4;  // (Not used further – kept for reference)
 
     // Tile count / fade:
     const TILE_MAX_COUNT = 30;          // Maximum number of active QR tiles allowed
     let currentTileCount = 0;           // Global counter for active QR tiles
-    const FADE_OUT_RATE = 0.01;         // Fade-out rate per frame for landed QR tiles
+    const FADE_OUT_RATE = 0.002;         // Fade-out rate per frame for landed QR tiles (slower fade)
     const DUST_FADE_DURATION = 120;     // Frames for Dust tile fade-out (~2 seconds at 60fps)
 
     // Project Image (landing) constants:
-    const PROJECT_IMAGE_FINAL_MULTIPLIER = 3; // Final project image = 3x final QR tile size (was 4x)
+    const PROJECT_IMAGE_FINAL_MULTIPLIER = 3; // Final project image = 3x final QR tile size
     const PROJECT_IMAGE_OVERSHOOT = 1.2;        // Overshoot factor (20% larger before settling)
     const PROJECT_IMAGE_ANIMATION_DURATION = 60; // Frames for the spring animation
     const PROJECT_IMAGE_CORNER_RADIUS = 10;     // Medium corner radius for project image
@@ -53,6 +53,19 @@
     // QR tile birth rate limiting (in ms)
     const QR_BIRTH_RATE = 200;
     let lastQRBirthTime = 0;
+
+    // Gentle horizontal acceleration for landed QR tiles sliding left.
+    const HORIZONTAL_GRAVITY = false;
+    const GENTLE_HORIZONTAL_ACCELERATION = -0.05;
+    const MAX_HORIZONTAL_VELOCITY = -2; // Maximum leftward velocity for landed QR tiles
+
+    // Horizontal repulsion constants.
+    const REPULSION_FORCE = 0.05;
+    const REPULSION_DISTANCE = FINAL_QR_SIZE * 3; // If centers are within 20 pixels, apply repulsion
+
+    // Timer for reinitializing logo if no activity for 10 seconds.
+    const REINIT_TIMEOUT = 10000;
+    let lastActivityTime = Date.now();
 
     // ---------- SETUP CANVAS & ASSETS ----------
     const canvas = document.getElementById('logoCanvas');
@@ -90,9 +103,13 @@
       scaledLogoCanvas.width = scaledWidth;
       scaledLogoCanvas.height = scaledHeight;
       scaledLogoCtx.drawImage(logoImg, 0, 0, scaledWidth, scaledHeight);
-      // Position logo roughly in the top 1/3 (centered horizontally)
+      // Position logo higher in the canvas (closer to the top)
       logoXOffset = (canvas.width - scaledWidth) / 2;
       logoYOffset = canvas.height / 20;
+
+      // Clear previous tiles and reset QR tile count
+      tiles = [];
+      currentTileCount = 0;
 
       // Get pixel data from the scaled logo and tessellate in blocks.
       const imageData = scaledLogoCtx.getImageData(0, 0, scaledWidth, scaledHeight);
@@ -125,7 +142,7 @@
               landed: false,     // True when nearly stopped in ticker area
               landing: false,    // True when starting landing state (for QR tiles)
               projectAnimTime: 0,// Timer for project image spring animation
-              dustLife: 0        // For dust tiles: remaining life in frames
+              dustLife: 0        // For Dust tiles: remaining life in frames
             });
           }
         }
@@ -134,13 +151,22 @@
       drawTiles();
     }
 
+    // ---------- REINITIALIZE LOGO AFTER TIMEOUT ----------
+    setInterval(function() {
+      if (Date.now() - lastActivityTime > REINIT_TIMEOUT) {
+        initLogo();
+      }
+    }, 1000);
+
     // ---------- EVENT LISTENERS ----------
     canvas.addEventListener('click', function(e) {
       const rect = canvas.getBoundingClientRect();
+      lastActivityTime = Date.now();
       triggerExplosion(e.clientX - rect.left, e.clientY - rect.top);
     });
     canvas.addEventListener('mousemove', function(e) {
       const rect = canvas.getBoundingClientRect();
+      lastActivityTime = Date.now();
       triggerExplosion(e.clientX - rect.left, e.clientY - rect.top);
     });
 
@@ -156,7 +182,7 @@
           const dy = tileCenterY - mouseY;
           if (Math.sqrt(dx * dx + dy * dy) < EXPLOSION_TRIGGER_RADIUS) {
             tile.exploded = true;
-            // Rate-limit QR tile births: allow only if 100ms has passed.
+            // Rate-limit QR tile births: allow only if QR_BIRTH_RATE has passed.
             if (currentTileCount < TILE_MAX_COUNT && (now - lastQRBirthTime >= QR_BIRTH_RATE)) {
               tile.type = "QR";
               currentTileCount++;
@@ -181,19 +207,42 @@
     function animate() {
       let animating = false;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Apply repulsion between exploded tiles
+      for (let i = 0; i < tiles.length; i++) {
+        for (let j = i + 1; j < tiles.length; j++) {
+          let tile1 = tiles[i], tile2 = tiles[j];
+          if (!tile1.exploded || !tile2.exploded) continue;
+          let dx = (tile1.x + tile1.baseSize/2) - (tile2.x + tile2.baseSize/2);
+          let distance = Math.abs(dx);
+          if (distance < REPULSION_DISTANCE && distance > 0) {
+            let force = REPULSION_FORCE / distance;
+            let sign = Math.sign(dx);
+            tile1.vx += force * sign;
+            tile2.vx -= force * sign;
+          }
+        }
+      }
+
       // Update each tile; remove fully faded ones.
       tiles = tiles.filter(tile => {
         if (tile.exploded) {
           // Apply physics: gravity & horizontal friction.
           tile.vy += GRAVITY;
           tile.vx *= HORIZONTAL_FRICTION;
+
+          // For landed QR tiles, add gentle leftward acceleration.
+          if (HORIZONTAL_GRAVITY && tile.landed && tile.type === "QR") {
+            tile.vx += GENTLE_HORIZONTAL_ACCELERATION;
+            if (tile.vx < MAX_HORIZONTAL_VELOCITY) { tile.vx = MAX_HORIZONTAL_VELOCITY; }
+          }
+
           tile.x += tile.vx;
           tile.y += tile.vy;
 
-          // Compute current size:
+          // Compute current size.
           let size;
           if (tile.type === "QR") {
-            // Interpolate size from base to final QR size.
             const tickerBoundary = canvas.height - TICKER_HEIGHT;
             const progress = Math.min(1, (tile.y - tile.originalY) / (tickerBoundary - tile.originalY));
             size = tile.baseSize + progress * (FINAL_QR_SIZE - tile.baseSize);
@@ -233,10 +282,13 @@
           if (tile.type === "QR" && tile.landing) {
             if (tile.projectAnimTime < PROJECT_IMAGE_ANIMATION_DURATION) { tile.projectAnimTime++; }
           }
+          // If a QR tile is fully faded, decrement currentTileCount before removal.
+          if (tile.type === "QR" && tile.fullAlpha <= 0) {
+            currentTileCount--;
+          }
           if (!tile.landed || tile.fullAlpha > 0) { animating = true; }
         }
         drawTile(tile);
-        // Remove tiles that have completely faded.
         return tile.fullAlpha > 0;
       });
       if (animating) { requestAnimationFrame(animate); }
@@ -277,19 +329,23 @@
             // Position project image so its bottom right aligns with the QR tile.
             const projX = tile.x + finalQRSize - currentProjectSize;
             const projY = tile.y + finalQRSize - currentProjectSize;
-            drawRoundedImage(ctx, projectImg, projX, projY, currentProjectSize, currentProjectSize, PROJECT_IMAGE_CORNER_RADIUS);
+            //drawRoundedImage(ctx, projectImg, projX, projY, currentProjectSize, currentProjectSize, PROJECT_IMAGE_CORNER_RADIUS);
+            ctx.drawImage(projectImg, projX, projY, currentProjectSize, currentProjectSize);
           }
           // Draw the QR tile.
           ctx.drawImage(qrImg, tile.x, tile.y, size, size);
+          
           // Overlay the original logo’s section (fading out).
-          const srcX = tile.originalX - logoXOffset;
-          const srcY = tile.originalY - logoYOffset;
-          ctx.globalAlpha = tile.fullAlpha * tile.overlayAlpha;
-          ctx.drawImage(scaledLogoCanvas, srcX, srcY, tile.baseSize, tile.baseSize,
-                        tile.x, tile.y, size, size);
+          //const srcX = tile.originalX - logoXOffset;
+          //const srcY = tile.originalY - logoYOffset;
+          //ctx.globalAlpha = tile.fullAlpha * tile.overlayAlpha;
+          //ctx.drawImage(scaledLogoCanvas, srcX, srcY, tile.baseSize, tile.baseSize,
+           //             tile.x, tile.y, size, size);
         } else if (tile.type === "Dust") {
           // Draw Dust tile as a constant-sized QR tile.
-          ctx.drawImage(qrImg, tile.x, tile.y, size, size);
+          //ctx.drawImage(qrImg, tile.x, tile.y, size, size);
+          ctx.fillStyle = '#ff0000';
+          ctx.fillRect(tile.x, tile.y, size, size);
         }
       }
       ctx.restore();
