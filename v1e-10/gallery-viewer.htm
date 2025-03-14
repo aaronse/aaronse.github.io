@@ -22,13 +22,13 @@
 
     // Physics constants:
     const GRAVITY = 0.3;                // Gravity acceleration per frame
-    const BOUNCE_DAMPING = 0.7;         // Dampening on bounce
+    const BOUNCE_DAMPING = 0.6;         // Dampening on bounce
     const HORIZONTAL_FRICTION = 0.98;   // Friction applied to horizontal velocity each frame
     const VELOCITY_THRESHOLD = 0.5;     // Below this velocity, consider the tile stopped
 
     // Tessellation:
-    const TILE_BASE_SIZE = 4;           // Size of each tile block (in pixels)
-    const ALPHA_THRESHOLD = 20;         // Minimum alpha (0-255) needed from the block for a tile
+    const TILE_BASE_SIZE = 8;           // Size of each tile block (in pixels)
+    const ALPHA_THRESHOLD = 50;         // Minimum alpha (0-255) needed from the block for a tile
 
     // QR Tile Sizing:
     const BASE_MAX_QR_SIZE = 30;        // Base max size (old value)
@@ -49,9 +49,9 @@
     const PROJECT_IMAGE_CORNER_RADIUS = 10;     // Medium corner radius for project image
 
     // Explosion trigger radius (in pixels)
-    const EXPLOSION_TRIGGER_RADIUS = 30;
+    const EXPLOSION_TRIGGER_RADIUS = 10;
     // QR tile birth rate limiting (in ms)
-    const QR_BIRTH_RATE = 100;
+    const QR_BIRTH_RATE = 200;
     let lastQRBirthTime = 0;
 
     // ---------- SETUP CANVAS & ASSETS ----------
@@ -85,14 +85,14 @@
     function initLogo() {
       // Scale logo to 90% of the window width (maintaining aspect ratio)
       const scaleFactor = (window.innerWidth * 0.9) / logoImg.width;
-      const scaledWidth = logoImg.width * scaleFactor;
-      const scaledHeight = logoImg.height * scaleFactor;
+      const scaledWidth = Math.round(logoImg.width * scaleFactor);
+      const scaledHeight = Math.round(logoImg.height * scaleFactor);
       scaledLogoCanvas.width = scaledWidth;
       scaledLogoCanvas.height = scaledHeight;
       scaledLogoCtx.drawImage(logoImg, 0, 0, scaledWidth, scaledHeight);
       // Position logo roughly in the top 1/3 (centered horizontally)
       logoXOffset = (canvas.width - scaledWidth) / 2;
-      logoYOffset = canvas.height / 6;
+      logoYOffset = canvas.height / 20;
 
       // Get pixel data from the scaled logo and tessellate in blocks.
       const imageData = scaledLogoCtx.getImageData(0, 0, scaledWidth, scaledHeight);
