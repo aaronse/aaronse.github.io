@@ -255,9 +255,17 @@ const render = turnIntoDelayableExecution(renderDelay, () => {
   runButton.disabled = true;
   setExecuting(true);
   
+  const dxfMode = getFormProp("dxf_mode");
+  const stlViewerEl = document.getElementById('viewer');
+  const svgViewerEl = document.getElementById('svgViewer');
+
+
+  // choose output filename
+  const outName = dxfMode ? outdxf_name : outstl_name;
+
   var arglist = [ 
     "input.scad",
-    "-o", outstl_name,
+    "-o", outName,
     ...Object.keys(featureCheckboxes).filter(f => featureCheckboxes[f].checked).map(f => `--enable=${f}`),
     ];
 
@@ -277,11 +285,13 @@ const render = turnIntoDelayableExecution(renderDelay, () => {
   const job = spawnOpenSCAD({
     inputs: [['input.scad', source]],
     args: arglist,
-    outputPaths: [outstl_name],
+    outputPaths: [outName],
     zipArchives: [model_dir],  // just a list of zip files (no longer an object)
   });
 
-  var only_3d = (typeof outsvg_name === 'undefined');
+  //var only_3d = (typeof outsvg_name === 'undefined' && outdxf_name === 'undefined');
+  var only_3d = false;
+  console.log("dxfMode: " + dxfMode);
 
   if (!only_3d) {
     var arglist2 = [ 
@@ -332,11 +342,27 @@ const render = turnIntoDelayableExecution(renderDelay, () => {
         const blob = new Blob([content], { type: "application/octet-stream" });
         stlFile = new File([blob], fileName);
 
-        viewStlFile(stlFile);
+        //viewStlFile(stlFile);
+        linkContainerElement.innerHTML = '';
+        if (dxfMode) {
+          // Just give the downloadable DXF
+          addDownloadLink(linkContainerElement, blob, fileName);
+          const span = document.createElement('span');
+          span.innerText = " ";
+          linkContainerElement.append(span);
+        } else {
+          // Hide the SVG, show the 3D viewer
+          svgViewerEl.style.display = 'none';
+          stlViewerEl.style.display = 'block';
+
+          // Show the STL in the viewer, _and_ let them download it
+          viewStlFile(stlFile);
+          addDownloadLink(linkContainerElement, blob, fileName);
+        }          
 
         if (only_3d) {
-          linkContainerElement.innerHTML = '';
-          addDownloadLink(linkContainerElement, blob, fileName);
+//          linkContainerElement.innerHTML = '';
+//          addDownloadLink(linkContainerElement, blob, fileName);
         }
         else {
           // result from SVG rendering is available for download
@@ -352,12 +378,30 @@ const render = turnIntoDelayableExecution(renderDelay, () => {
           if (!output2) throw 'No output from runner!'
           const [filePath2, content2] = output2;
           const filePathFragments2 = filePath2.split('/');
-          const fileName2 = filePathFragments2[filePathFragments2.length - 1];
+          const svgName = filePathFragments2[filePathFragments2.length - 1];
 
-          const blob2 = new Blob([content2], { type: "application/octet-stream" });
-          svgFile = new File([blob], fileName2);
-          linkContainerElement.innerHTML = '';
-          addDownloadLink(linkContainerElement, blob2, fileName2);
+          //const svgBlob = new Blob([content2], { type: "application/octet-stream" });
+          const svgBlob = new Blob([content2], { type: 'image/svg+xml' });
+          svgFile = new File([blob], svgName);
+          //linkContainerElement.innerHTML = '';
+
+
+          if (dxfMode) {
+            // Hide the 3D viewer, show the SVG container
+            stlViewerEl.style.display = 'none';
+            svgViewerEl.style.display = 'block';
+
+            // dump any old SVG
+            svgViewerEl.innerHTML = '';
+            // embed your new SVG
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(svgBlob);
+            img.style.maxWidth  = '100%';
+            img.style.maxHeight = '100%';
+            svgViewerEl.appendChild(img);
+          } 
+
+          addDownloadLink(linkContainerElement, svgBlob, svgName);
         }
       } catch (e) {
         console.error(e, e.stack);

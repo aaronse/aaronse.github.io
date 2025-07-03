@@ -16,8 +16,12 @@
     const model_path = 'aza-plyramid/aza-plyramid.scad';  // folder name (actually zip file) and source file name
   
     const outstl_name = 'model_out.stl';
-  
+    const outdxf_name = 'model_out.dxf';       
+    const outsvg_name = 'model_out.svg';       
+
     const model_default_params = {
+      dxf_mode: false,           // Set to true for DXF export layout
+      part_gap: 3.175,            // Gap between layers (endmill diameter)
       num_layers: 6,
       ply_thickness: 12.7,            // Default 1/2" plywood
       top_size_mm: 40,                // Width/Length of the top layer
@@ -28,6 +32,8 @@
     };
     
     const model_param_descriptions = {
+      dxf_mode: "Set true to export a DXF layout for CNC/laser cutting. False for STL export.",
+      part_gap: "Gap between part layers in millimeters. Use endmill diameter or larger",
       num_layers: "Number of pyramid layers. Controls the total height when multiplied by the plywood thickness.",
       ply_thickness: "Thickness of each plywood layer in millimeters. Default is 12.7mm (1/2 inch).",
       top_size_mm: "Width and depth (in mm) of the topmost square layer. Controls the flat surface where belt anchors or bolts can be mounted.",
@@ -275,6 +281,7 @@
         <span class="spacer settings"></span>
       </div>
       <div id="viewer" tabindex="0"></div>
+      <div id="svgViewer" tabindex="1" style="display: none;"></div>
       <span id="features" class="features"></span>
     </div>
   </div>
