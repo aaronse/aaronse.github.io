@@ -13,13 +13,30 @@ total_height_mm = num_layers * ply_thickness;
 echo(str("Base Size: ", base_size_mm, " mm"));
 echo(str("Total Height: ", total_height_mm, " mm"));
 
-// === Geometry ===
+// === DXF Export Config ===
+dxf_mode = true;           // Set to true for DXF export layout
+part_gap = 3.175;            // Gap between layers (endmill diameter)
+
+// === 2D layer outline with holes ===
+module pyramid_layer_2d(size) {
+    difference() {
+        square([size, size], center=false);
+        // Center bore
+        translate([size/2, size/2])
+            circle(d=center_bore_diameter, $fn=16);
+        // Register holes
+        for (x_sign = [-1, 1], y_sign = [-1, 1]) {
+            translate([size/2 + x_sign * register_hole_offset, size/2 + y_sign * register_hole_offset])
+                circle(d=register_hole_diameter, $fn=12);
+        }
+    }
+}
+
+// === 3D pyramid as before ===
 module pyramid_layer(size) {
     difference() {
         square([size, size], center=true);
-        // Center bore with fewer facets
         circle(d=center_bore_diameter, $fn=16);
-        // Register holes with minimal segments
         for (x_sign = [-1, 1], y_sign = [-1, 1]) {
             translate([x_sign * register_hole_offset, y_sign * register_hole_offset])
                 circle(d=register_hole_diameter, $fn=12);
@@ -36,4 +53,21 @@ module pyramid() {
     }
 }
 
-pyramid();
+// === DXF layout ===
+module pyramid_dxf_layout() {
+    for (i = [0 : num_layers - 1]) {
+        layer_size = top_size_mm + (num_layers - 1 - i) * layer_inc_mm;
+        offset = i*top_size_mm + layer_inc_mm*(i*(num_layers-1) - (i*(i-1)/2)) + i*part_gap;
+        translate([offset, 0])
+            pyramid_layer_2d(layer_size);
+    }
+}
+
+// === Top-level ===
+if (dxf_mode) {
+    // For DXF export, ensure only 2D objects at top level
+    pyramid_dxf_layout();
+} else {
+    // 3D solid pyramid
+    pyramid();
+}
