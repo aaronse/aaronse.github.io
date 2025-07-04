@@ -12,7 +12,18 @@ const logsElement = document.getElementById("logs");
 const featuresContainer = document.getElementById("features");
 const flipModeButton = document.getElementById("flip-mode");
 const paramsForm = document.getElementById("params");
-const svgViewerElement = document.getElementById("svgViewer");
+
+const overlay = document.getElementById('busy-overlay');
+const busyText = document.getElementById('busy-text');
+
+function showBusy(text) {
+  busyText.innerText = text;
+  overlay.style.display = 'flex';
+}
+
+function hideBusy() {
+  overlay.style.display = 'none';
+}
 
 
 const queryParams = new URLSearchParams(location.search);
@@ -249,6 +260,8 @@ function turnIntoDelayableExecution(delay, createJob) {
 
 var renderDelay = 1000;
 const render = turnIntoDelayableExecution(renderDelay, () => {
+  showBusy('Rendering…');
+
   const source = 'include <' + model_path + '>';
   const model_dir = model_path.split(/[\\/]/)[0];
   const timestamp = Date.now();
@@ -257,7 +270,6 @@ const render = turnIntoDelayableExecution(renderDelay, () => {
   runButton.disabled = true;
   setExecuting(true);
   
-  const stlViewerEl = document.getElementById('viewer');
   const svgViewerEl = document.getElementById('svgViewer');
 
   var arglist = [ 
@@ -393,6 +405,7 @@ const render = turnIntoDelayableExecution(renderDelay, () => {
         metaElement.innerText = '<failed>';
         metaElement.title = e.toString();
       } finally {
+        hideBusy(); 
         setExecuting(false);
         runButton.disabled = false;
       }
@@ -488,6 +501,11 @@ function pollCameraChanges() {
 }
 
 try {
+  showBusy('Loading OpenSCAD...');
+
+  // give the browser a tick to paint the overlay & start the SVG
+  await new Promise(resolve => setTimeout(resolve, 0));
+
   stlViewer = buildStlViewer();
   stlViewerElement.ondblclick = () => {
     setAutoRotate(!autorotateCheckbox.checked);
@@ -519,6 +537,9 @@ try {
   
   pollCameraChanges();
   onStateChanged({allowRun: true});
+
+  // once engine is ready:
+  hideBusy();
 } catch (e) {
   console.error(e);
 }
