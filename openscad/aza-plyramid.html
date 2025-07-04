@@ -13,14 +13,14 @@
   <script src="browserfs.min.js" defer></script>
 
   <script>
-    const model_path = 'aza-plyramid/aza-plyramid.scad';  // folder name (actually zip file) and source file name
+    const model_path = 'aza-plyramid-2/aza-plyramid.scad';  // folder name (actually zip file) and source file name
   
     const outstl_name = 'model_out.stl';
     const outdxf_name = 'model_out.dxf';       
     const outsvg_name = 'model_out.svg';       
 
     const model_default_params = {
-      dxf_mode: false,           // Set to true for DXF export layout
+      //render_2d: false,           // Set to true for DXF export layout
       part_gap: 3.175,            // Gap between layers (endmill diameter)
       num_layers: 6,
       ply_thickness: 12.7,            // Default 1/2" plywood
@@ -32,7 +32,7 @@
     };
     
     const model_param_descriptions = {
-      dxf_mode: "Set true to export a DXF layout for CNC/laser cutting. False for STL export.",
+      //render_2d: "Set true to export a DXF layout for CNC/laser cutting. False for STL export.",
       part_gap: "Gap between part layers in millimeters. Use endmill diameter or larger",
       num_layers: "Number of pyramid layers. Controls the total height when multiplied by the plywood thickness.",
       ply_thickness: "Thickness of each plywood layer in millimeters. Default is 12.7mm (1/2 inch).",
@@ -58,8 +58,18 @@
   </script>
   
   <script src="filesystem.js" defer></script>
-  <script type="module" src="main.js" defer></script>
+  <script type="module" src="main.2.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    body { font-family: 'Poppins', Arial, sans-serif; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'IBM Plex Mono', monospace; }
+    /* @font-face for Adelle Sans still needed as above */
+    h2 {
+      font-size: 1.5em;
+      margin: 0.25em 0;
+    }
+
     .tooltip-trigger {
       position: relative;
       cursor: pointer;
@@ -243,6 +253,18 @@
       }
     }
   
+    /* make all text & number inputs half as wide */
+    input[type="text"],
+    input[type="number"] {
+      width: 15%;
+      box-sizing: border-box;
+    }
+
+    /* hide the old render_2d switch entirely */
+    #param_div_render_2d {
+      display: none;
+    }
+
   </style>
 </head>
 
@@ -255,33 +277,36 @@
       </form>
       <div>
       <br/>
-      <a href='' id="permalink">Link to current parameters</a>
+        <a href='' id="permalink">Direct Link</a>
+        <a href="https://github.com/aaronse/aaronse.github.io">Code</a><br/>
       </div>
       <div class="logs-container">
         <pre><code id="logs"></code></pre>
       </div>
     </div>
     <div id="view-panel" class="col">
-      <div class="text title desktop">
-        <h2>Gridfinity Parametric Web Generator</h2>
-      </div>
-      <div class="text desktop">
-      <a href="https://github.com/vector76/Web_OpenSCAD_Customizer">Web OpenSCAD Customizer Project</a><br/>
-      <a href="https://github.com/vector76/gridfinity_openscad">Gridfinity OpenSCAD</a>
-      </div>
-      <div class="text desktop">
-      </div>
+      <h2>Maslow CNC Corner Plyramid mounts</h2>
+      <!-- <div class="text desktop">
+      </div> -->
       <div class="row text">
         <button class="button settings" id="run">Render (Enter)</button>
         <button class="button settings" id="kill" disabled>Kill</button>
         <div class="text-fragment" id="link-container"></div>
         <div class="text-fragment settings" id="meta"></div>
         <span class="spacer settings"></span>
-        <span class="text-fragment settings"><input type="checkbox" id="autorotate" checked>Rotate</span>
+        <span class="text-fragment settings"><input type="checkbox" id="autorotate" checked>Rotating</span>
         <span class="spacer settings"></span>
       </div>
-      <div id="viewer" tabindex="0"></div>
-      <div id="svgViewer" tabindex="1" style="display: none;"></div>
+<!-- SVG preview, click to download -->
+      <div>
+        <div id="svgViewer"
+          style="cursor: pointer; position: absolute; max-width: 100%;"
+          alt="2D SVG preview" >
+        </div>
+        <div id="viewer" tabindex="0"></div>
+      </div>
+
+      <!-- <div id="svgViewer" tabindex="1" style="display: none;"></div> -->
       <span id="features" class="features"></span>
     </div>
   </div>

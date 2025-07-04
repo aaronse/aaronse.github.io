@@ -14,7 +14,7 @@ echo(str("Base Size: ", base_size_mm, " mm"));
 echo(str("Total Height: ", total_height_mm, " mm"));
 
 // === DXF Export Config ===
-dxf_mode = true;           // Set to true for DXF export layout
+render_2d = false;           // Set to true for DXF export layout
 part_gap = 3.175;            // Gap between layers (endmill diameter)
 
 // === 2D layer outline with holes ===
@@ -54,7 +54,7 @@ module pyramid() {
 }
 
 // === DXF layout ===
-module pyramid_dxf_layout() {
+module pyramid_2d_layout() {
     for (i = [0 : num_layers - 1]) {
         layer_size = top_size_mm + (num_layers - 1 - i) * layer_inc_mm;
         offset = i*top_size_mm + layer_inc_mm*(i*(num_layers-1) - (i*(i-1)/2)) + i*part_gap;
@@ -64,9 +64,9 @@ module pyramid_dxf_layout() {
 }
 
 // === Top-level ===
-if (dxf_mode) {
+if (render_2d) {
     // For DXF export, ensure only 2D objects at top level
-    pyramid_dxf_layout();
+    pyramid_2d_layout();
 } else {
     // 3D solid pyramid
     pyramid();
