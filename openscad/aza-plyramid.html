@@ -62,7 +62,6 @@
   <style>
     body { font-family: 'Poppins', Arial, sans-serif; }
     h1,h2,h3,h4,h5,h6 { font-family: 'IBM Plex Mono', monospace; }
-    /* @font-face for Adelle Sans still needed as above */
     h2 {
       font-size: 1.5em;
       margin: 0.25em 0;
@@ -251,18 +250,12 @@
       }
     }
   
-    /* make all text & number inputs half as wide */
+    /* Ensure text & number inputs are reasonably sized */
     input[type="text"],
     input[type="number"] {
       width: 4rem;
       box-sizing: border-box;
     }
-
-    /* hide the old render_2d switch entirely */
-    #param_div_render_2d {
-      display: none;
-    }
-
 
     /* full-screen semi-opaque overlay */
     #busy-overlay {
@@ -281,9 +274,17 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 33%;
+      width: 40%;
       height: 33%;
       background-color: #AB7CC1;
+      border-radius: 20px;
+
+      /* outer glow + drop shadow */
+      box-shadow:
+        /* glow: horizontal-offset vertical-offset blur spread color */
+        0 0 20px 5px rgba(0, 0, 0, 0.3),
+        /* drop shadow: h-offset v-offset blur spread color */
+        0 4px 15px 0 rgba(0, 0, 0, 0.7);      
     }
     
     /* status text */
