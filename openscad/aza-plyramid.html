@@ -20,9 +20,8 @@
     const outsvg_name = 'model_out.svg';       
 
     const model_default_params = {
-      //render_2d: false,           // Set to true for DXF export layout
-      part_gap: 3.175,            // Gap between layers (endmill diameter)
-      num_layers: 6,
+      part_gap: 3.175,                // Gap between layers (end mill diameter)
+      num_layers: 4,                  // Number of layers in the pyramid
       ply_thickness: 12.7,            // Default 1/2" plywood
       top_size_mm: 40,                // Width/Length of the top layer
       layer_inc_mm: 12.7,             // Increase per layer from top to bottom
@@ -32,8 +31,7 @@
     };
     
     const model_param_descriptions = {
-      //render_2d: "Set true to export a DXF layout for CNC/laser cutting. False for STL export.",
-      part_gap: "Gap between part layers in millimeters. Use endmill diameter or larger",
+      part_gap: "Gap between part layers in millimeters. Use end mill diameter or larger",
       num_layers: "Number of pyramid layers. Controls the total height when multiplied by the plywood thickness.",
       ply_thickness: "Thickness of each plywood layer in millimeters. Default is 12.7mm (1/2 inch).",
       top_size_mm: "Width and depth (in mm) of the topmost square layer. Controls the flat surface where belt anchors or bolts can be mounted.",
