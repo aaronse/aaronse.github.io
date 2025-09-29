@@ -29,7 +29,7 @@ var cncData = [
     name: "Maslow CNC",
     minCost: 525, maxCost: 525, avgCost: 525,
     minArea: 1, maxArea: 50,
-    url: "https://www.maslowcnc.com/shop/p/maslow-41-kit-pre-order",
+    url: "https://shop.maslowcnc.com/",
     features: "Unique vertical-hanging design for large plywood sheets on a budget.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAQlBMVEVHcEyrfMGrfMGrfMGrfMGrfMGrfMGrfMGrfMGrfMGqesCodr+mcr2yh8bKrtjh0ejq3/D////07vfWwOC+ms+rfMH6xU6KAAAAFnRSTlMAUprQ9/8eqY7i//////////////9Gfq6LwgAAAXNJREFUeAFsUleiwzAIa4bTxuAB8bv/VZ+AdJcPT4HEuLzYNC9rSusyT5cftl3Ti123z/9b+rDbu/uevmzfXv7XeMtEzEQ5buv28Z+51NZbq4nzOyLiU+kiooqlFXbM8qIv8yFyFKbKxU5a8l3p5v7cpIGdu0BJbiIOSEbi+cP/YNBUUWxccXPADIATFGnsG3bfxhkC9fUAXSg2qZRIAZPO9vN3mSPAQU7QpbjcguWUuRig2g2w3oRpCLxxqeSZrp6CshNkbZzVeViaAfZLSFA2gpqkWr5ib+oi1hPgMTuDCjDcXgBGQaAAgVUrA+aKQcFOsRjgkAxPYm2AubynyDPNEcoVz/5F9UwzCpW8B3lEIbHQs1BR6mo/YNLshK02GVHqaBZb7ox1GK8103sXzdruHAdrvDLXkgwZ7XaZPhA62CxXk/o62nsgBni0d1udyYoQFiSJeBxdtR/jc2gd4RBi2PfY/49gxkG4FDPrEc68BLM/AHsXH8p3seW/AAAAAElFTkSuQmCC"
   },
@@ -37,7 +37,7 @@ var cncData = [
     name: "Sienci LongMill (30×30)",
     minCost: 1460, maxCost: 1460, avgCost: 1460,
     minArea: 6.25, maxArea: 6.25,
-    url: "https://sienci.com/product/longmill-30x30/",
+    url: "https://sienci.com/product-category/longmill/",
     features: "Canadian-designed open-source kit, robust rails for woodworking.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAeFBMVEVHcExgYGAAAABISEhsbGwAAACKiooAAAAAAAAAAAAQEBBoaGgAAAAAAAAuLi59fX3///+hoaHx8fGVlZVqamqOjo6Dg4N3d3f4+Pj9/f26urro6Ojg4ODZ2dnHx8eqqqqcnJzOzs6mpqZaWlqvr6+srKwsLCw/Pz+GFRXNAAAAEHRSTlMA7RXe8IPrWiw7l8RPbsLe3Ks+swAAAS5JREFUKJF1k+l2hCAMhZm6O9Np2BVcZ2nf/w1LwAXt6f2BRz9uSEIkZFVVX3PO82tWkrM+UwleoxzS4oDKi20ookF0bu2Tj50VTwDmoBUm2EFWGzO96JoHSI7f2xZXutASA1ItFHMkYPeQIfLFB2LfLzgoQZYxv5WNVsywePHRY84qvGFCRrPImhJy63boTpI7HEpSQwyBabPRjHwdIbSzCLEadSd8ST1An85DN642BTkZT06/RU7a2bmHuzN4mXrqGeH018klTGAEy5f+RNAI67gLwO+kViaGVgze3PpSbnYW/QpbtZyC0DUB24e5I3xt7UOYhsa7gmkzdj7CBrtiuzIrft6+jHaFSXTZ6g2R+HrZy5jQGFJanQdsl95YNJpBh9GMh9rVdxrqf36HX2zZLDfUedcoAAAAAElFTkSuQmCC"
   },
@@ -58,7 +58,7 @@ var cncData = [
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAgCAMAAAAynjhNAAAAdVBMVEVHcEx5Sy7/gRL/lDT/hBbgaw7/hRb/hxX/kyldMRPMbAr/hRj/hxabVAuMRQ//hxn/hhcFAADrfQ//hRT/hRn/hxe0XAb/jxUAAAD/iBb/gxhXKACCPgQuCQBEIQBGHQAAAABVIwBXIwBaJABVKQBPIABVKQB8FMVtAAAAJ3RSTlMABTsHI+VQdxCu/57X/nLpuP3/Yor0////////////b8o+Vy0ZlK9wD4DVAAABXElEQVR4AYySB3aEIBBAGSBKxI2GIoxxCxhz/yNmTLGl/l3rn/qe7B/A75ZzdkBwuebyu0LsbXmn2McrXqj7SqtNNVmfHlTxUVI2TftoGitAzIByvnusvRXs04dTNL51WmvnXI1VrEJJdvEYT9h7+s2EpxhKtoH7zvQLWHVuv2tBeRvfCrZDNf2Wo6Zs3Ggvd1boHsOnpztv97VrHM4VvssuDqjFfnKM50geZ3s+h0ZtLDja9XyOBhFNfDoP6Pmudo+GkoaA4XI+nxGp+k5T2SFGE6oYB7L7zZWjxUJf9cF0JiA29rC41BQwQ9KXih0RsvXvUi9yCwheV51ppWA/oK63RPJHANg3CCFWD8cYKF3BpCAgZ8jjCM9A/6VlW3PeWqktmybIaUwvKU0JFq2Vs46jG6cpp5yvU0r5mpaPXrKitby0OSXSY7pCSmlcRptLADHfzCcxX4C9jlIAAMFqIQCgdZbRAAAAAElFTkSuQmCC"
   },
   {
-    name: "BobsCNC E3",
+    name: "BobsCNC E3 💀",
     minCost: 500, maxCost: 500, avgCost: 500,
     minArea: 1, maxArea: 1,
     url: "https://www.bobscnc.com/products/e3-cnc-engraver-kit",
@@ -69,12 +69,12 @@ var cncData = [
     name: "Sainsmart Genmitsu 3020 PRO Max v2",
     minCost: 500, maxCost: 500, avgCost: 500,
     minArea: 0.5, maxArea: 0.5,
-    url: "https://www.sainsmart.com/collections/cnc-router/products/genmitsu-3020-pro-max-cnc-machine",
+    url: "https://www.sainsmart.com/products/3020-pro-max-v2",
     features: "Rigid frame and deeper Z-axis than typical 3018 machines.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAVFBMVEX///8zm8sll8kNkscalMjQ5PD2+vwtmcrw9vrg7fVustaPwt7r8/mTxN/Y6fPK4e4/n8262OqozuV/utoAjsVQpdB2ttibyOFeq9PB3OwAisOu0uaakzjnAAABOElEQVQ4ja1T2ZaFIAyjC9Z9R9H5//8cRC7K1XmbPPWcBGiTotT/Imu7rs3+YvO1J3agfs3f+IpQwEOQqgddCMINKEXKaxJIIKTvfE3wANU3Qf/kAfqLH/FNgGMUsLwJhD/8YMunRNiaIQjKTW2IiUQQNzWUQYDr0QdctwjD8f6KQUBnv7oy3mo21emBoZABczQlz+uYlWY+M8n4M/Ksa1aDRHM4iAlw8oVd1DwU+xnDhBCeUAaAGz/vrBarwNcNA5ggaJyRvBzVvuk9G4+Di+OxCYKCj9HE2TK2qsyzH9fHMTLHyI344aXRboa6W8VbIjZm0Z5pi3gbWE7HqL3irF7i5GTt7EOBViWw/HW+VF9Y6XYJ0vjNu72crjSn14/RxSuwe+Pvm51s9AflbaXk0aILPfkaFLfiFzpqCsc5b/5tAAAAAElFTkSuQmCC"
   },
   {
-    name: "BobsCNC E4",
+    name: "BobsCNC E4 💀",
     minCost: 650, maxCost: 650, avgCost: 650,
     minArea: 3, maxArea: 3,
     url: "https://www.bobscnc.com/products/e4-cnc-router-engraver-kit",
@@ -83,33 +83,33 @@ var cncData = [
   },
   {
     name: "Sainsmart Genmitsu PROverXL 4030",
-    minCost: 700, maxCost: 700, avgCost: 700,
+    minCost: 1400, maxCost: 1400, avgCost: 1400,
     minArea: 0.8, maxArea: 0.8,
-    url: "https://www.sainsmart.com/collections/cnc-router/products/genmitsu-proverxl-4030-cnc-router",
+    url: "https://www.sainsmart.com/products/proverxl-4030-v2",
     features: "Sturdier rails, reliable electronics, good for hobby sign-making.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAVFBMVEX///8zm8sll8kNkscalMjQ5PD2+vwtmcrw9vrg7fVustaPwt7r8/mTxN/Y6fPK4e4/n8262OqozuV/utoAjsVQpdB2ttibyOFeq9PB3OwAisOu0uaakzjnAAABOElEQVQ4ja1T2ZaFIAyjC9Z9R9H5//8cRC7K1XmbPPWcBGiTotT/Imu7rs3+YvO1J3agfs3f+IpQwEOQqgddCMINKEXKaxJIIKTvfE3wANU3Qf/kAfqLH/FNgGMUsLwJhD/8YMunRNiaIQjKTW2IiUQQNzWUQYDr0QdctwjD8f6KQUBnv7oy3mo21emBoZABczQlz+uYlWY+M8n4M/Ksa1aDRHM4iAlw8oVd1DwU+xnDhBCeUAaAGz/vrBarwNcNA5ggaJyRvBzVvuk9G4+Di+OxCYKCj9HE2TK2qsyzH9fHMTLHyI344aXRboa6W8VbIjZm0Z5pi3gbWE7HqL3irF7i5GTt7EOBViWw/HW+VF9Y6XYJ0vjNu72crjSn14/RxSuwe+Pvm51s9AflbaXk0aILPfkaFLfiFzpqCsc5b/5tAAAAAElFTkSuQmCC"
   },
   {
-    name: "FoxAlien 4040-XE",
-    minCost: 750, maxCost: 750, avgCost: 750,
-    minArea: 0.8, maxArea: 0.8,
-    url: "https://www.foxalien.com/products/4040-xe-cnc-router",
+    name: "FoxAlien XE-PRO 8040",
+    minCost: 2049, maxCost: 2049, avgCost: 2049,
+    minArea: 1.7, maxArea: 1.7,
+    url: "https://www.foxalien.com/collections/4040xe-series/products/cnc-router-machine-xe-pro-with-8040-extension-bundle-kit",
     features: "More powerful stepper motors vs. Masuter line. Can handle light aluminum.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAgCAMAAAAynjhNAAAAdVBMVEVHcEx5Sy7/gRL/lDT/hBbgaw7/hRb/hxX/kyldMRPMbAr/hRj/hxabVAuMRQ//hxn/hhcFAADrfQ//hRT/hRn/hxe0XAb/jxUAAAD/iBb/gxhXKACCPgQuCQBEIQBGHQAAAABVIwBXIwBaJABVKQBPIABVKQB8FMVtAAAAJ3RSTlMABTsHI+VQdxCu/57X/nLpuP3/Yor0////////////b8o+Vy0ZlK9wD4DVAAABXElEQVR4AYySB3aEIBBAGSBKxI2GIoxxCxhz/yNmTLGl/l3rn/qe7B/A75ZzdkBwuebyu0LsbXmn2McrXqj7SqtNNVmfHlTxUVI2TftoGitAzIByvnusvRXs04dTNL51WmvnXI1VrEJJdvEYT9h7+s2EpxhKtoH7zvQLWHVuv2tBeRvfCrZDNf2Wo6Zs3Ggvd1boHsOnpztv97VrHM4VvssuDqjFfnKM50geZ3s+h0ZtLDja9XyOBhFNfDoP6Pmudo+GkoaA4XI+nxGp+k5T2SFGE6oYB7L7zZWjxUJf9cF0JiA29rC41BQwQ9KXih0RsvXvUi9yCwheV51ppWA/oK63RPJHANg3CCFWD8cYKF3BpCAgZ8jjCM9A/6VlW3PeWqktmybIaUwvKU0JFq2Vs46jG6cpp5yvU0r5mpaPXrKitby0OSXSY7pCSmlcRptLADHfzCcxX4C9jlIAAMFqIQCgdZbRAAAAAElFTkSuQmCC"
   },
   {
     name: "Sainsmart Genmitsu PROverXL 6050",
-    minCost: 1000, maxCost: 1000, avgCost: 1000,
+    minCost: 1800, maxCost: 1800, avgCost: 1800,
     minArea: 1.25, maxArea: 1.25,
-    url: "https://www.sainsmart.com/collections/cnc-router/products/genmitsu-proverxl-6050-cnc-router",
+    url: "https://www.sainsmart.com/products/genmitsu-proverxl-6050-plus-cnc-router-kit-with-carveco-maker-subscription",
     features: "Larger workspace than 4030, improved rigidity for deeper cuts.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAVFBMVEX///8zm8sll8kNkscalMjQ5PD2+vwtmcrw9vrg7fVustaPwt7r8/mTxN/Y6fPK4e4/n8262OqozuV/utoAjsVQpdB2ttibyOFeq9PB3OwAisOu0uaakzjnAAABOElEQVQ4ja1T2ZaFIAyjC9Z9R9H5//8cRC7K1XmbPPWcBGiTotT/Imu7rs3+YvO1J3agfs3f+IpQwEOQqgddCMINKEXKaxJIIKTvfE3wANU3Qf/kAfqLH/FNgGMUsLwJhD/8YMunRNiaIQjKTW2IiUQQNzWUQYDr0QdctwjD8f6KQUBnv7oy3mo21emBoZABczQlz+uYlWY+M8n4M/Ksa1aDRHM4iAlw8oVd1DwU+xnDhBCeUAaAGz/vrBarwNcNA5ggaJyRvBzVvuk9G4+Di+OxCYKCj9HE2TK2qsyzH9fHMTLHyI344aXRboa6W8VbIjZm0Z5pi3gbWE7HqL3irF7i5GTt7EOBViWw/HW+VF9Y6XYJ0vjNu72crjSn14/RxSuwe+Pvm51s9AflbaXk0aILPfkaFLfiFzpqCsc5b/5tAAAAAElFTkSuQmCC"
   },
   {
-    name: "Next Wave CNC SHARK SD100",
-    minCost: 1000, maxCost: 1800, avgCost: 1400,
+    name: "Next Wave CNC SHARK SD110",
+    minCost: 1500, maxCost: 1500, avgCost: 1500,
     minArea: 1, maxArea: 1,
-    url: "https://www.nextwavecnc.com/shark-sd100",
+    url: "https://nextwavecnc.com/product/shark-sd110",
     features: "Compact Shark model with stable gantry; good for small craft projects.",
     iconUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIACAAIAMBIgACEQEDEQH/xAAYAAADAQEAAAAAAAAAAAAAAAAABgcFBP/EACcQAAICAQMDBAIDAAAAAAAAAAECAwQFABEhBhITFCJBUVKRFTFC/8QAFQEBAQAAAAAAAAAAAAAAAAAAAgH/xAAbEQACAgMBAAAAAAAAAAAAAAAAAQIRITFBEv/aAAwDAQACEQMRAD8AuOjSfmsjkMj1BUxNGdqtA2jBYmjO0krLGZGVW/yANhuOdyfrnF6rr9UC1mkw9iwYbEvhrRJc7HhYUwVaPncBnLArxyqt9nTlBxSvoYz9N1wpWjU0mgy/oKcOKnyE0vmeS123ZEaWuVQtHH5JpD5GA3Rgw22fYrvuWTAxVq/UOUb+QnkM0i+limyUkoKFFZu2NnIHuDfHA3A40BHRawc0kUjVZFitw3jbqyNypJHKtt8EMyn96XeoMDlMtk5r6d2PmFdGgjKGVVuI3EvcgPtKbpyAdj/Q1QdGm52qYVGtEzr9FZOsRNib9eG6NijvSkVYmQ9kWx29wWFpI/jgj61pdN4k4vqN/QwAUHMfi7pWUxoldIgO3sIY+z8geeRxp60aOC5P/9k="
   },
@@ -122,15 +122,15 @@ var cncData = [
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAADsklEQVRIieWWf0zUZRzHX987figiQj8oyB+sGhVMsQxOzMqgPyJ0YAZRu4X/uLCWtTXLsizXklpbq8lUQBQQC4WdELCRrEsULob444hMhCLhThFRUzx+3d330x/cxibXcVhubr3//Hz3fr++z/P5PHseRUS4ldLc0vT/HWDwAgf1NGzAOey9SfGuyULz55g/wB9UUGHxHqL0/xGgsxJTKnaI30P7N4TEMe0eTn5McCjLqrk31rPb4xb1t1E+H2MqKiTUEqVHRvG7g8WbeKWLGQs4EEdtGoO9UweM/IXxNSrm4xNEagtOQAFQ/Oj5lt4WgiJYUUeykf5ySsJo3gKq14ATWykO4WweGkiuI3ThuFfRMvIHlbHUpjN0kbnPoBd02zFvpFBLR4UXAHM+LetY9DVJTdjBMYLqHP/qHCRyE8sb6S+jOJSjX4AQk8Xqa8xbi3El1qZJV6DgD4+9heLrdsk47dy3BL2gy+HkBoo0dH6P70yWbUWBCSPjocnupksbQEc2LV8CLHyDzKvMWUNdCobHOd+EBlervAO4haoELqD1XQoVfq/GL4iEPNJ/RVRqluLjxjFVwAizV5I5xJw1HFyBIZZLp7gzilXHeboMx78BaHwBHFewWdBOIzGPtDZUG2XRGLNw2Ih8we2gegFQNGjg3E98F4Kth64CDIu43M5d0bx4imcr6M5ldyDHvkJ7EwDf6VztQgNtnxKcSEYfq9rRBmF4mENvYh/gwRRWq8Rs4cT6KQIUH3ygYT37IwkIZ3kTSeVMv5uhS9gvooXuHIqCMOeCQtz7pHUyOiWA5RAKdOWwtJiXrITpGOih+jkqlxDwAOnneVWIyeZYFnsVLEeYFeE2ZuJkKShwQEdfM9HvEb8ZrT+qnabNtH7GrGBSTITHA1hN/FkEMDOBmqcIT8Td0ZwAUEexw3AH+nPMCAM4XYrpZQSeLCQ6E+C6lfq1dFcxN5mkOgJn09vMDzpUkAmjKjdo+IrUZkg+UpUkZ3+U/Q/JDuTwO+IYEhFR7dL4kWxH9vqKpcFlsZqkdJ7kI40bRXXckDcBMKbeFtl3v+Qhu5ELR13F0/ukANmJ/FLgqgxYpSZFtiHVz8u1brdJ/wAY02+lUojsQsy5Uv6o5CL1b4vdJiKiOuTnT2QHUoL0HPaQ4REgIs5RafxQcscw21zF9jLZheQjrTsnsYt4d+lft1D/OpYqIjKwnaHvOI+s44lsfAIm9076C+PqOSIliEEnl894b/Ly2XLzuq1edrcn4G9YJ70Qf0rSkgAAAABJRU5ErkJggg=="
   },
   {
-    name: "Shapeoko 4",
-    minCost: 1500, maxCost: 1500, avgCost: 1500,
-    minArea: 3, maxArea: 3,
-    url: "https://shop.carbide3d.com/collections/machines/products/shapeoko-4",
+    name: "Shapeoko 4 Standard",
+    minCost: 1800, maxCost: 1800, avgCost: 1800,
+    minArea: 2.11, maxArea: 2.11,
+    url: "https://shop.carbide3d.com/collections/cnc-routers/products/shapeoko4?variant=33051555921981",
     features: "Upgraded belts, simpler assembly than older Shapeoko versions.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAJ1BMVEVHcEyAxHN/w3F/xHJ/xHJ/w3J/w3J9w29+w3B/xHF+w3F9w3GAxHNHP+KXAAAADHRSTlMA9k16yuSvFimPYToG9FdtAAAAxUlEQVQokb2S2xLDIAhEo3IR5f+/txWw1lxm+tR9SnICDOwex6+qQp0fUEHVJP0GcQM1odQza5R0Csre0RG2bOUJ8mJj2FvCo7s9J4reFbbXQ/xXL86jpTdiXkPKB5KhTNQGZtzgqOuSRvdcG+kZdow9wZfaYNNd/4A9Dg8EV+iW4dsy2+n7CHaaLuEmbFChuav2AValH14hIsBh33TNbdLhC0vEYWWJ3aYkJzdDnXAumGL+XYqg3KXT8oflkr2JyzWWj3oBwAkOU/y4JcQAAAAASUVORK5CYII="
   },
   {
-    name: "BobsCNC KL744",
+    name: "BobsCNC KL744 💀",
     minCost: 1900, maxCost: 1900, avgCost: 1900,
     minArea: 2.5, maxArea: 2.5,
     url: "https://www.bobscnc.com/products/kl744",
@@ -139,9 +139,9 @@ var cncData = [
   },
   {
     name: "Shapeoko Pro",
-    minCost: 2000, maxCost: 2000, avgCost: 2000,
-    minArea: 4, maxArea: 4,
-    url: "https://shop.carbide3d.com/collections/machines/products/shapeoko-pro",
+    minCost: 2400, maxCost: 2800, avgCost: 2600,
+    minArea: 2.11, maxArea: 7.56,
+    url: "https://shop.carbide3d.com/collections/cnc-machines/products/shapeoko-pro-cnc-router",
     features: "Heavier linear rails, more rigid, better for aluminum than Shapeoko 4.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAJ1BMVEVHcEyAxHN/w3F/xHJ/xHJ/w3J/w3J9w29+w3B/xHF+w3F9w3GAxHNHP+KXAAAADHRSTlMA9k16yuSvFimPYToG9FdtAAAAxUlEQVQokb2S2xLDIAhEo3IR5f+/txWw1lxm+tR9SnICDOwex6+qQp0fUEHVJP0GcQM1odQza5R0Csre0RG2bOUJ8mJj2FvCo7s9J4reFbbXQ/xXL86jpTdiXkPKB5KhTNQGZtzgqOuSRvdcG+kZdow9wZfaYNNd/4A9Dg8EV+iW4dsy2+n7CHaaLuEmbFChuav2AValH14hIsBh33TNbdLhC0vEYWWJ3aYkJzdDnXAumGL+XYqg3KXT8oflkr2JyzWWj3oBwAkOU/y4JcQAAAAASUVORK5CYII="
   },
@@ -149,21 +149,21 @@ var cncData = [
     name: "Onefinity Woodworker X-35",
     minCost: 2000, maxCost: 2500, avgCost: 2250,
     minArea: 4.5, maxArea: 4.5,
-    url: "https://www.onefinitycnc.com/product-page/woodworker-x-35",
+    url: "https://www.onefinitycnc.com/product-page/elite-series-woodworker-32-x32-cut-area",
     features: "Ball-screw motion, easy assembly, strong steel tubes for rigidity.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAG1BMVEVHcEys0Kyt0K2s0Kyt0K2s0Kyt0K2s0Kyt0a24fpQtAAAACHRSTlMAYVSmsHs4InV3ARMAAABfSURBVCiRvdFBDoAwCETRglW5/4lNDEVSfl12tm8zyW/tnZpPW10g6WV/Khu0w+XQAzB0QjmzTqgmSQtmrZgU8FPCUMShHdH1ZnRdIGmKDaoblGKHYmxl9Ni6iJ114AM/wwebvgk2rwAAAABJRU5ErkJggg=="
   },
   {
-    name: "Sienci LongMill (48×30)",
-    minCost: 2000, maxCost: 2500, avgCost: 2250,
+    name: "Sienci LongMill Benchtop (48×30)",
+    minCost: 1879, maxCost: 1879, avgCost: 1879,
     minArea: 10, maxArea: 10,
-    url: "https://sienci.com/product/longmill-48x30/",
+    url: "https://sienci.com/product/longmill-mk2-5-2/",
     features: "Larger version for bigger panels, same sturdy design as 30×30.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAeFBMVEVHcExgYGAAAABISEhsbGwAAACKiooAAAAAAAAAAAAQEBBoaGgAAAAAAAAuLi59fX3///+hoaHx8fGVlZVqamqOjo6Dg4N3d3f4+Pj9/f26urro6Ojg4ODZ2dnHx8eqqqqcnJzOzs6mpqZaWlqvr6+srKwsLCw/Pz+GFRXNAAAAEHRSTlMA7RXe8IPrWiw7l8RPbsLe3Ks+swAAAS5JREFUKJF1k+l2hCAMhZm6O9Np2BVcZ2nf/w1LwAXt6f2BRz9uSEIkZFVVX3PO82tWkrM+UwleoxzS4oDKi20ookF0bu2Tj50VTwDmoBUm2EFWGzO96JoHSI7f2xZXutASA1ItFHMkYPeQIfLFB2LfLzgoQZYxv5WNVsywePHRY84qvGFCRrPImhJy63boTpI7HEpSQwyBabPRjHwdIbSzCLEadSd8ST1An85DN642BTkZT06/RU7a2bmHuzN4mXrqGeH018klTGAEy5f+RNAI67gLwO+kViaGVgze3PpSbnYW/QpbtZyC0DUB24e5I3xt7UOYhsa7gmkzdj7CBrtiuzIrft6+jHaFSXTZ6g2R+HrZy5jQGFJanQdsl95YNJpBh9GMh9rVdxrqf36HX2zZLDfUedcoAAAAAElFTkSuQmCC"
   },
   {
     name: "Inventables X-Carve Pro",
-    minCost: 6000, maxCost: 6000, avgCost: 6000,
+    minCost: 6500, maxCost: 6500, avgCost: 6500,
     minArea: 16, maxArea: 16,
     url: "https://www.inventables.com/products/x-carve-pro-4x4-cnc-machine",
     features: "Upgraded rails & motion system, designed for light business use.",
@@ -171,17 +171,17 @@ var cncData = [
   },
   {
     name: "Carvera (desktop ATC)",
-    minCost: 3000, maxCost: 3500, avgCost: 3250,
+    minCost: 5500, maxCost: 5500, avgCost: 5500,
     minArea: 1.3, maxArea: 1.3,
-    url: "https://www.makera.com/pages/carvera",
+    url: "https://www.makera.com/products/carvera",
     features: "Compact enclosed CNC with automatic tool changer; high precision.",
     iconUrl: "data:image/png;base64,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"
   },
   {
-    name: "Avid CNC Benchtop Pro",
-    minCost: 3500, maxCost: 5000, avgCost: 4250,
+    name: "Avid CNC Benchtop Pro 2424",
+    minCost: 8725, maxCost: 8725, avgCost: 8725,
     minArea: 4, maxArea: 4,
-    url: "https://www.avidcnc.com/benchtop-cnc.html",
+    url: "https://www.avidcnc.com/benchtop-pro-2424-2-x-2-cnc-machine-p-1332.html",
     features: "Modular kit, heavy-duty linear bearings, can handle aluminum or wood.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAbFBMVEWrIyirIieqHySqGyGpDhWpDxetHyatICW5TlLWmJvu0tT68fH26erTkZO3RkquKzDNg4b04eL////x2tvIeHytJivKfX/CbG/25+f79fXCZmmoFRy8Wl21PUGvMTboyMngs7X++/vao6Xeq62pOZ04AAAA4klEQVR4Ac2QVRaEMAwAqeLu1JD733GTrts/g2ceseDUEErIH8O4kCEX7IenJIqTNEvygn5ZWlZ142m7/sMSUqXNjWz4+FeME4Tntp7hUS/q1akCc0651nGGmQ17OmYdhNKqZ6rPMb0rH5bKFQLbXjLBebhv8HEwenM9fm9Hz8q4bdsa5bb39OqumQxTVXPlWoPgEB022kYqUHnzpB5hlVS3OJtW8Bq56QoOlGhIvPskwu+9GK/kaHfIe0D5GMujZR7Vxxt0HEDaJIst/di03VOflimpPhxYRRi7JiOf7ho8HxdJFRLqbmTHRAAAAABJRU5ErkJggg=="
   },
@@ -195,33 +195,33 @@ var cncData = [
   },
   {
     name: "Laguna IQ",
-    minCost: 6000, maxCost: 8000, avgCost: 7000,
+    minCost: 15500, maxCost: 15500, avgCost: 15500,
     minArea: 2.7, maxArea: 2.7,
-    url: "https://lagunatools.com/cnc/iq-cnc/",
+    url: "https://lagunatools.com/cnc/iq-series/",
     features: "Industrial-quality build, welded steel frame, brand reputation.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADO0lEQVRYhbVXvU8UQRT/vZkNh3fGAo2JsWM2EY3YEq6ztsXEyj8B7YTYg612VCZWUtnbSGnsIHTuFVTkxFDIacLdsc9id3bezM59Ib5k73bf52/evJk3QwjImPQ3gCaoZDCXL1TpEAk22Mmo/AzJiQ+zLFuWIhUEPwHQjLioPJN1Ro4XjxrF8NCk6dcoAGPSbwBuxUyJigcoRs7MZQYopu6eAH4Jc8Wk6SfL10Vw8x6gJzHIgBu1c4UCEMmIdbtKFCaIsHRzYeHG6enpZzLGrAN4W4Nc1UA4RAeAo3LUE1MHUOBiPCNjDEetRhZhUXQ2K14tzg4AScxiOBzivH8ujJ2HVqsFoKgBIvKcUzjv7PNZ1Kx9TeSoAGAwGKDdbmO1vQrO89KoUNc6wfb2NppNt1D8JRkPPI5qU9A762Hj9QZerr+IGxBhcdFUq0KEhZ9JLgE4XggUqDJgvQNMDM4nr+sCjO/YZsP+hwElZivzAfwTURBkivwj2AlnChcZpX2PpXoU+avAblf55OAirJR4UxDqx4ozCZuMxDMd2a2OUNsFx9SAJTEFhbaaclL8NPsZZLHxjyILRsU2j2nWr4wbY03rQox3pryPBkmlLLLkYktTyW+rkE8owjDgKOxE9QIM5cqfqykmT4C18ScBCYNKSmR3Yy68TCrEXu8PlKKqqcg+GbPN8yLw/Pw8VKlggcy8E25tvUGjMTdeKViRzIDWGru7H9HtdisQlwKwuflqVpOK9va+4Pj42AMQSRh5CldJHKlEBfgn3VbrGnZ2dtDv9/8LiCgAFo/SGr/OzrC29hQnJz+vNBgp5cUCIiciAGg0Gtg/2Mftu3fw6P4DGGPK9JHXaEZtRvYQJc8jpDWy7xm00v5dxhjDzpN/AGVm5BeMPL9wowiPYP4haCwlSQJS5JklAD4AeB4zICJoTdBaCd7lAUToHQGAMeYAwLIvi3mmOgCrOk1w//6yl2XZ44plUnMOxpyVktjf7DUsnCkW3iSjpifvrgWv0+lkKeDtA8Prrnv4J4vibug4Xscg0QbCoiQnr/AQfmCIJatSAehkRwMA9+SFiFksUdlKR3W/8ifWdkvqAljpHGVDy/gLEa4r7rzEn/UAAAAASUVORK5CYII="
   },
   {
-    name: "Camaster Stinger I",
-    minCost: 6000, maxCost: 9000, avgCost: 7500,
-    minArea: 2.6, maxArea: 2.6,
-    url: "https://www.camaster.com/product/stinger-i-cnc-router/",
+    name: "CAMaster Stinger II",
+    minCost: 19000, maxCost: 19000, avgCost: 19000,
+    minArea: 16, maxArea: 16,
+    url: "https://www.camaster.com/cnc-routers/stinger/",
     features: "Entry-level pro machine with solid gantry, vacuum table options.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAKlBMVEVHcEz+yFb+yFX+yFb+yFb+x1X+yFb+yFb+yFb+yFb9x1T+yFb+yFb+yFbnZRWPAAAADXRSTlMAlDCA92HlSL2gDNMXlVuzLgAAAIVJREFUKJGtklESgCAIBU1BM/X+162MDJX4aNpPd2AeoDE/sAV0y00MXKEvHY5VDYrLPCoupzomXXta452oBSIDXUIikNykAePlUJw+XVJeDVTnZUlBP8skS68FolGsKFHtSxuKWt/iUdogvxVU2D1DmWDfBDVpLCjyKF7hXZ5k28jy1A87sFQNYvYlpv8AAAAASUVORK5CYII="
   },
   {
     name: "Tormach PCNC 440",
-    minCost: 7000, maxCost: 7000, avgCost: 7000,
+    minCost: 9000, maxCost: 9000, avgCost: 9000,
     minArea: 1, maxArea: 1,
-    url: "https://tormach.com/machines/mills/440/",
+    url: "https://tormach.com/machines/mills/pcnc-440.html",
     features: "Small CNC mill for metals (steel/aluminum) with enclosure options.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAQlBMVEVHcEwjN0QlN0QoNkIlNkMlN0IpOEYlN0UnNkYNIzIhMj5JV2NZZXA4R1OIkJn///+hrbSPl6KxuLvJzM7w+PojNkdgX741AAAAFnRSTlMARWkYff///97///////////////+qL0ohEwAAAQNJREFUeAG90wWWg1AQRFEkVRUat/1vddLwm7gcmxtPv4OTJXlxLy+zWyeAoBhE8VxkocRG98hzzPkmiOJ8zO8iRlHACYeYuzwWoMoeyUw8py2s6uZZW9dimeU+7/oXBl9Evm0Ch243HrqpHyvIii1op93ccIhi7kcj7OSB1bFQ9FceEJdAAttddfm7qYykzPwDKbCk7fuuWYbKTCKIWIKw86Ce+6ECtsD9GOgh0NVdgLeB+7gE999LuF6ARZbfB+1DkGclFDyYl0uACCi/5JgSX4KbUhBXfiEoYe0IEIg1+CKgYGZI5NbMlY/3C7WBr+C+oIAjgNLcrWRKeARx8367/f8AVHceEJDcp3EAAAAASUVORK5CYII="
   },
   {
     name: "Avid CNC PRO 4848",
-    minCost: 7000, maxCost: 7000, avgCost: 7000,
+    minCost: 11600, maxCost: 11600, avgCost: 11600,
     minArea: 16, maxArea: 16,
-    url: "https://www.avidcnc.com/pro4848-cnc-router.html",
+    url: "https://www.avidcnc.com/pro4848-4-x-4-cnc-router-machine-p-1335.html",
     features: "4×4 foot kit, rack & pinion drives, popular for small businesses.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAbFBMVEWrIyirIieqHySqGyGpDhWpDxetHyatICW5TlLWmJvu0tT68fH26erTkZO3RkquKzDNg4b04eL////x2tvIeHytJivKfX/CbG/25+f79fXCZmmoFRy8Wl21PUGvMTboyMngs7X++/vao6Xeq62pOZ04AAAA4klEQVR4Ac2QVRaEMAwAqeLu1JD733GTrts/g2ceseDUEErIH8O4kCEX7IenJIqTNEvygn5ZWlZ142m7/sMSUqXNjWz4+FeME4Tntp7hUS/q1akCc0651nGGmQ17OmYdhNKqZ6rPMb0rH5bKFQLbXjLBebhv8HEwenM9fm9Hz8q4bdsa5bb39OqumQxTVXPlWoPgEB022kYqUHnzpB5hlVS3OJtW8Bq56QoOlGhIvPskwu+9GK/kaHfIe0D5GMujZR7Vxxt0HEDaJIst/di03VOflimpPhxYRRi7JiOf7ho8HxdJFRLqbmTHRAAAAABJRU5ErkJggg=="
   },
@@ -235,7 +235,7 @@ var cncData = [
   },
   {
     name: "ShopSabre RC Series (entry)",
-    minCost: 10000, maxCost: 10000, avgCost: 10000,
+    minCost: 17000, maxCost: 17000, avgCost: 17000,
     minArea: 16, maxArea: 16,
     url: "https://www.shopsabre.com/cnc-routers/rc-series",
     features: "Industrial router design, welded steel frame, high precision ball screws.",
@@ -243,15 +243,15 @@ var cncData = [
   },
   {
     name: "Tormach 770M",
-    minCost: 10000, maxCost: 20000, avgCost: 15000,
+    minCost: 11500, maxCost: 20000, avgCost: 15000,
     minArea: 1, maxArea: 1,
-    url: "https://tormach.com/machines/mills/770m/",
+    url: "https://tormach.com/machines/mills/770m.html",
     features: "Bigger, more powerful mill than 440, suitable for production shops.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAQlBMVEVHcEwjN0QlN0QoNkIlNkMlN0IpOEYlN0UnNkYNIzIhMj5JV2NZZXA4R1OIkJn///+hrbSPl6KxuLvJzM7w+PojNkdgX741AAAAFnRSTlMARWkYff///97///////////////+qL0ohEwAAAQNJREFUeAG90wWWg1AQRFEkVRUat/1vddLwm7gcmxtPv4OTJXlxLy+zWyeAoBhE8VxkocRG98hzzPkmiOJ8zO8iRlHACYeYuzwWoMoeyUw8py2s6uZZW9dimeU+7/oXBl9Evm0Ch243HrqpHyvIii1op93ccIhi7kcj7OSB1bFQ9FceEJdAAttddfm7qYykzPwDKbCk7fuuWYbKTCKIWIKw86Ce+6ECtsD9GOgh0NVdgLeB+7gE999LuF6ARZbfB+1DkGclFDyYl0uACCi/5JgSX4KbUhBXfiEoYe0IEIg1+CKgYGZI5NbMlY/3C7WBr+C+oIAjgNLcrWRKeARx8367/f8AVHceEJDcp3EAAAAASUVORK5CYII="
   },
   {
     name: "Avid CNC PRO 4896",
-    minCost: 10000, maxCost: 15000, avgCost: 12500,
+    minCost: 13500, maxCost: 13500, avgCost: 13500,
     minArea: 32, maxArea: 32,
     url: "https://www.avidcnc.com/pro4896-4-x-8-cnc-router-machine-p-1337.html",
     features: "Large 4×8 foot system, easily handles full sheet goods at scale.",
@@ -259,7 +259,7 @@ var cncData = [
   },
   {
     name: "ShopBot Buddy 24",
-    minCost: 12000, maxCost: 12000, avgCost: 12000,
+    minCost: 19000, maxCost: 19000, avgCost: 19000,
     minArea: 8, maxArea: 8,
     url: "https://www.shopbottools.com/products/buddy",
     features: "Compact but powerful system with industrial components & brand support.",
@@ -269,55 +269,47 @@ var cncData = [
     name: "Laguna Swift 4×4",
     minCost: 15000, maxCost: 15000, avgCost: 15000,
     minArea: 16, maxArea: 16,
-    url: "https://lagunatools.com/cnc/swift-series/",
+    url: "https://lagunatools.com/cnc/swift-series/standard/",
     features: "Mid-range industrial router, rigid structure, vacuum hold-down options.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADO0lEQVRYhbVXvU8UQRT/vZkNh3fGAo2JsWM2EY3YEq6ztsXEyj8B7YTYg612VCZWUtnbSGnsIHTuFVTkxFDIacLdsc9id3bezM59Ib5k73bf52/evJk3QwjImPQ3gCaoZDCXL1TpEAk22Mmo/AzJiQ+zLFuWIhUEPwHQjLioPJN1Ro4XjxrF8NCk6dcoAGPSbwBuxUyJigcoRs7MZQYopu6eAH4Jc8Wk6SfL10Vw8x6gJzHIgBu1c4UCEMmIdbtKFCaIsHRzYeHG6enpZzLGrAN4W4Nc1UA4RAeAo3LUE1MHUOBiPCNjDEetRhZhUXQ2K14tzg4AScxiOBzivH8ujJ2HVqsFoKgBIvKcUzjv7PNZ1Kx9TeSoAGAwGKDdbmO1vQrO89KoUNc6wfb2NppNt1D8JRkPPI5qU9A762Hj9QZerr+IGxBhcdFUq0KEhZ9JLgE4XggUqDJgvQNMDM4nr+sCjO/YZsP+hwElZivzAfwTURBkivwj2AlnChcZpX2PpXoU+avAblf55OAirJR4UxDqx4ozCZuMxDMd2a2OUNsFx9SAJTEFhbaaclL8NPsZZLHxjyILRsU2j2nWr4wbY03rQox3pryPBkmlLLLkYktTyW+rkE8owjDgKOxE9QIM5cqfqykmT4C18ScBCYNKSmR3Yy68TCrEXu8PlKKqqcg+GbPN8yLw/Pw8VKlggcy8E25tvUGjMTdeKViRzIDWGru7H9HtdisQlwKwuflqVpOK9va+4Pj42AMQSRh5CldJHKlEBfgn3VbrGnZ2dtDv9/8LiCgAFo/SGr/OzrC29hQnJz+vNBgp5cUCIiciAGg0Gtg/2Mftu3fw6P4DGGPK9JHXaEZtRvYQJc8jpDWy7xm00v5dxhjDzpN/AGVm5BeMPL9wowiPYP4haCwlSQJS5JklAD4AeB4zICJoTdBaCd7lAUToHQGAMeYAwLIvi3mmOgCrOk1w//6yl2XZ44plUnMOxpyVktjf7DUsnCkW3iSjpifvrgWv0+lkKeDtA8Prrnv4J4vibug4Xscg0QbCoiQnr/AQfmCIJatSAehkRwMA9+SFiFksUdlKR3W/8ifWdkvqAljpHGVDy/gLEa4r7rzEn/UAAAAASUVORK5CYII="
   },
   {
-    name: "Phantom CNC (smallest)",
-    minCost: 15000, maxCost: 15000, avgCost: 15000,
+    name: "Phantom CNC COSMIC (cheapest)",
+    minCost: 12900, maxCost: 12900, avgCost: 12900,
     minArea: 16, maxArea: 16,
-    url: "https://phantomcnc.com/cnc-routers/",
+    url: "https://www.phantomcncsystems.com/cosmic",
     features: "Heavy-duty frames, ball screw or rack/pinion options, pro-level support.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAtFBMVEX////Z2dnx8fHHx8a3t7fQ0NDT09P4+PhiZIapqamfn53Dw8OxsbG+vr6ampqurq5oaYjo6OufoLfT1NqWlpaEhqOio7Z7e6HLy8iVlqtFR7HIyNIAAJ8AAKesrMOsrLtnZ6R7fKhRUq5SU6fk5Orr6+i2tsG7vM3t7fl9fpRkZXnf3+/Q0OKcnKuUlZ+Li5uIiIt0dHOsrLSGh55wcYjFxtbHyOLY2OaWl8C5udqDg5RXWHFO2dv2AAABFUlEQVR4AWKgBwDULRdIDsNAAARXbJDMGGZmhv+/6xg2KWdsYZcIfSWMEM4FkeoZlGU7rqtd4/m+4wThA0axTIyvBbeFo4WbYsvygv2ip2WRl1hrdYyiAbhmq0DYbihkYbODkHSbdYS09/iyPwBUSzGEwwhwbZnY/Bcdd/SAY3c8mepPlLP5grewhUumYDD9QH+1ANCjOlbDKMB8Kvn6w8CXFNmIrXgMEAotP2a9YkuEdWdUBBthiKvD7ZTtzAhQkXGT8f4A4TrKbMPSIUYVHTPjSyBEOtkxm8Bzxl/HbC88qEoTeWwT4laZyqzDtFwGQViBp3Prs8vlChXR+jGujwdDqGp6WO1Wt+W9EgfnxfF4Hpzhr3f3qhlIFwDbLgAAAABJRU5ErkJggg=="
   },
   {
-    name: "CAMaster Stinger II",
-    minCost: 15000, maxCost: 20000, avgCost: 17500,
+    name: "ShopBot PRS5 Alpha 4×4",
+    minCost: 31127, maxCost: 31127, avgCost: 31127,
     minArea: 16, maxArea: 16,
-    url: "https://www.camaster.com/product/stinger-ii-cnc-router/",
-    features: "Scaled-up Stinger with bigger table & power. Ideal for cabinet shops.",
-    iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAKlBMVEVHcEz+yFb+yFX+yFb+yFb+x1X+yFb+yFb+yFb+yFb9x1T+yFb+yFb+yFbnZRWPAAAADXRSTlMAlDCA92HlSL2gDNMXlVuzLgAAAIVJREFUKJGtklESgCAIBU1BM/X+162MDJX4aNpPd2AeoDE/sAV0y00MXKEvHY5VDYrLPCoupzomXXta452oBSIDXUIikNykAePlUJw+XVJeDVTnZUlBP8skS68FolGsKFHtSxuKWt/iUdogvxVU2D1DmWDfBDVpLCjyKF7hXZ5k28jy1A87sFQNYvYlpv8AAAAASUVORK5CYII="
-  },
-  {
-    name: "ShopBot PRSalpha 4×4",
-    minCost: 20000, maxCost: 20000, avgCost: 20000,
-    minArea: 16, maxArea: 16,
-    url: "https://www.shopbottools.com/products/prsalpha",
+    url: "https://shopbottools.com/products/shopbot-prs5-alpha/",
     features: "High-speed industrial-grade router for pro shops, advanced software.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAyUlEQVR4AWJwL/ChKx4cFo5aaGicZg7EDYB269iGQhCKwvAMbMAWrsEYjEHvDq7CFO7AClT3UZyCnJCbnKgWLxZ/p35CLtHRThUqXwKBnSMTizIIrKoY6jKIbTTqdDIqqWBePcCLrs8qWOgBQbwnqGBabGfCVkfnvsBTqqAdmFfDcB1YYWRQHxy9cuUcBqygi+jmgPILxFHCJBdsZyOw6qAYoe0N8Lgb/MC+BDFh7eaMqjNoL7TNYH8Um7788+HdH6iMwvfX9l/gD7DqtLEe65aQAAAAAElFTkSuQmCC"
   },
   {
-    name: "Blue Elephant 1212",
-    minCost: 15000, maxCost: 25000, avgCost: 20000,
-    minArea: 16, maxArea: 16,
-    url: "https://www.elephant-cnc.com/1212-cnc-router",
+    name: "Blue Elephant 1325 4x8 ATC",
+    minCost: 11000, maxCost: 15000, avgCost: 13000,
+    minArea: 32, maxArea: 32,
+    url: "https://www.elephant-cnc.com/pro/latest-1325-atc-cnc-wood-engraving-and-cutting-machine-with-a-laser-head/",
     features: "Chinese manufacturer with heavy frames, includes ATC & vacuum table options.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC7UlEQVR4Ae3XA3AkQQBG4bNt27Zt27Zt27Zt27Zt27Z2KnOvj32zPThtKVv1xcn/atFT8WG8ed98H/sk+EJuNELDb+r6Ou6KGGPW6SzRZ59pjIYGjaLNOVsxS881cQu0nlcHDb9phHzwBUfjQj7chS5xEVCcgFGM6SoE7MvRZXlJht5Bl9xHQfiAbUAynIZuREDdGDNPd7MIWJe3/aKajGjQDc4iOSzHI2IDdGXACVdn7oF6FgGTGGgC3cRmRIJyPAgmq4ale2AUAaUYc5kEjCnYam4/MWZhKoLil3Hf6IhPNgFjCMjG2DuTgP4EjLEJcKELfONHQCW8gG4TsDTqvPO5GXsLXaExAePEkI2XqPw9IB9uQLd13LUj4pIr6Rh6qBjXYs04WZWAVWLEgZsoIAK2QHfoXKj1d0XAVUXAu7iTjxYhYKcYcGibCMiEvQ4DbgTd/jQZYwcVAW8Sj91XgYDzDsf3I7MIEGJiFbxsAu4E2Pc6afRZZ7YpAu6nGL6zYIFWc685GF+DOHA7A2ZCswh45e/gu1y8Eja4Bcw5czndgE05+aO3LYY1zLc6C4JjBD6qA/j60U+FCJiieAnu4RgWx+1ri5ffGIS0Ow0DoT1embwUaxMwWBGwJU+HxaX54x8U42/QG0GcXpD8oAEeux/HGteDU00VASvztVvYWDH+Ak3hF799SS6N24brQVvugbqKAHEANTCM30NV+LYfV0cIeXFaeghGEFCNUS9DQC9egu2k8esoZn0Jdh6REge+BcyLNvdcAUbfGwIaEjD82/hxZHY27jwiHjZxHG+JvPBidkZfyAHcK40ImM3gASRXj/99RHTugcZcDxIxeksK+BR72vFKhVrOacFoXIvxvw/xoem+uLujM3pTCngrLtOd0zf1LYb/640xIRzOyscwEuD/jksBgbBTCriJaJ4M8INlUsAlRPJkgDBeCtiDIB4JkCLGSgGr4dfTAfL/BxPF1zwdkAj1UB9Z/nTc+/YZ17Y6A9knz5IAAAAASUVORK5CYII="
   },
   {
     name: "ShopSabre IS Series",
-    minCost: 20000, maxCost: 30000, avgCost: 25000,
-    minArea: 16, maxArea: 32,
-    url: "https://www.shopsabre.com/cnc-routers/is-series",
+    minCost: 57300, maxCost: 77000, avgCost: 57300,
+    minArea: 16, maxArea: 72,
+    url: "https://www.shopsabre.com/cnc-routers/is-m-series/",
     features: "Top-tier line with servo motors, advanced controls, heavy steel frames.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAz0lEQVR4AWMYXODj958C4jWLfwlXLfwnVLnwPyEs17DsNVzz55+/eUGCpGDVlhUv4QYUrT8+A12B98wdB/G5+MG7z0pwDjZnJyw9sPr+209KyPjF528SWE0j1flvvnwXhWued+JGJqkGTDtyrRBugN/snftJNeDn7z/scAOuvXivQ6oBRKeNqEX7NqJrDp63eydcwaLTt1LefP0h8vnHL15sWL5h2Ud0A84+em0GN0CmbulXipwvWbvku1j14l/4MCh5S9Qs/uk5Y/sRhkEHADg8SdpO5UtoAAAAAElFTkSuQmCC"
   },
   {
     name: "AXIOM Precision AR16",
-    minCost: 20000, maxCost: 30000, avgCost: 25000,
-    minArea: 16, maxArea: 32,
-    url: "https://www.axiomprecision.com/elite-series/ar16-elite",
+    minCost: 17550, maxCost: 17550, avgCost: 17550,
+    minArea: 16, maxArea: 16,
+    url: "https://axiomprecision.com/ar16-elite-48-x-48-cnc-router",
     features: "Elite series with steel frame, water-cooled spindle, and large capacity.",
     iconUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACxElEQVR4AWOgNrh2/Dibrq5um6am5iQQjQ0rKinNCwkI8GWgBVg6b64zkPoPwpycnH+wYZCckZHRBKpb/vzJE05eXt6XIAsIYVAIUd0Bvu4eC6AW0N8BK1es8AcbTn8HIIJ+wBwQFhwMC3r6O2DKxAkBYEPp7wBE0A+YA7w8PFdDDaS/Aya0tERADaO/A64cPsLPzMLyfsAc4O/jswKf4fx8vG+sLS330MQBs6dNDSXku4KcnLIJPT2uhBxAk6AXl5J6BFKblpYWQXUH+Pv6LSPk+xP795mC1No7O2VR1QFTJk2MJWR5cmLiNJj6ppYWY6o54Obly6JMjIxfCQU9qDEC0/Mit1y2J6+gikGQ/z3FDnB2ctpAyPdLJkx0Q9azT804821g3D1QogWlG7Id0FRcEk/I8pSq8trfqzbIbGUT2bnX2G7RPgunKXuM7Q5sZOL//8o74lB7VbU3AxPDQ3QHUCXouXl4HoPUPpmzIHI9A+f/7VLqECyn9X+HquH/7bxS/+/ZeB6tDwpLhIcEwgGUl/XQNiDDhb5JqSAf71DSQ8UaJv9B4j+d/JeBQoJoB0ybPJlg0KdGRVeBFSMcAPI5CMNDYJOw/P87Rg7PjnX3p4gqKx5HdgBFQa+qonIZohrhAGgUQCzXMAFbfllU5d2VeYtsZe1tNhKdBmysrHYQ8v22LZvtkPUc2b1b+OCkqaZH5y3UA5WYO+08Gu+oGP/f19TmxysjfZjoXNDZ0Z5JyPKEiIg+QunnVVKu+ery6nxOddUjRJcDly9ekCFkubSMzG38ViNChIWP7za+kpCCoCcMwsLDM0kqilurq9MpD3oEiIyIyCDaAUf37DEiZLmujs5JmHqqhsC0CROMvT08WkFFpbCw8GZBQcEdyBhY0u0FKju2c/VqDVIckJma6s3ExHRdQEBgJ7qZIHErC4tMhsEAACrSm6ReHjlMAAAAAElFTkSuQmCC"
   }
