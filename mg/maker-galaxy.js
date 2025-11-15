@@ -69,14 +69,14 @@
     radiusOuter: 260,
     starCountBase: 3200,
     armCount: 4,
-    spiralTightness: 0.22,    // how tightly the arms curl
+    spiralTightness: 0.3,    // how tightly the arms curl
     spiralStartRadius: 40,    // where arms visibly start from center
     thetaMax: 9.0,            // angular length of arms
     scatterRadius: 25,
     thicknessCore: 30,
     coreFraction: 0.16,       // fraction of stars in central bulge
     densityScale: 1.0,
-    twinkleSpeed: 1.0,
+    twinkleSpeed: 0.75,
   };
 
   // Aurora configuration (global)
