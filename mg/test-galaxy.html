@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Maker Galaxy — Landing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="maker-galaxy.css" />
+</head>
+<body>
+  <section id="mg-hero" class="mg-hero">
+    <canvas id="mg-galaxy-canvas"></canvas>
+
+    <div class="mg-hero-overlay">
+      <div class="mg-hero-inner">
+        <h1 class="mg-title" id="mg-title">Maker Galaxy</h1>
+        <p class="mg-tagline" id="mg-tagline">
+          Where makers, tools, and ideas orbit together.
+        </p>
+        <div class="mg-cta-row">
+          <button class="mg-btn mg-btn-primary">Explore the Galaxy</button>
+          <button class="mg-btn mg-btn-outline">Join as a Maker</button>
+        </div>
+      </div>
+    </div>
+    
+  </section>
+
+  <!-- Just to give us some scroll so the IntersectionObserver logic does something -->
+  <section class="mg-placeholder-content">
+    <h2>Scroll Test Content</h2>
+    <p>
+      This is placeholder content below the hero. Scroll up and down to see the
+      galaxy animation slow down when it leaves the viewport.
+    </p>
+    <p>
+      Later we’ll replace this with real Maker Galaxy sections (How it works,
+      For Makers, For Buyers, etc.).
+    </p>
+  </section>
+
+  <!-- Three.js CDN, must come first -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <!-- <script src="threejs.161.js"></script> -->
+  
+
+  <!-- Our galaxy logic, relies on global THREE -->
+  <script src="maker-galaxy.js"></script>
+</body>
+</html>

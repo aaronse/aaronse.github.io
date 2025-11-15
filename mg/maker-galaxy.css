@@ -1,0 +1,298 @@
+:root {
+  /* Core palette */
+  --mg-bg-color: #050311;
+  --mg-bg-gradient-inner: #100624;
+  --mg-bg-gradient-outer: #020010;
+
+  --mg-primary: #b36bff;       /* Main purple */
+  --mg-primary-strong: #d68bff;
+  --mg-accent-teal: #35e0ff;
+  --mg-accent-gold: #ffc857;
+
+  /* Motion / scene scalars */
+  --mg-galaxy-rotation-speed: 0.05; /* radians per second base (scaled in JS) */
+  --mg-aurora-speed: 0.7;           /* shader time multiplier */
+  --mg-starfield-density: 1;        /* 0.5–2 range is nice */
+  --mg-hover-scale: 1.65;
+
+  /* Typography */
+  --mg-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Layout */
+  --mg-hero-padding: 4vw;
+}
+
+/* Global reset-ish */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: radial-gradient(circle at top, var(--mg-bg-gradient-inner), var(--mg-bg-gradient-outer));
+  color: #f6f0ff;
+  font-family: var(--mg-font-family);
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* HERO SECTION */
+
+.mg-hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 480px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% -20%, rgba(255, 120, 255, 0.55), transparent 60%),
+    radial-gradient(circle at 80% -10%, rgba(120, 180, 255, 0.45), transparent 65%),
+    radial-gradient(circle at 10% 110%, rgba(150, 70, 220, 0.7), transparent 60%),
+    radial-gradient(circle at 90% 120%, rgba(60, 20, 100, 0.9), transparent 65%),
+    var(--mg-bg-color);
+}
+
+
+/* Canvas fills section */
+#mg-galaxy-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Overlay content */
+.mg-hero-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* let canvas capture pointer, we’ll still show hover via raycaster */
+  display: none; /* flex; */
+  align-items: center;
+  justify-content: center;
+}
+
+.mg-hero-inner {
+  max-width: 720px;
+  padding: var(--mg-hero-padding);
+  text-align: center;
+  pointer-events: auto; /* re-enable for buttons */
+  backdrop-filter: blur(12px);
+  background: radial-gradient(circle at top, rgba(15, 4, 38, 0.9), rgba(5, 1, 15, 0.7));
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7);
+}
+
+.mg-title {
+  margin: 0 0 0.4em;
+  font-size: clamp(2.75rem, 4vw, 4rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #fdf7ff;
+  text-shadow:
+    0 0 16px rgba(179, 107, 255, 0.9),
+    0 0 36px rgba(53, 224, 255, 0.85);
+}
+
+.mg-tagline {
+  margin: 0 0 1.8em;
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  color: rgba(238, 229, 255, 0.92);
+}
+
+/* CTA buttons */
+
+.mg-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+}
+
+.mg-btn {
+  border-radius: 999px;
+  padding: 0.7rem 1.8rem;
+  border: 1px solid transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease-out,
+    box-shadow 0.18s ease-out,
+    background-color 0.18s ease-out,
+    border-color 0.18s ease-out,
+    color 0.18s ease-out;
+}
+
+.mg-btn-primary {
+  background-image: linear-gradient(
+    135deg,
+    var(--mg-primary-strong),
+    var(--mg-accent-teal)
+  );
+  color: #08030d;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.6),
+    0 0 24px rgba(179, 107, 255, 0.9),
+    0 0 48px rgba(53, 224, 255, 0.8);
+}
+
+.mg-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.8),
+    0 0 30px rgba(179, 107, 255, 1),
+    0 0 70px rgba(53, 224, 255, 0.9);
+}
+
+.mg-btn-outline {
+  background-color: transparent;
+  color: #f5ebff;
+  border-color: rgba(243, 228, 255, 0.4);
+}
+
+.mg-btn-outline:hover {
+  border-color: rgba(255, 255, 255, 0.85);
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.18), transparent 60%);
+  transform: translateY(-1px);
+}
+
+/* Placeholder section styling */
+
+.mg-placeholder-content {
+  padding: 4rem 1.5rem 6rem;
+  max-width: 760px;
+  margin: 0 auto;
+  color: rgba(245, 237, 255, 0.96);
+}
+
+.mg-placeholder-content h2 {
+  margin-top: 0;
+  font-size: 1.7rem;
+}
+
+.mg-placeholder-content p {
+  line-height: 1.7;
+  max-width: 60ch;
+}
+
+/* Tooltip for hover star (optional, just a simple style stub) */
+
+.mg-star-tooltip {
+  position: fixed;
+  z-index: 4;
+  padding: 0.3rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background: rgba(7, 2, 20, 0.9);
+  color: #fef9ff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  transform: translate(-50%, -140%);
+  white-space: nowrap;
+}
+
+
+#mg-dev-panel {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  background: rgba(20, 12, 30, 0.95);
+  color: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  width: 240px;
+  display: none;
+  z-index: 9999;
+}
+#mg-dev-panel.open {
+  display: block;
+}
+#mg-dev-panel label {
+  display: block;
+  margin: 6px 0 12px;
+}
+
+#mg-dev-panel {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 260px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: rgba(10, 5, 25, 0.96);
+  color: #fdf7ff;
+  padding: 10px 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 11px;
+  line-height: 1.4;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: none;
+}
+
+#mg-dev-panel.open {
+  display: block;
+}
+
+.mg-dev-header {
+  font-weight: 700;
+  font-size: 12px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.mg-dev-hint {
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.mg-dev-row {
+  margin: 6px 0 8px;
+}
+
+.mg-dev-row label {
+  display: block;
+  margin-bottom: 2px;
+  opacity: 0.9;
+}
+
+.mg-dev-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mg-dev-control input[type="range"] {
+  flex: 1 1 auto;
+}
+
+.mg-dev-value {
+  min-width: 40px;
+  text-align: right;
+  opacity: 0.9;
+}
+
+#mg-dev-panel hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 6px 0 8px;
+}
