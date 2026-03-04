@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🧠🤖 AI Adoption Roadmap — 5 Stages for Knowledge Workers</title>
+  <meta name="description" content="A dark-theme, interactive 5-stage roadmap for adopting AI tools safely and effectively. Includes checklists, habits, and grounded references." />
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#0f1733;
+      --panel2:#0c1430;
+      --text:#e6e9f2;
+      --muted:#aab3d1;
+      --faint:#6f7aa6;
+      --accent:#8b5cf6;
+      --accent2:#22c55e;
+      --warn:#f59e0b;
+      --danger:#fb7185;
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 12px 35px rgba(0,0,0,.35);
+      --radius:16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(139,92,246,.22), transparent 60%),
+        radial-gradient(900px 500px at 85% 0%, rgba(34,197,94,.16), transparent 55%),
+        radial-gradient(900px 650px at 50% 115%, rgba(245,158,11,.12), transparent 65%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    a{color:#b9a2ff; text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1100px; margin:0 auto; padding:24px 18px 80px}
+    header{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(11,16,32,.85), rgba(11,16,32,.55));
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner{max-width:1100px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:14px}
+    .brand{
+      display:flex; align-items:center; gap:10px; min-width:280px;
+    }
+    .brand .logo{
+      width:40px; height:40px; border-radius:12px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.25), rgba(255,255,255,.05)),
+                  linear-gradient(135deg, rgba(139,92,246,.9), rgba(34,197,94,.65));
+      box-shadow: var(--shadow);
+      display:grid; place-items:center;
+      font-size:18px;
+    }
+    .brand h1{font-size:16px; margin:0}
+    .brand .sub{font-size:12px; color:var(--muted)}
+    .top-actions{margin-left:auto; display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .btn{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:13px;
+      display:inline-flex; align-items:center; gap:8px;
+      transition: transform .05s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+    }
+    .btn:hover{background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.18)}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{
+      background: rgba(139,92,246,.18);
+      border-color: rgba(139,92,246,.35);
+    }
+    .btn.good{
+      background: rgba(34,197,94,.16);
+      border-color: rgba(34,197,94,.30);
+    }
+    .btn.warn{
+      background: rgba(245,158,11,.14);
+      border-color: rgba(245,158,11,.30);
+    }
+
+    .hero{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:16px;
+      align-items:stretch;
+    }
+    @media (max-width: 980px){
+      .hero{grid-template-columns:1fr}
+      .brand{min-width:auto}
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+    }
+    .card.soft{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      box-shadow: 0 10px 26px rgba(0,0,0,.28);
+    }
+    .muted{color:var(--muted)}
+    .tiny{font-size:12px; color:var(--muted)}
+    .kpi{
+      display:flex; gap:12px; flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .pill{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius:999px;
+      padding:6px 10px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .pill strong{color:var(--text); font-weight:600}
+    .progress{
+      margin-top:14px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+    }
+    .bar{
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.07);
+      overflow:hidden;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(139,92,246,.95), rgba(34,197,94,.9));
+      transition: width .25s ease;
+    }
+    .bar-labels{
+      margin-top:8px;
+      display:flex;
+      justify-content:space-between;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .stage-nav{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .stage-chip{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius:14px;
+      padding:10px 12px;
+      cursor:pointer;
+      min-width: 172px;
+      transition: transform .06s ease, border-color .15s ease, background .15s ease;
+    }
+    .stage-chip:hover{background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.18)}
+    .stage-chip.active{
+      border-color: rgba(139,92,246,.55);
+      background: rgba(139,92,246,.14);
+    }
+    .stage-chip .t1{font-size:12px; color:var(--muted)}
+    .stage-chip .t2{font-size:13px; font-weight:650}
+    .stage-chip .t3{font-size:12px; color:var(--faint); margin-top:2px}
+
+    .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:16px}
+    @media (max-width: 980px){ .grid2{grid-template-columns:1fr} }
+
+    .section{margin-top:18px}
+    .section h2{margin:0 0 8px; font-size:16px}
+    .section h3{margin:14px 0 8px; font-size:14px; color:#d5d9ff}
+    .stage-title{
+      display:flex; align-items:center; gap:10px;
+      margin:0 0 8px;
+      font-size:18px;
+    }
+    .stage-title .badge{
+      font-size:12px;
+      padding:5px 9px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+    }
+    .stage-summary{
+      margin:0;
+      color:var(--muted);
+    }
+
+    details{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding:10px 12px;
+      margin-top:10px;
+    }
+    summary{
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:space-between;
+      list-style:none;
+      gap:12px;
+      font-weight:650;
+      color:#e9ecff;
+    }
+    summary::-webkit-details-marker{display:none}
+    .sum-left{display:flex; align-items:center; gap:10px}
+    .sum-right{display:flex; align-items:center; gap:8px}
+    .tag{
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      color:var(--muted);
+      background: rgba(0,0,0,.18);
+    }
+    .tag.good{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.10); color:#b7f7cf}
+    .tag.warn{border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.10); color:#ffe2b0}
+    .tag.danger{border-color: rgba(251,113,133,.35); background: rgba(251,113,133,.10); color:#ffd0d8}
+
+    ul.clean{margin:8px 0 0 18px}
+    ul.clean li{margin:6px 0}
+    .checklist{
+      margin-top:10px;
+      display:grid;
+      gap:8px;
+    }
+    .check{
+      display:flex; gap:10px; align-items:flex-start;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background: rgba(0,0,0,.18);
+      padding:9px 10px;
+    }
+    .check input{margin-top:3px; transform: scale(1.1)}
+    .check label{cursor:pointer}
+    .check small{display:block; color:var(--faint); margin-top:2px; font-size:12px}
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: var(--radius);
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+    }
+    th,td{
+      text-align:left;
+      padding:10px 10px;
+      border-bottom:1px solid var(--border);
+      vertical-align:top;
+      font-size:13px;
+    }
+    th{font-size:12px; color:var(--muted); background: rgba(255,255,255,.03)}
+    tr:last-child td{border-bottom:none}
+
+    .callout{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(139,92,246,.12), rgba(255,255,255,.03));
+      border-radius: var(--radius);
+      padding:12px;
+    }
+    .callout b{color:#f0f2ff}
+    .foot{
+      margin-top:18px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .toast{
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15,23,51,.92);
+      border:1px solid var(--border);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 999;
+      max-width: min(720px, calc(100vw - 24px));
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+    .kbd{
+      font-family: var(--mono);
+      font-size: 12px;
+      border: 1px solid var(--border);
+      border-bottom-color: rgba(255,255,255,.25);
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(0,0,0,.24);
+      color: #dbe0ff;
+      display:inline-block;
+    }
+    .sep{height:1px; background: var(--border); margin:12px 0}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo">🧠🤖</div>
+      <div>
+        <h1>AI Tool Adoption Roadmap</h1>
+        <div class="sub">5-stage psychological + workflow pattern • dark mode edition 🌙</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn primary" id="btnJump">🧭 Jump to stage</button>
+      <button class="btn good" id="btnExport">📦 Export progress</button>
+      <button class="btn warn" id="btnReset">🧨 Reset</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="card">
+      <div class="callout">
+        <b>What this is:</b> a pragmatic field guide for knowledge/tech workers adopting AI tools—how beliefs, habits, and workflows evolve from novelty to durable leverage.
+        <div class="sep"></div>
+        <div class="tiny">
+          🧪 Not a clinical model. Stages are not strictly linear—you can loop or occupy multiple stages depending on task risk and tooling maturity.
+        </div>
+      </div>
+
+      <div class="kpi" id="kpis"></div>
+
+      <div class="progress" aria-label="overall progress">
+        <div class="bar"><div id="overallBar"></div></div>
+        <div class="bar-labels">
+          <span>Stage progress</span>
+          <span><span id="overallPct">0%</span> complete</span>
+        </div>
+      </div>
+
+      <div class="stage-nav" id="stageNav"></div>
+
+      <div class="foot">
+        <div>Tip: share this page + your progress file with a friend. 💌</div>
+        <div>Keyboard: <span class="kbd">1</span>…<span class="kbd">5</span> to jump • <span class="kbd">/</span> to search in page</div>
+      </div>
+    </div>
+
+    <div class="card soft">
+      <h2 style="margin:0 0 10px; font-size:16px;">🧰 “Safe lanes” to start (low-risk wins)</h2>
+      <ul class="clean">
+        <li>📝 Docs, meeting notes, summaries, RFC drafts</li>
+        <li>🧪 Unit tests + test refactors (with running tests)</li>
+        <li>🧹 Code cleanup: renames, formatting, lint fixes</li>
+        <li>🧩 UI scaffolding & quick prototypes (behind feature flags)</li>
+      </ul>
+      <div class="sep"></div>
+      <h2 style="margin:0 0 10px; font-size:16px;">🛡️ “High-risk” lanes to slow down</h2>
+      <ul class="clean">
+        <li>🔐 Security-sensitive code, auth, cryptography, input validation</li>
+        <li>🧾 Legal/IP, customer data, regulated domains (health/finance)</li>
+        <li>🧨 Infra changes with blast radius (prod config, IAM, networking)</li>
+      </ul>
+      <div class="sep"></div>
+      <div class="tiny">
+        If you must use AI in high-risk lanes, do it with tighter verification gates + human review + strong logging/auditing.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🧠 Five stages (click a stage chip above)</h2>
+    <div class="grid2">
+      <div class="card" id="stageCard"></div>
+      <div class="card soft">
+        <h2 style="margin:0 0 10px; font-size:16px;">📊 Comparison table</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>Primary mindset</th>
+              <th>Default trust</th>
+              <th>Main risk</th>
+              <th>Best intervention</th>
+            </tr>
+          </thead>
+          <tbody id="comparisonBody"></tbody>
+        </table>
+        <div class="sep"></div>
+        <h2 style="margin:0 0 10px; font-size:16px;">🧭 How to use this with friends</h2>
+        <ul class="clean">
+          <li>Pick a <b>task category</b> (e.g., “frontend scaffolding”, “backend APIs”, “security”).</li>
+          <li>Agree on their <b>dominant stage</b> for that category.</li>
+          <li>Do only the <b>checklist items</b> for that stage until completion ≥ 70%.</li>
+          <li>Then “promote” them to the next stage 🧗‍♂️.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🔗 Grounded references (selected)</h2>
+    <div class="card soft">
+      <ul class="clean">
+        <li>📈 Gartner: “Hype Cycle for Artificial Intelligence” (2025) — maturity curve & scaling focus. <a href="https://www.gartner.com/en/articles/hype-cycle-for-artificial-intelligence" target="_blank" rel="noreferrer">Open</a></li>
+        <li>🏢 BCG: “The AI Adoption Puzzle: Why Usage Is Up But Impact Is Not” (Dec 8, 2025). <a href="https://www.bcg.com/publications/2025/ai-adoption-puzzle-why-usage-up-impact-not" target="_blank" rel="noreferrer">Open</a></li>
+        <li>🧠 Aalto University: AI use can increase overconfidence / miscalibration (Oct 29, 2025). <a href="https://www.aalto.fi/en/news/ai-use-makes-us-overestimate-our-cognitive-performance" target="_blank" rel="noreferrer">Open</a></li>
+        <li>📄 Research (arXiv): “AI Makes You Smarter, But None The Wiser” — performance vs metacognition disconnect (Sep 25, 2024). <a href="https://arxiv.org/html/2409.16708v1" target="_blank" rel="noreferrer">Open</a></li>
+        <li>🛡️ NIST: AI Risk Management Framework 1.0 (Jan 26, 2023). <a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noreferrer">Open</a> • <a href="https://nvlpubs.nist.gov/nistpubs/ai/nist.ai.100-1.pdf" target="_blank" rel="noreferrer">PDF</a></li>
+        <li>🧱 OWASP SAMM: security maturity model for software assurance. <a href="https://owasp.org/www-project-samm/" target="_blank" rel="noreferrer">Open</a></li>
+        <li>🍣 SLSA: Supply-chain Levels for Software Artifacts. <a href="https://slsa.dev/" target="_blank" rel="noreferrer">Open</a></li>
+        <li>✅ GitHub Docs: creating a pull request template (verification checklist habit). <a href="https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/creating-a-pull-request-template-for-your-repository" target="_blank" rel="noreferrer">Open</a></li>
+      </ul>
+      <div class="tiny">These aren’t endorsements—just a reality-grounding set of sources that map to the “hype → craft → governance” arc.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🧾 Shareable “team norms” starter pack</h2>
+    <div class="grid2">
+      <div class="card soft">
+        <h3 style="margin-top:0;">🧑‍⚖️ Minimum rules (lightweight)</h3>
+        <ul class="clean">
+          <li>🧷 <b>Label AI usage</b> in PRs / docs when it materially influenced output.</li>
+          <li>🧪 <b>Run verification</b>: tests, build, lint, and quick threat-check for risky areas.</li>
+          <li>🧼 <b>Small diffs</b> beat giant “AI refactor bombs”.</li>
+          <li>🔐 <b>No secrets</b> in prompts. Treat prompts as potentially logged.</li>
+        </ul>
+      </div>
+      <div class="card soft">
+        <h3 style="margin-top:0;">🧠 Best prompt add-on (works everywhere)</h3>
+        <div class="tiny">Append this to most prompts to reduce “Prompt Hero” failure modes:</div>
+        <pre style="margin:10px 0 0; padding:12px; border-radius:14px; border:1px solid var(--border); background:rgba(0,0,0,.25); overflow:auto; font-family:var(--mono); font-size:12px; color:#dbe0ff;"><code>Before you answer:
+1) List assumptions you made.
+2) List what could be wrong / unsafe.
+3) Give a quick verification plan (tests, checks, sources).
+4) If uncertain, say so and propose safer options.</code></pre>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const VERSION = "1.0";
+  const LS_KEY = "aiRoadmapProgress_v" + VERSION;
+
+  const stages = [
+    {
+      num: 1,
+      emoji: "✨",
+      name: 'Discovery ("Magic")',
+      coreShift: "AI feels like a superpower",
+      output: "Rapid ideation, demos, playful exploration",
+      summary: "The first-contact high. Surprising wins update your mental model of what’s possible.",
+      signals: [
+        "You use AI for brainstorming, naming, summarization, quick code sketches.",
+        "You’re delighted by speed; you underestimate edge cases and integration cost.",
+        "You talk about possibilities more than you ship production changes."
+      ],
+      risks: [
+        "Confusing demo-quality with production readiness.",
+        "Underestimating data/privacy/IP and security constraints.",
+        "Tool sprawl: trying everything, standardizing nothing."
+      ],
+      checklist: [
+        { t: "Pick 2–3 safe work categories to start (docs, tests, refactors, UI scaffolds).", s:"Start where failure is cheap and reversible." },
+        { t: "Write a one-page acceptable-use note (allowed vs prohibited).", s:"Clarify secrets, customer data, and regulated content." },
+        { t: "Track one metric: time saved or cycle time reduction for a workflow.", s:"No vibes-only adoption." },
+        { t: "Establish a default verification habit (tests, compile, lint, source check).", s:"Your future self will thank you." }
+      ],
+      team: [
+        "Share a short weekly “wins + gotchas” thread.",
+        "Create a small prompt/snippet library with examples.",
+        "Decide which AI outputs can be used without review vs with review."
+      ],
+      refHint: [
+        { label:"📈 Tech hype/maturity curves", url:"https://www.gartner.com/en/articles/hype-cycle-for-artificial-intelligence" }
+      ]
+    },
+    {
+      num: 2,
+      emoji: "🦸‍♂️",
+      name: 'Overconfidence ("Prompt Hero")',
+      coreShift: "Assume the tool is reliable by default",
+      output: "Fast drafts, risky copy/paste, inflated certainty",
+      summary: "Enough wins create excessive trust; velocity rises, but hidden risk rises faster.",
+      signals: [
+        "Copy/paste into the codebase with minimal review.",
+        "High confidence in outputs; fewer external checks.",
+        "You feel “10x” on greenfield tasks but struggle on messy real-world code."
+      ],
+      risks: [
+        "Overestimating your own performance when using AI (metacognitive slip).",
+        "Hallucinated APIs, subtle security issues, brittle designs.",
+        "Shipping “works-on-my-machine” changes that erode trust."
+      ],
+      checklist: [
+        { t: "Adopt a trust-but-verify gate: tests + static analysis + human review for non-trivial changes.", s:"Treat AI output like junior code: useful, fallible." },
+        { t: "Force explicit assumptions: “What could be wrong? What did you assume?” in every prompt.", s:"Prevents hidden leaps." },
+        { t: "Use small diffs: AI suggests, you integrate surgically.", s:"Reduces blast radius." },
+        { t: "Start a personal error log: recurring failure types and how you caught them.", s:"Turns mistakes into reusable guardrails." }
+      ],
+      team: [
+        "Define review rules for AI-assisted code (e.g., no unreviewed security-sensitive changes).",
+        "Add PR template items: “AI used?” + “verification steps” + “risk areas checked”.",
+        "Teach red-team prompting: ask the model to find bugs in its own output."
+      ],
+      refHint: [
+        { label:"🧠 Overconfidence effect (Aalto)", url:"https://www.aalto.fi/en/news/ai-use-makes-us-overestimate-our-cognitive-performance" },
+        { label:"📄 Performance vs metacognition (arXiv)", url:"https://arxiv.org/html/2409.16708v1" },
+        { label:"✅ PR templates (GitHub docs)", url:"https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/creating-a-pull-request-template-for-your-repository" }
+      ]
+    },
+    {
+      num: 3,
+      emoji: "🧩",
+      name: 'Disillusionment ("Friction")',
+      coreShift: "Reality-checking returns (sometimes painfully)",
+      output: "Debugging the model, guarding against errors",
+      summary: "You hit limits: context, integration complexity, and “almost right” outputs. Trust resets.",
+      signals: [
+        "You spend time debugging AI output or fighting formatting/consistency issues.",
+        "You become more skeptical and selective about when to use AI.",
+        "You build guardrails and start valuing reliability over raw speed."
+      ],
+      risks: [
+        "Throwing the tool out entirely (“it’s useless”).",
+        "Over-indexing on prompt tweaks instead of workflow design.",
+        "Tool fatigue and context switching."
+      ],
+      checklist: [
+        { t: "Define a repeatable workflow for one recurring task (e.g., unit tests for module X).", s:"Make wins repeatable." },
+        { t: "Create “golden prompts” with inputs/outputs, examples, constraints.", s:"Turn craft into templates." },
+        { t: "Introduce structured context: small design notes, interfaces, test oracles.", s:"Give the model a map, not a novel." },
+        { t: "Separate tasks by risk class (low/medium/high) and match verification accordingly.", s:"Right-size the gate." }
+      ],
+      team: [
+        "Run a post-mortem on one AI-caused defect: how it slipped and how to prevent it.",
+        "Standardize context packages (architecture notes, coding standards, API docs).",
+        "Maintain a “don’t use AI for this” list (until mitigations exist)."
+      ],
+      refHint: [
+        { label:"🏢 Adoption friction in orgs (BCG)", url:"https://www.bcg.com/publications/2025/ai-adoption-puzzle-why-usage-up-impact-not" }
+      ]
+    },
+    {
+      num: 4,
+      emoji: "🛠️",
+      name: 'Integration ("Craft")',
+      coreShift: "AI becomes a workflow component with QA",
+      output: "Repeatable patterns, verification loops, team norms",
+      summary: "AI becomes part of engineering craft: strong workflows + institutional QA make outputs trustworthy.",
+      signals: [
+        "You have templates for prompts, PRs, and verification.",
+        "You treat the model like a junior collaborator: helpful, fallible, needs review.",
+        "You see consistent cycle-time reductions on specific workflows."
+      ],
+      risks: [
+        "Local optimization: speed in one lane but friction elsewhere (build, reviews, compliance).",
+        "Invisible dependency: teams forget how to do things without AI support.",
+        "Governance lag: policies and training don’t keep pace with usage."
+      ],
+      checklist: [
+        { t: "Codify team standards: approved tools, allowed data, where outputs can go.", s:"Reduce ambiguity + risk." },
+        { t: "Automate verification: CI tests, linters, SAST/DAST, dependency scanning.", s:"Make the safe path the easy path." },
+        { t: "Instrument outcomes: defects, lead time, review time, incident rates.", s:"Measure impact, not sentiment." },
+        { t: "Train AI literacy: prompting, verification, risk spotting, limits.", s:"Make calibration a skill." }
+      ],
+      team: [
+        "Create an internal playbook: AI patterns that work here.",
+        "Establish an AI peer review cadence for shared prompts/workflows.",
+        "Add lightweight governance (risk tiers, audit trails, data handling rules)."
+      ],
+      refHint: [
+        { label:"🛡️ NIST AI RMF (governance)", url:"https://www.nist.gov/itl/ai-risk-management-framework" },
+        { label:"🧑‍⚖️ OWASP SAMM (security maturity)", url:"https://owasp.org/www-project-samm/" }
+      ]
+    },
+    {
+      num: 5,
+      emoji: "🎛️",
+      name: 'Leverage ("Orchestration")',
+      coreShift: "Systems/agents handle chunks of work with governance",
+      output: "Delegation, semi-autonomous collaboration, measurable ROI",
+      summary: "You move from “using AI” to “building systems with AI”: pipelines, agents, and measurable outcomes.",
+      signals: [
+        "You delegate subtasks (tests, migrations, docs, code mods) with clear acceptance criteria.",
+        "You use structured artifacts (tickets/specs/contracts) to drive AI reliably.",
+        "You integrate AI into tools (IDE, CI, back-office) with observability and controls."
+      ],
+      risks: [
+        "Agent-washing and hype projects with unclear ROI.",
+        "Cost explosions (tokens/compute) and maintenance burdens.",
+        "Safety/security failures if autonomy exceeds guardrails."
+      ],
+      checklist: [
+        { t: "Define ‘definition of done’ for agent-delivered work (tests, traceability, review).", s:"Acceptance criteria = guardrail." },
+        { t: "Set budget + rate limits + caching; monitor cost per outcome.", s:"No blank check." },
+        { t: "Add human-in-the-loop control points for high-risk actions.", s:"Autonomy without governance is a trap." },
+        { t: "Track ROI: throughput, quality, and avoided toil — not vibes.", s:"Ship outcomes." }
+      ],
+      team: [
+        "Create a small platform layer: approved models, tools, policies, logging, evals.",
+        "Use evaluation harnesses (golden test suites) for prompts/agents.",
+        "Do quarterly kill/scale reviews to prevent zombie agent projects."
+      ],
+      refHint: [
+        { label:"🍣 SLSA (supply-chain integrity)", url:"https://slsa.dev/" },
+        { label:"🛡️ NIST AI RMF (risk mgmt)", url:"https://www.nist.gov/itl/ai-risk-management-framework" }
+      ]
+    }
+  ];
+
+  const comparison = [
+    { stage:"1 Discovery", mindset:"Exploration + surprise", trust:"High (naive)", risk:"Demo ≠ production", best:"Pick safe lanes + basic verification habit" },
+    { stage:"2 Overconfidence", mindset:"Speed + certainty", trust:"Too high", risk:"Shallow checking", best:"Mandatory gates + explicit assumptions" },
+    { stage:"3 Disillusionment", mindset:"Skepticism + friction", trust:"Low → realistic", risk:"Tool abandonment", best:"Workflow design + structured context" },
+    { stage:"4 Integration", mindset:"Craft + repeatability", trust:"Calibrated", risk:"Governance lag", best:"Automation + playbooks + training" },
+    { stage:"5 Leverage", mindset:"Systems thinking", trust:"Calibrated + controls", risk:"Cost/ROI + autonomy failures", best:"Observability + evals + kill/scale reviews" }
+  ];
+
+  function defaultState(){
+    return {
+      selectedStage: 1,
+      checks: Object.fromEntries(stages.map(s => [s.num, Array(s.checklist.length).fill(false)])),
+      lastUpdated: new Date().toISOString(),
+      version: VERSION
+    };
+  }
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return defaultState();
+      const s = JSON.parse(raw);
+      if(!s || s.version !== VERSION) return defaultState();
+      // ensure shape
+      for(const st of stages){
+        if(!s.checks?.[st.num]) s.checks[st.num] = Array(st.checklist.length).fill(false);
+        if(s.checks[st.num].length !== st.checklist.length){
+          const padded = Array(st.checklist.length).fill(false);
+          for(let i=0;i<Math.min(st.checklist.length, s.checks[st.num].length);i++) padded[i]=!!s.checks[st.num][i];
+          s.checks[st.num]=padded;
+        }
+      }
+      if(!s.selectedStage) s.selectedStage = 1;
+      return s;
+    }catch{
+      return defaultState();
+    }
+  }
+
+  function saveState(){
+    state.lastUpdated = new Date().toISOString();
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+  }
+
+  function toast(msg){
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    window.clearTimeout(toast._t);
+    toast._t = window.setTimeout(() => el.classList.remove("show"), 2200);
+  }
+
+  function stageCompletion(stageNum){
+    const st = stages.find(x => x.num === stageNum);
+    const arr = state.checks[stageNum] || [];
+    const done = arr.filter(Boolean).length;
+    return st ? (done / st.checklist.length) : 0;
+  }
+
+  function overallCompletion(){
+    const parts = stages.map(s => stageCompletion(s.num));
+    return parts.reduce((a,b)=>a+b,0) / parts.length;
+  }
+
+  function renderKpis(){
+    const totalChecks = stages.reduce((sum,s)=>sum+s.checklist.length,0);
+    const doneChecks = stages.reduce((sum,s)=> sum + (state.checks[s.num].filter(Boolean).length), 0);
+    const pct = Math.round(overallCompletion()*100);
+
+    const kpis = document.getElementById("kpis");
+    kpis.innerHTML = "";
+    const items = [
+      { icon:"✅", label:"Checklist items done", value:`${doneChecks}/${totalChecks}` },
+      { icon:"📈", label:"Overall completion", value:`${pct}%` },
+      { icon:"🧭", label:"Current stage", value:`${state.selectedStage} / 5` }
+    ];
+    for(const it of items){
+      const div = document.createElement("div");
+      div.className = "pill";
+      div.innerHTML = `<span>${it.icon}</span><span>${it.label}: <strong>${it.value}</strong></span>`;
+      kpis.appendChild(div);
+    }
+
+    const bar = document.getElementById("overallBar");
+    bar.style.width = pct + "%";
+    document.getElementById("overallPct").textContent = pct + "%";
+  }
+
+  function renderNav(){
+    const nav = document.getElementById("stageNav");
+    nav.innerHTML = "";
+    for(const s of stages){
+      const chip = document.createElement("div");
+      chip.className = "stage-chip" + (s.num === state.selectedStage ? " active" : "");
+      const pct = Math.round(stageCompletion(s.num)*100);
+      chip.innerHTML = `
+        <div class="t1">Stage ${s.num} ${s.emoji}</div>
+        <div class="t2">${s.name}</div>
+        <div class="t3">${s.coreShift} • ${pct}%</div>
+      `;
+      chip.onclick = () => selectStage(s.num, true);
+      nav.appendChild(chip);
+    }
+  }
+
+  function renderComparison(){
+    const body = document.getElementById("comparisonBody");
+    body.innerHTML = "";
+    for(const r of comparison){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><b>${r.stage}</b></td>
+        <td>${r.mindset}</td>
+        <td>${r.trust}</td>
+        <td>${r.risk}</td>
+        <td>${r.best}</td>
+      `;
+      body.appendChild(tr);
+    }
+  }
+
+  function mkTag(pct){
+    if(pct >= 0.80) return `<span class="tag good">✅ strong</span>`;
+    if(pct >= 0.40) return `<span class="tag warn">⚠️ partial</span>`;
+    return `<span class="tag danger">🧨 early</span>`;
+  }
+
+  function renderStage(){
+    const s = stages.find(x => x.num === state.selectedStage);
+    const card = document.getElementById("stageCard");
+
+    const pct = Math.round(stageCompletion(s.num)*100);
+    const refLinks = (s.refHint || []).map(r => `<a href="${r.url}" target="_blank" rel="noreferrer">${r.label}</a>`).join(" • ");
+
+    card.innerHTML = `
+      <div class="stage-title">
+        <span class="badge">Stage ${s.num}</span>
+        <span style="font-size:22px">${s.emoji}</span>
+        <span>${s.name}</span>
+      </div>
+      <p class="stage-summary">${s.summary}</p>
+
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <span class="tag">Core shift: ${s.coreShift}</span>
+        <span class="tag">Typical output: ${s.output}</span>
+        ${mkTag(stageCompletion(s.num))}
+        <span class="tag">${pct}% checklist</span>
+      </div>
+
+      ${refLinks ? `<div class="tiny" style="margin-top:10px;">Grounding links: ${refLinks}</div>` : ""}
+
+      <details open>
+        <summary>
+          <span class="sum-left">👀 What it looks like (signals)</span>
+          <span class="sum-right"><span class="tag">observe</span> ⌄</span>
+        </summary>
+        <ul class="clean">${s.signals.map(x=>`<li>${x}</li>`).join("")}</ul>
+      </details>
+
+      <details>
+        <summary>
+          <span class="sum-left">🧨 Common failure modes (risks)</span>
+          <span class="sum-right"><span class="tag warn">watch</span> ⌄</span>
+        </summary>
+        <ul class="clean">${s.risks.map(x=>`<li>${x}</li>`).join("")}</ul>
+      </details>
+
+      <details open>
+        <summary>
+          <span class="sum-left">✅ Checklist to advance</span>
+          <span class="sum-right"><span class="tag good">do</span> ⌄</span>
+        </summary>
+        <div class="checklist" id="checklist"></div>
+      </details>
+
+      <details>
+        <summary>
+          <span class="sum-left">🤝 Team practices (lightweight)</span>
+          <span class="sum-right"><span class="tag">share</span> ⌄</span>
+        </summary>
+        <ul class="clean">${s.team.map(x=>`<li>${x}</li>`).join("")}</ul>
+      </details>
+
+      <div class="sep"></div>
+      <div class="tiny">
+        🚦Rule of thumb: the higher the <b>risk</b>, the tighter the <b>verification gate</b>. If you're unsure, choose the safer gate.
+      </div>
+    `;
+
+    // checklist render + wire
+    const list = card.querySelector("#checklist");
+    const checks = state.checks[s.num];
+
+    list.innerHTML = "";
+    s.checklist.forEach((item, idx) => {
+      const id = `st${s.num}-chk${idx}`;
+      const row = document.createElement("div");
+      row.className = "check";
+      row.innerHTML = `
+        <input type="checkbox" id="${id}" ${checks[idx] ? "checked" : ""} />
+        <div>
+          <label for="${id}"><b>${item.t}</b></label>
+          <small>${item.s || ""}</small>
+        </div>
+      `;
+      row.querySelector("input").addEventListener("change", (e) => {
+        state.checks[s.num][idx] = !!e.target.checked;
+        saveState();
+        renderKpis();
+        renderNav();
+        // stage tag updates
+        renderStage();
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function selectStage(n, updateHash){
+    state.selectedStage = n;
+    saveState();
+    renderKpis();
+    renderNav();
+    renderStage();
+    if(updateHash){
+      history.replaceState(null, "", "#stage-" + n);
+      toast(`Jumped to Stage ${n}`);
+    }
+  }
+
+  function parseHashStage(){
+    const m = (location.hash || "").match(/stage-(\d)/);
+    if(!m) return null;
+    const n = parseInt(m[1],10);
+    if(n>=1 && n<=5) return n;
+    return null;
+  }
+
+  // Export/import
+  function exportProgress(){
+    const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `ai-roadmap-progress.stage${state.selectedStage}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast("Exported progress JSON 📦");
+  }
+
+  function reset(){
+    state = defaultState();
+    saveState();
+    selectStage(1, true);
+    toast("Reset complete 🧨");
+  }
+
+  function jumpDialog(){
+    const msg = "Type a stage number 1–5 (or paste a URL fragment like #stage-3):";
+    const resp = prompt(msg, "3");
+    if(!resp) return;
+    const m = resp.match(/(\d)/);
+    const n = m ? parseInt(m[1],10) : null;
+    if(n && n>=1 && n<=5) selectStage(n, true);
+    else toast("Nope — pick 1–5 🙂");
+  }
+
+  // Wire buttons
+  document.getElementById("btnExport").onclick = exportProgress;
+  document.getElementById("btnReset").onclick = () => {
+    if(confirm("Reset all checklist progress?")) reset();
+  };
+  document.getElementById("btnJump").onclick = jumpDialog;
+
+  // Keyboard shortcuts
+  window.addEventListener("keydown", (e) => {
+    const k = e.key;
+    if(k >= "1" && k <= "5"){
+      selectStage(parseInt(k,10), true);
+    }
+    if(k === "/"){
+      // basic: focus browser find with a gentle hint
+      toast("Use your browser find (Ctrl/⌘+F) to search this page 🔎");
+    }
+  });
+
+  // Initial render
+  let state = loadState();
+  renderComparison();
+  renderKpis();
+  renderNav();
+  const hs = parseHashStage();
+  if(hs) state.selectedStage = hs;
+  selectStage(state.selectedStage, false);
+
+})();
+</script>
+
+</body>
+</html>
