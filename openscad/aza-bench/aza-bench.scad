@@ -19,7 +19,7 @@ leg_span_x  = 56; // footprint width (front-to-back)
 leg_span_y  = 28; // footprint depth (left-to-right)
 
 // Sheathing panels
-panel_h     = 28;
+panel_h     = 20;
 panel_th    = 0.5;
 
 // --- Modules ---
