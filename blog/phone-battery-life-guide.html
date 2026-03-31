@@ -220,6 +220,82 @@
       margin-top: 18px;
     }
 
+    .setup {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .setup-intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .phone-guides {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .phone-guide {
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .phone-guide h3 {
+      margin: 0 0 8px;
+      font-size: 1.03rem;
+    }
+
+    .guide-path {
+      margin: 0 0 10px;
+      color: #bfdbfe;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .guide-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .guide-list li {
+      margin: 7px 0;
+    }
+
+    .screenshot {
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .screenshot img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .screenshot figcaption {
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .tip-note {
+      margin: 4px 0 0;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
     .good, .avoid {
       border-radius: 18px;
       padding: 16px;
@@ -363,7 +439,7 @@
 
     @media (max-width: 860px) {
       .grid { grid-template-columns: 1fr; }
-      .headline-strip, .do-dont { grid-template-columns: 1fr; }
+      .headline-strip, .do-dont, .phone-guides { grid-template-columns: 1fr; }
       .wrap { padding: 16px; }
       .hero { padding: 20px 18px 16px; }
     }
@@ -490,6 +566,45 @@
           <li><strong>Long-term gain:</strong> lower charge ceilings can materially improve cycle life in lab testing.<a class="evidence-cue" href="#evidence-charge" aria-label="See evidence for better cycle life with lower charge ceilings">📚</a></li>
         </ul>
       </aside>
+    </section>
+
+    <section class="setup card">
+      <h2>📲 Set an 80% or 85% Charge Limit (iPhone + Android)</h2>
+      <p class="setup-intro">If your phone supports charge limiting, this is the easiest high-impact setting to turn on. Use <strong>80%</strong> for best battery longevity, or <strong>85%</strong> if your phone offers it and you need a little more daily runtime.</p>
+
+      <div class="phone-guides">
+        <article class="phone-guide">
+          <h3>🍎 iPhone</h3>
+          <p class="guide-path">Path: Settings > Battery > Charging > Charge Limit</p>
+          <ol class="guide-list">
+            <li>Open <strong>Settings</strong>, then tap <strong>Battery</strong>.</li>
+            <li>Tap <strong>Charging</strong> (or <strong>Battery Health &amp; Charging</strong> on some iOS versions).</li>
+            <li>Tap <strong>Charge Limit</strong> and choose <strong>80%</strong> (or <strong>85%</strong> if available on your model).</li>
+            <li>Keep <strong>Optimized Battery Charging</strong> enabled for overnight charging behavior.</li>
+          </ol>
+          <figure class="screenshot">
+            <img src="images/iphone-charge-limit-settings.svg" alt="iPhone settings screenshot style showing Battery, Charging, and Charge Limit set to 80 percent" loading="lazy" />
+            <figcaption>iPhone settings screen reference: go to Battery then Charging and set Charge Limit to 80% for daily use.</figcaption>
+          </figure>
+        </article>
+
+        <article class="phone-guide">
+          <h3>🤖 Android</h3>
+          <p class="guide-path">Common paths shown below (varies by brand and Android version)</p>
+          <ol class="guide-list">
+            <li>Open <strong>Settings</strong>, then go to <strong>Battery</strong>.</li>
+            <li>Look for a charging feature like <strong>Charging optimization</strong>, <strong>Battery protection</strong>, or <strong>Protect battery</strong>.</li>
+            <li>Enable <strong>Limit to 80%</strong>, <strong>Maximum (80%)</strong>, or the closest available option (some phones offer 85%).</li>
+            <li>If no hard limit exists, turn on <strong>Adaptive Charging</strong> to reduce time at 100%.</li>
+          </ol>
+          <figure class="screenshot">
+            <img src="images/android-charge-limit-settings.svg" alt="Android settings screenshot style showing charging optimization and battery protection with 80 percent limit" loading="lazy" />
+            <figcaption>Android reference: Pixel usually uses Charging optimization and Samsung uses Battery protection with Maximum (80%).</figcaption>
+          </figure>
+        </article>
+      </div>
+
+      <p class="tip-note">Tip: if your exact menu names differ, use Settings search for terms like <strong>charge limit</strong>, <strong>protect battery</strong>, <strong>battery protection</strong>, or <strong>adaptive charging</strong>.</p>
     </section>
 
     <section class="do-dont">
