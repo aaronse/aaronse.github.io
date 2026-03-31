@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phone Battery Life Guide</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: rgba(15, 23, 42, 0.72);
+      --panel-2: rgba(30, 41, 59, 0.75);
+      --text: #e5eefb;
+      --muted: #b9c7de;
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      --accent: #60a5fa;
+      --accent-2: #a78bfa;
+      --border: rgba(255,255,255,0.12);
+      --shadow: 0 20px 50px rgba(0,0,0,0.28);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(167,139,250,0.18), transparent 32%),
+        linear-gradient(160deg, #020617 0%, #0f172a 45%, #111827 100%);
+      min-height: 100vh;
+      line-height: 1.35;
+    }
+
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(96,165,250,0.18), rgba(167,139,250,0.14));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: calc(var(--radius) + 6px);
+      padding: 26px 26px 20px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero::after {
+      content: "🔋";
+      position: absolute;
+      right: 18px;
+      top: 12px;
+      font-size: 68px;
+      opacity: 0.12;
+      transform: rotate(-8deg);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.7rem, 3.6vw, 2.7rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+      font-size: 1rem;
+    }
+
+    .headline-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .pill {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 11px 14px;
+      font-weight: 700;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .rules {
+      display: grid;
+      gap: 10px;
+    }
+
+    .rule {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 12px;
+      align-items: start;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      font-size: 1.35rem;
+    }
+
+    .rule strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 1rem;
+    }
+
+    .rule p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .meter {
+      margin-top: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .bar {
+      height: 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg,
+        var(--bad) 0% 15%,
+        var(--warn) 15% 25%,
+        var(--good) 25% 80%,
+        var(--warn) 80% 90%,
+        var(--bad) 90% 100%);
+      position: relative;
+      margin: 10px 0 8px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+    }
+
+    .marker {
+      position: absolute;
+      top: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 32px;
+      border-radius: 999px;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.12);
+    }
+
+    .labels {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mini-list li {
+      padding: 11px 12px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .mini-list li strong { color: var(--text); }
+
+    .do-dont {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .good, .avoid {
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .good h3, .avoid h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+
+    .good h3 { color: #86efac; }
+    .avoid h3 { color: #fca5a5; }
+
+    .good ul, .avoid ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .good li, .avoid li { margin: 8px 0; }
+
+    .footer-card {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, rgba(34,197,94,0.14), rgba(96,165,250,0.12));
+    }
+
+    .small {
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-weight: 500;
+      margin-top: 8px;
+    }
+
+    .hero-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .evidence-cue {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.2rem;
+      height: 1.2rem;
+      margin-left: 0.2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(96,165,250,0.35);
+      background: rgba(96,165,250,0.12);
+      color: #bfdbfe;
+      text-decoration: none;
+      font-size: 0.72rem;
+      vertical-align: text-top;
+    }
+
+    .evidence-cue:hover {
+      background: rgba(96,165,250,0.2);
+      border-color: rgba(96,165,250,0.55);
+    }
+
+    .evidence-stack {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .evidence {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      overflow: hidden;
+    }
+
+    .evidence summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 12px 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .evidence summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .evidence summary::after {
+      content: "+";
+      float: right;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .evidence[open] summary::after {
+      content: "−";
+    }
+
+    .evidence-body {
+      padding: 0 14px 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .evidence-body p {
+      margin: 0 0 10px;
+    }
+
+    .source-list {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .source-list li {
+      margin: 8px 0;
+    }
+
+    .source-list a {
+      color: #bfdbfe;
+      text-decoration: none;
+    }
+
+    .source-list a:hover {
+      text-decoration: underline;
+    }
+
+    .source-tag {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 0.75rem;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+      .headline-strip, .do-dont { grid-template-columns: 1fr; }
+      .wrap { padding: 16px; }
+      .hero { padding: 20px 18px 16px; }
+    }
+
+    @media print {
+      body { background: white; color: #111827; }
+      .hero, .card, .good, .avoid { box-shadow: none; backdrop-filter: none; }
+      .hero, .card, .good, .avoid, .footer-card { border-color: #d1d5db; background: white; }
+      .subtitle, .rule p, .labels, .mini-list li, .good ul, .avoid ul, .small { color: #374151; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>📱 Phone Battery Life: Actionable Tips</h1>
+      <p class="subtitle">Don't waste time babying your phone. Following a few high-impact habits can help your battery stay healthier for much longer.</p>
+      <div class="headline-strip">
+        <div class="pill">🔋 Best zone: <strong>20%–80%</strong><a class="evidence-cue" href="#evidence-charge" aria-label="See sources for charge range guidance">📚</a></div>
+        <div class="pill">🔥 Biggest enemy: <strong>HEAT</strong><a class="evidence-cue" href="#evidence-heat" aria-label="See sources for heat guidance">📚</a></div>
+        <div class="pill">😌 Perfection not required</div>
+      </div>
+      <p class="hero-note">Tap a small 📚 cue if you want the source behind a claim. Otherwise, the page stays simple.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>⭐ High-ROI Actions</h2>
+        <div class="rules">
+          <div class="rule">
+            <div class="icon">🔋</div>
+            <div>
+              <strong>Keep it in the middle most of the time</strong>
+              <p>Try to charge around <strong>20%–30%</strong> and unplug around <strong>80%</strong> when convenient. Going to 100% sometimes is fine.<a class="evidence-cue" href="#evidence-charge" aria-label="See evidence for charging in the middle range">📚</a></p>
+            </div>
+          </div>
+
+          <div class="rule">
+            <div class="icon">🔥</div>
+            <div>
+              <strong>Avoid heat whenever possible</strong>
+              <p>Don’t leave the phone in a hot car. Avoid gaming, heavy video, or fast charging while it’s already hot.<a class="evidence-cue" href="#evidence-heat" aria-label="See evidence about heat and battery aging">📚</a></p>
+            </div>
+          </div>
+
+          <div class="rule">
+            <div class="icon">⚠️</div>
+            <div>
+              <strong>Don’t let it sit dead at 0%</strong>
+              <p>If it dies, recharge it soon. Full discharges add stress, so long stretches at 0% are best avoided.<a class="evidence-cue" href="#evidence-charge" aria-label="See evidence about avoiding deep discharge">📚</a></p>
+            </div>
+          </div>
+
+          <div class="rule">
+            <div class="icon">⚙️</div>
+            <div>
+              <strong>Turn on battery protection if your phone has it</strong>
+              <p>Some phones can stop around <strong>80%–85%</strong>. That’s an easy, evidence-backed way to cut time spent at a stressful full charge.<a class="evidence-cue" href="#evidence-smart" aria-label="See evidence for battery protection features">📚</a></p>
+            </div>
+          </div>
+
+          <div class="rule">
+            <div class="icon">🛏️</div>
+            <div>
+              <strong>Overnight charging is usually OK</strong>
+              <p>Modern phones are smarter now. They often slow down, stop, or finish charging closer to when you wake up.<a class="evidence-cue" href="#evidence-smart" aria-label="See evidence for modern charging features">📚</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="evidence-stack">
+          <details class="evidence" id="evidence-charge">
+            <summary>📚 Why people recommend the 20%–80% zone</summary>
+            <div class="evidence-body">
+              <p>The exact perfect range depends on the battery, but the overall pattern is consistent: partial charging and shallower discharge reduce stress compared with spending long periods at 100% or repeatedly running all the way down.</p>
+              <ul class="source-list">
+                <li><a href="https://batteryuniversity.com/article/bu-808-how-to-prolong-lithium-based-batteries" target="_blank" rel="noopener noreferrer">Battery University: partial discharge reduces stress, and lower peak charge voltage can extend cycle life</a><span class="source-tag">Research summary</span></li>
+                <li><a href="https://support.apple.com/en-us/118418" target="_blank" rel="noopener noreferrer">Apple: 80% charge limit can help prolong battery lifespan, and less time fully charged reduces wear</a><span class="source-tag">Manufacturer</span></li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="evidence" id="evidence-heat">
+            <summary>📚 Why heat matters so much</summary>
+            <div class="evidence-body">
+              <p>Heat and high state of charge are the roughest combination for lithium-ion batteries. That is why hot cars, heavy gaming while plugged in, and charging in already-hot conditions are worth avoiding.</p>
+              <ul class="source-list">
+                <li><a href="https://batteryuniversity.com/article/bu-808-how-to-prolong-lithium-based-batteries" target="_blank" rel="noopener noreferrer">Battery University: elevated temperature and high charge voltage accelerate capacity loss</a><span class="source-tag">Research summary</span></li>
+                <li><a href="https://support.apple.com/en-us/118418" target="_blank" rel="noopener noreferrer">Apple: charging or using devices above 95°F / 35°C can permanently reduce battery lifespan</a><span class="source-tag">Manufacturer</span></li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="evidence" id="evidence-smart">
+            <summary>📚 Why battery protection and overnight charging are usually fine</summary>
+            <div class="evidence-body">
+              <p>Modern phones actively manage charging near full. Some slow down near 80%, some stop at an 80% limit, and some finish later so the battery spends less time sitting fully charged.</p>
+              <ul class="source-list">
+                <li><a href="https://support.apple.com/en-us/118418" target="_blank" rel="noopener noreferrer">Apple: overnight charging is safe, charging slows near full, and 80% Limit is offered to reduce wear</a><span class="source-tag">Manufacturer</span></li>
+                <li><a href="https://www.apple.com/batteries/why-lithium-ion/" target="_blank" rel="noopener noreferrer">Apple: fast charge to 80%, then slower charging for longevity</a><span class="source-tag">Manufacturer</span></li>
+                <li><a href="https://support.google.com/pixelphone/answer/10011133?hl=en" target="_blank" rel="noopener noreferrer">Google Pixel Help: current Pixel devices expose adaptive battery and charging management tools</a><span class="source-tag">Manufacturer</span></li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <aside class="card">
+        <h2>🎯 Quick Battery Cheat Sheet</h2>
+        <div class="meter">
+          <strong>Charge range guide</strong>
+          <div class="bar"><div class="marker" title="Sweet spot"></div></div>
+          <div class="labels">
+            <span>0%</span><span>20%</span><span>80%</span><span>100%</span>
+          </div>
+          <p class="small">The green middle zone is where batteries are happiest most of the time.</p>
+        </div>
+
+        <ul class="mini-list">
+          <li><strong>Best daily habit:</strong> live mostly in the <strong>20%–80%</strong> zone.<a class="evidence-cue" href="#evidence-charge" aria-label="See evidence for the 20 to 80 percent guideline">📚</a></li>
+          <li><strong>Most damaging combo:</strong> <strong>heat + high charge</strong>.<a class="evidence-cue" href="#evidence-heat" aria-label="See evidence for heat and high charge damage">📚</a></li>
+          <li><strong>Not worth stressing over:</strong> occasional 100% charges.</li>
+          <li><strong>Good news:</strong> short top-up charges are perfectly fine.</li>
+          <li><strong>Long-term gain:</strong> lower charge ceilings can materially improve cycle life in lab testing.<a class="evidence-cue" href="#evidence-charge" aria-label="See evidence for better cycle life with lower charge ceilings">📚</a></li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="do-dont">
+      <div class="good">
+        <h3>✅ Good habits</h3>
+        <ul>
+          <li>Charge when convenient, especially around 20%–30%</li>
+          <li>Unplug around 80% when it’s easy to do</li>
+          <li>Use battery protection / adaptive charging settings</li>
+          <li>Take the case off if the phone gets hot while charging</li>
+          <li>Store unused phones around 40%–60%</li>
+        </ul>
+      </div>
+
+      <div class="avoid">
+        <h3>🚫 Try to avoid</h3>
+        <ul>
+          <li>Leaving a phone baking in a car ☀️</li>
+          <li>Keeping it at 0% for days</li>
+          <li>Heavy gaming while plugged in 🎮</li>
+          <li>Keeping it at 100% all day every day</li>
+          <li>Covering it with blankets or pillows while charging 🛌</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card footer-card">
+      <div>💡 Family rule of thumb:</div>
+      <div style="font-size:1.15rem; margin-top: 6px;">“Don’t cook it, don’t kill it, don’t max it all day.”</div>
+      <div class="small">Translation: avoid heat, don’t leave it dead, and don’t keep it at 100% for long periods unless you really need the extra battery life.</div>
+    </section>
+  </main>
+</body>
+</html>
