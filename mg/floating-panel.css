@@ -1,0 +1,439 @@
+:root {
+  --mg-panel-top: 12px;
+  --mg-panel-left: 12px;
+  --mg-panel-width: 320px;
+  --mg-panel-height-fraction: 0.72;
+  --mg-panel-height-max: 640px;
+  --mg-panel-min-width: 280px;
+  --mg-panel-min-height: 280px;
+  --mg-panel-viewport-margin: 8px;
+  --mg-panel-touch-affordance-ms: 1400;
+  --mg-panel-radius: 16px;
+  --mg-panel-edge-hit: 14px;
+  --mg-panel-corner-hit: 20px;
+  --mg-panel-corner-grip-size: 20px;
+  --mg-panel-corner-grip-offset: 0px;
+  --mg-panel-scrollbar-safe-right: 10px;
+  --mg-panel-scrollbar-safe-bottom: 10px;
+  --mg-panel-scrollbar-size: 12px;
+  --mg-panel-scrollbar-thumb-radius: 4px;
+  --mg-panel-window-controls-nudge-x: 0.4rem;
+  --mg-panel-window-controls-nudge-y: -1px;
+  --mg-panel-scrollbar-track: rgba(255, 255, 255, 0.06);
+  --mg-panel-scrollbar-track-hover: rgba(255, 255, 255, 0.08);
+  --mg-panel-scrollbar-thumb: rgba(186, 167, 224, 0.56);
+  --mg-panel-scrollbar-thumb-hover: rgba(204, 188, 238, 0.7);
+  --mg-panel-scrollbar-thumb-active: rgba(226, 214, 252, 0.82);
+  --mg-panel-scrollbar-thumb-border: 2px;
+  --mg-panel-corner-center-offset: calc(
+    var(--mg-panel-corner-hit) -
+    var(--mg-panel-radius) -
+    (var(--mg-panel-edge-hit) * 0.5)
+  );
+  --mg-panel-chrome-height: 2.25rem;
+  --mg-panel-chrome-font-size: 1rem;
+  --mg-panel-handle-line-light: rgba(244, 240, 255, 0.4);
+  --mg-panel-handle-line-dark: rgba(98, 87, 128, 0.4);
+  --mg-panel-handle-line-soft-light: rgba(255, 255, 255, 0.12);
+  --mg-panel-handle-line-soft-dark: rgba(44, 36, 68, 0.12);
+  --mg-panel-handle-fade-ms: 180ms;
+  --mg-panel-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)),
+    linear-gradient(135deg, rgba(151, 97, 255, 0.14), rgba(53, 224, 255, 0.08)),
+    rgba(7, 6, 16, 0.72);
+  --mg-panel-border: rgba(255, 255, 255, 0.24);
+  --mg-panel-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 18px 44px rgba(0, 0, 0, 0.42),
+    0 0 24px rgba(53, 224, 255, 0.08);
+  --mg-panel-chrome-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04)),
+    linear-gradient(135deg, rgba(255, 200, 87, 0.12), rgba(214, 139, 255, 0.12)),
+    rgba(9, 8, 20, 0.84);
+}
+
+.mg-panel {
+  position: fixed;
+  top: var(--mg-panel-top);
+  left: var(--mg-panel-left);
+  width: var(--mg-panel-width);
+  height: min(calc(var(--mg-panel-height-fraction) * 100vh), var(--mg-panel-height-max));
+  min-width: var(--mg-panel-min-width);
+  min-height: var(--mg-panel-min-height);
+  display: none;
+  overflow: visible;
+  border-radius: var(--mg-panel-radius);
+  font-size: 11px;
+  line-height: 1.4;
+  z-index: 9999;
+}
+
+.mg-panel.open {
+  display: block;
+}
+
+.mg-panel-surface {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #fdf7ff;
+  background: var(--mg-panel-bg);
+  border: 1px solid var(--mg-panel-border);
+  border-radius: inherit;
+  box-shadow: var(--mg-panel-shadow);
+  backdrop-filter: blur(5px) saturate(160%);
+  -webkit-backdrop-filter: blur(5px) saturate(160%);
+}
+
+.mg-panel.is-collapsed .mg-panel-surface {
+  height: var(--mg-panel-chrome-height);
+}
+
+.mg-panel-chrome {
+  height: var(--mg-panel-chrome-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 12px 0 14px;
+  background: var(--mg-panel-chrome-bg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: grab;
+  user-select: none;
+}
+
+.mg-panel-chrome:active {
+  cursor: grabbing;
+}
+
+.mg-panel-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: var(--mg-panel-chrome-font-size);
+  font-weight: 700;
+}
+
+.mg-panel-title {
+  letter-spacing: 0.02em;
+}
+
+.mg-panel-hint {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.mg-panel-window-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transform:
+    translateX(var(--mg-panel-window-controls-nudge-x))
+    translateY(var(--mg-panel-window-controls-nudge-y));
+}
+
+.mg-panel-action {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+  color: #f5ecff;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.mg-panel-action:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06));
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.08);
+}
+
+.mg-panel-action:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.mg-panel-action svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 1.65;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  transition: transform 0.22s ease;
+}
+
+.mg-panel-action[data-panel-action="toggle-collapse"].is-collapsed svg {
+  transform: rotate(180deg);
+}
+
+.mg-panel-body {
+  width: calc(100% - var(--mg-panel-scrollbar-safe-right));
+  height: calc(
+    100% -
+    var(--mg-panel-chrome-height) -
+    var(--mg-panel-scrollbar-safe-bottom)
+  );
+  margin-right: var(--mg-panel-scrollbar-safe-right);
+  margin-bottom: var(--mg-panel-scrollbar-safe-bottom);
+  overflow: auto;
+  padding: 10px 12px 12px;
+  scrollbar-gutter: stable;
+  scrollbar-color: var(--mg-panel-scrollbar-thumb) var(--mg-panel-scrollbar-track);
+}
+
+.mg-panel-body::-webkit-scrollbar {
+  width: var(--mg-panel-scrollbar-size);
+  height: var(--mg-panel-scrollbar-size);
+}
+
+.mg-panel-body::-webkit-scrollbar-track {
+  background: var(--mg-panel-scrollbar-track);
+}
+
+.mg-panel-body::-webkit-scrollbar-track:hover {
+  background: var(--mg-panel-scrollbar-track-hover);
+}
+
+.mg-panel-body::-webkit-scrollbar-thumb {
+  background: var(--mg-panel-scrollbar-thumb);
+  border-radius: var(--mg-panel-scrollbar-thumb-radius);
+  border: var(--mg-panel-scrollbar-thumb-border) solid transparent;
+  background-clip: padding-box;
+}
+
+.mg-panel-body::-webkit-scrollbar-thumb:hover {
+  background: var(--mg-panel-scrollbar-thumb-hover);
+  border: var(--mg-panel-scrollbar-thumb-border) solid transparent;
+  background-clip: padding-box;
+}
+
+.mg-panel-body::-webkit-scrollbar-thumb:active {
+  background: var(--mg-panel-scrollbar-thumb-active);
+  border: var(--mg-panel-scrollbar-thumb-border) solid transparent;
+  background-clip: padding-box;
+}
+
+.mg-panel-body::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.mg-panel.is-collapsed .mg-panel-body {
+  display: none;
+}
+
+.mg-panel.is-collapsed .mg-panel-resize-handle {
+  display: none;
+}
+
+.mg-panel-resize-handle {
+  position: absolute;
+  z-index: 4;
+  touch-action: none;
+  background: transparent;
+  opacity: 0;
+  transition: opacity var(--mg-panel-handle-fade-ms) ease;
+}
+
+.mg-panel-resize-handle::before {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--mg-panel-handle-line-light) 0 1.15px,
+    var(--mg-panel-handle-line-soft-light) 1.15px 1.65px,
+    var(--mg-panel-handle-line-dark) 1.65px 2.75px,
+    var(--mg-panel-handle-line-soft-dark) 2.75px 3.25px
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 1px 8px rgba(0, 0, 0, 0.18);
+  opacity: 0.82;
+  filter: blur(0.25px);
+}
+
+.mg-panel.show-resize-affordance .mg-panel-resize-handle,
+.mg-panel.is-resizing .mg-panel-resize-handle,
+.mg-panel.is-dragging .mg-panel-resize-handle,
+.mg-panel:hover .mg-panel-resize-handle {
+  opacity: 1;
+}
+
+.mg-panel.is-collapsed .mg-panel-resize-handle,
+.mg-panel.is-collapsed.show-resize-affordance .mg-panel-resize-handle,
+.mg-panel.is-collapsed.is-resizing .mg-panel-resize-handle,
+.mg-panel.is-collapsed.is-dragging .mg-panel-resize-handle,
+.mg-panel.is-collapsed:hover .mg-panel-resize-handle {
+  opacity: 0;
+}
+
+.mg-panel-resize-handle-n,
+.mg-panel-resize-handle-s {
+  left: var(--mg-panel-corner-hit);
+  right: var(--mg-panel-corner-hit);
+  height: var(--mg-panel-edge-hit);
+}
+
+.mg-panel-resize-handle-n {
+  top: calc(var(--mg-panel-edge-hit) * -0.5);
+}
+
+.mg-panel-resize-handle-n::before,
+.mg-panel-resize-handle-s::before {
+  left: 50%;
+  top: 50%;
+  width: 52px;
+  height: 8px;
+  transform: translate(-50%, -50%);
+}
+
+.mg-panel-resize-handle-s {
+  bottom: calc(var(--mg-panel-edge-hit) * -0.5);
+}
+
+.mg-panel-resize-handle-e,
+.mg-panel-resize-handle-w {
+  top: var(--mg-panel-corner-hit);
+  bottom: var(--mg-panel-corner-hit);
+  width: var(--mg-panel-edge-hit);
+}
+
+.mg-panel-resize-handle-e {
+  right: calc(var(--mg-panel-edge-hit) * -0.5);
+}
+
+.mg-panel-resize-handle-e::before,
+.mg-panel-resize-handle-w::before {
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 52px;
+  transform: translate(-50%, -50%);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--mg-panel-handle-line-light) 0 1.15px,
+    var(--mg-panel-handle-line-soft-light) 1.15px 1.65px,
+    var(--mg-panel-handle-line-dark) 1.65px 2.75px,
+    var(--mg-panel-handle-line-soft-dark) 2.75px 3.25px
+  );
+}
+
+.mg-panel-resize-handle-w {
+  left: calc(var(--mg-panel-edge-hit) * -0.5);
+}
+
+.mg-panel-resize-handle-ne,
+.mg-panel-resize-handle-nw,
+.mg-panel-resize-handle-se,
+.mg-panel-resize-handle-sw {
+  width: var(--mg-panel-corner-hit);
+  height: var(--mg-panel-corner-hit);
+}
+
+.mg-panel-resize-handle-ne {
+  top: calc(var(--mg-panel-edge-hit) * -0.5);
+  right: calc(var(--mg-panel-edge-hit) * -0.5);
+}
+
+.mg-panel-resize-handle-ne::before,
+.mg-panel-resize-handle-nw::before,
+.mg-panel-resize-handle-se::before,
+.mg-panel-resize-handle-sw::before {
+  width: var(--mg-panel-corner-grip-size);
+  height: var(--mg-panel-corner-grip-size);
+  border-radius: 999px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
+  background-repeat: no-repeat;
+}
+
+.mg-panel-resize-handle-ne::before {
+  left: calc(var(--mg-panel-corner-grip-offset) * -1);
+  bottom: calc(var(--mg-panel-corner-grip-offset) * -1);
+  background:
+    radial-gradient(circle at var(--mg-panel-corner-center-offset) calc(100% - var(--mg-panel-corner-center-offset)), transparent 0 15px, var(--mg-panel-handle-line-light) 15px 16.4px, transparent 16.4px),
+    radial-gradient(circle at var(--mg-panel-corner-center-offset) calc(100% - var(--mg-panel-corner-center-offset)), transparent 0 16px, var(--mg-panel-handle-line-dark) 16px 17.4px, transparent 17.4px),
+    radial-gradient(circle at var(--mg-panel-corner-center-offset) calc(100% - var(--mg-panel-corner-center-offset)), transparent 0 17px, var(--mg-panel-handle-line-light) 17px 18.4px, transparent 18.4px),
+    radial-gradient(circle at var(--mg-panel-corner-center-offset) calc(100% - var(--mg-panel-corner-center-offset)), transparent 0 18px, var(--mg-panel-handle-line-dark) 18px 19.4px, transparent 19.4px);
+}
+
+.mg-panel-resize-handle-nw {
+  top: calc(var(--mg-panel-edge-hit) * -0.5);
+  left: calc(var(--mg-panel-edge-hit) * -0.5);
+}
+
+.mg-panel-resize-handle-nw::before {
+  right: calc(var(--mg-panel-corner-grip-offset) * -1);
+  bottom: calc(var(--mg-panel-corner-grip-offset) * -1);
+  background:
+    radial-gradient(circle at calc(100% - var(--mg-panel-corner-center-offset)) calc(100% - var(--mg-panel-corner-center-offset)), transparent 0 15px, var(--mg-panel-handle-line-light) 15px 16.4px, transparent 16.4px),
+    radial-gradient(circle at calc(100% - var(--mg-panel-corner-center-offset)) calc(100% - var(--mg-panel-corner-center-offset)), transparent 0 16px, var(--mg-panel-handle-line-dark) 16px 17.4px, transparent 17.4px),
+    radial-gradient(circle at calc(100% - var(--mg-panel-corner-center-offset)) calc(100% - var(--mg-panel-corner-center-offset)), transparent 0 17px, var(--mg-panel-handle-line-light) 17px 18.4px, transparent 18.4px),
+    radial-gradient(circle at calc(100% - var(--mg-panel-corner-center-offset)) calc(100% - var(--mg-panel-corner-center-offset)), transparent 0 18px, var(--mg-panel-handle-line-dark) 18px 19.4px, transparent 19.4px);
+}
+
+.mg-panel-resize-handle-se {
+  right: calc(var(--mg-panel-edge-hit) * -0.5);
+  bottom: calc(var(--mg-panel-edge-hit) * -0.5);
+}
+
+.mg-panel-resize-handle-se::before {
+  left: calc(var(--mg-panel-corner-grip-offset) * -1);
+  top: calc(var(--mg-panel-corner-grip-offset) * -1);
+  background:
+    radial-gradient(circle at var(--mg-panel-corner-center-offset) var(--mg-panel-corner-center-offset), transparent 0 15px, var(--mg-panel-handle-line-light) 15px 16.4px, transparent 16.4px),
+    radial-gradient(circle at var(--mg-panel-corner-center-offset) var(--mg-panel-corner-center-offset), transparent 0 16px, var(--mg-panel-handle-line-dark) 16px 17.4px, transparent 17.4px),
+    radial-gradient(circle at var(--mg-panel-corner-center-offset) var(--mg-panel-corner-center-offset), transparent 0 17px, var(--mg-panel-handle-line-light) 17px 18.4px, transparent 18.4px),
+    radial-gradient(circle at var(--mg-panel-corner-center-offset) var(--mg-panel-corner-center-offset), transparent 0 18px, var(--mg-panel-handle-line-dark) 18px 19.4px, transparent 19.4px);
+}
+
+.mg-panel-resize-handle-sw {
+  left: calc(var(--mg-panel-edge-hit) * -0.5);
+  bottom: calc(var(--mg-panel-edge-hit) * -0.5);
+}
+
+.mg-panel-resize-handle-sw::before {
+  right: calc(var(--mg-panel-corner-grip-offset) * -1);
+  top: calc(var(--mg-panel-corner-grip-offset) * -1);
+  background:
+    radial-gradient(circle at calc(100% - var(--mg-panel-corner-center-offset)) var(--mg-panel-corner-center-offset), transparent 0 15px, var(--mg-panel-handle-line-light) 15px 16.4px, transparent 16.4px),
+    radial-gradient(circle at calc(100% - var(--mg-panel-corner-center-offset)) var(--mg-panel-corner-center-offset), transparent 0 16px, var(--mg-panel-handle-line-dark) 16px 17.4px, transparent 17.4px),
+    radial-gradient(circle at calc(100% - var(--mg-panel-corner-center-offset)) var(--mg-panel-corner-center-offset), transparent 0 17px, var(--mg-panel-handle-line-light) 17px 18.4px, transparent 18.4px),
+    radial-gradient(circle at calc(100% - var(--mg-panel-corner-center-offset)) var(--mg-panel-corner-center-offset), transparent 0 18px, var(--mg-panel-handle-line-dark) 18px 19.4px, transparent 19.4px);
+}
+
+.mg-panel.is-dragging,
+.mg-panel.is-resizing {
+  user-select: none;
+}
+
+.mg-panel.resize-n,
+.mg-panel.resize-s {
+  cursor: ns-resize;
+}
+
+.mg-panel.resize-e,
+.mg-panel.resize-w {
+  cursor: ew-resize;
+}
+
+.mg-panel.resize-ne,
+.mg-panel.resize-sw {
+  cursor: nesw-resize;
+}
+
+.mg-panel.resize-nw,
+.mg-panel.resize-se {
+  cursor: nwse-resize;
+}
