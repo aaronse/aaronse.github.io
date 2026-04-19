@@ -379,6 +379,10 @@ body {
   display: none;
 }
 
+#mg-dev-panel.is-collapsed .mg-dev-resize-handle {
+  display: none;
+}
+
 .mg-dev-hint {
   font-size: 12px;
   font-weight: 500;
@@ -417,6 +421,14 @@ body {
 #mg-dev-panel.is-dragging .mg-dev-resize-handle,
 #mg-dev-panel:hover .mg-dev-resize-handle {
   opacity: 1;
+}
+
+#mg-dev-panel.is-collapsed .mg-dev-resize-handle,
+#mg-dev-panel.is-collapsed.show-resize-affordance .mg-dev-resize-handle,
+#mg-dev-panel.is-collapsed.is-resizing .mg-dev-resize-handle,
+#mg-dev-panel.is-collapsed.is-dragging .mg-dev-resize-handle,
+#mg-dev-panel.is-collapsed:hover .mg-dev-resize-handle {
+  opacity: 0;
 }
 
 .mg-dev-resize-handle-n,

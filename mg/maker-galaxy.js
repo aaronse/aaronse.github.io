@@ -832,7 +832,7 @@
     <div class="mg-dev-surface">
       <div class="mg-dev-chrome">
         <div class="mg-dev-header">
-          <span class="mg-dev-title">Maker Galaxy Dev Panel</span>
+          <span class="mg-dev-title">Dev Panel</span>
           <span class="mg-dev-hint">(Ctrl+.)</span>
         </div>
         <div class="mg-dev-window-controls">
@@ -1130,6 +1130,10 @@
   }
 
   function getResizeEdgeFromEvent(event) {
+    if (isDevPanelCollapsed()) {
+      return "";
+    }
+
     const handleEdge = getResizeHandleEdge(event.target);
     if (handleEdge) {
       return handleEdge;
@@ -1318,6 +1322,11 @@
 
   devPanel.addEventListener("pointermove", (event) => {
     if (devPanelState.drag || devPanelState.resize) return;
+    if (isDevPanelCollapsed()) {
+      devPanelState.hoverEdge = "";
+      removeDevPanelCursorClasses();
+      return;
+    }
     const edge = getResizeEdgeFromEvent(event);
     devPanelState.hoverEdge = edge;
     applyDevPanelCursor(edge);
@@ -1339,6 +1348,7 @@
 
   devPanel.addEventListener("pointerdown", (event) => {
     if (event.button !== 0) return;
+    if (isDevPanelCollapsed()) return;
     const edge = getResizeEdgeFromEvent(event);
     if (!edge) return;
     event.preventDefault();
@@ -1348,6 +1358,7 @@
   devPanelResizeHandles.forEach((handle) => {
     handle.addEventListener("pointerdown", (event) => {
       if (event.button !== 0) return;
+      if (isDevPanelCollapsed()) return;
       const edge = handle.dataset.devPanelEdge || "";
       if (!edge) return;
       event.preventDefault();
