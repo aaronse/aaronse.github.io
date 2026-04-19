@@ -738,132 +738,451 @@
 
   // ---- Dev panel (Ctrl+.) --------------------------------------------------
 
+  const DEV_PANEL_CONFIG = {
+    initialTop: 12,
+    initialLeft: 12,
+    initialWidth: 320,
+    initialHeightFraction: 0.72,
+    initialHeightMax: 640,
+    minWidth: 280,
+    minHeight: 280,
+    edgeResizeThreshold: 8,
+    viewportMargin: 8,
+  };
+
+  const DEV_PANEL_CURSOR_CLASSNAMES = [
+    "resize-n",
+    "resize-s",
+    "resize-e",
+    "resize-w",
+    "resize-ne",
+    "resize-nw",
+    "resize-se",
+    "resize-sw",
+  ];
+
+  const DEV_PANEL_EDGE_CURSORS = {
+    n: "resize-n",
+    s: "resize-s",
+    e: "resize-e",
+    w: "resize-w",
+    ne: "resize-ne",
+    nw: "resize-nw",
+    se: "resize-se",
+    sw: "resize-sw",
+  };
+
+  const initialPanelHeight = Math.min(
+    Math.round(window.innerHeight * DEV_PANEL_CONFIG.initialHeightFraction),
+    DEV_PANEL_CONFIG.initialHeightMax
+  );
+
   const devPanel = document.createElement("div");
   devPanel.id = "mg-dev-panel";
   devPanel.innerHTML = `
-    <div class="mg-dev-header">Maker Galaxy Dev Panel <span class="mg-dev-hint">(Ctrl+.)</span></div>
-
-    <div class="mg-dev-row">
-      <label>Rotation Speed</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-rot-speed" min="0" max="0.6" step="0.01">
-        <span class="mg-dev-value" id="mg-rot-speed-val"></span>
+    <div class="mg-dev-chrome">
+      <div class="mg-dev-header">
+        <span class="mg-dev-title">Maker Galaxy Dev Panel</span>
+        <span class="mg-dev-hint">(Ctrl+.)</span>
+      </div>
+      <div class="mg-dev-window-controls" aria-hidden="true">
+        <span class="mg-dev-window-dot is-warm"></span>
+        <span class="mg-dev-window-dot is-cool"></span>
+        <span class="mg-dev-window-dot is-bright"></span>
       </div>
     </div>
 
-    <div class="mg-dev-row">
-      <label>Camera X</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-cam-x" min="-400" max="400" step="1">
-        <span class="mg-dev-value" id="mg-cam-x-val"></span>
+    <div class="mg-dev-body">
+      <div class="mg-dev-row">
+        <label>Rotation Speed</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-rot-speed" min="0" max="0.6" step="0.01">
+          <span class="mg-dev-value" id="mg-rot-speed-val"></span>
+        </div>
       </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Camera Y</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-cam-y" min="-400" max="400" step="1">
-        <span class="mg-dev-value" id="mg-cam-y-val"></span>
-      </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Camera Z</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-cam-z" min="150" max="900" step="1">
-        <span class="mg-dev-value" id="mg-cam-z-val"></span>
-      </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Camera Target Y</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-cam-target-y" min="-100" max="200" step="1">
-        <span class="mg-dev-value" id="mg-cam-target-y-val"></span>
-      </div>
-    </div>
 
-    <hr />
+      <div class="mg-dev-row">
+        <label>Camera X</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-cam-x" min="-400" max="400" step="1">
+          <span class="mg-dev-value" id="mg-cam-x-val"></span>
+        </div>
+      </div>
+      <div class="mg-dev-row">
+        <label>Camera Y</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-cam-y" min="-400" max="400" step="1">
+          <span class="mg-dev-value" id="mg-cam-y-val"></span>
+        </div>
+      </div>
+      <div class="mg-dev-row">
+        <label>Camera Z</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-cam-z" min="150" max="900" step="1">
+          <span class="mg-dev-value" id="mg-cam-z-val"></span>
+        </div>
+      </div>
+      <div class="mg-dev-row">
+        <label>Camera Target Y</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-cam-target-y" min="-100" max="200" step="1">
+          <span class="mg-dev-value" id="mg-cam-target-y-val"></span>
+        </div>
+      </div>
 
-    <div class="mg-dev-row">
-      <label>Arms</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-arm-count" min="2" max="6" step="1">
-        <span class="mg-dev-value" id="mg-arm-count-val"></span>
-      </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Spiral Tightness</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-spiral" min="0.10" max="0.40" step="0.01">
-        <span class="mg-dev-value" id="mg-spiral-val"></span>
-      </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Disc Radius</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-radius" min="150" max="340" step="1">
-        <span class="mg-dev-value" id="mg-radius-val"></span>
-      </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Core Thickness</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-thickness" min="10" max="60" step="1">
-        <span class="mg-dev-value" id="mg-thickness-val"></span>
-      </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Disc Star Density</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-density" min="0.5" max="2.5" step="0.1">
-        <span class="mg-dev-value" id="mg-density-val"></span>
-      </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Spiral Start Radius</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-spiral-start" min="0" max="120" step="1">
-        <span class="mg-dev-value" id="mg-spiral-start-val"></span>
-      </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Arm Length (Theta)</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-theta-max" min="4" max="12" step="0.2">
-        <span class="mg-dev-value" id="mg-theta-max-val"></span>
-      </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Core Fraction</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-core-frac" min="0" max="0.5" step="0.02">
-        <span class="mg-dev-value" id="mg-core-frac-val"></span>
-      </div>
-    </div>
+      <hr />
 
-    <hr />
+      <div class="mg-dev-row">
+        <label>Arms</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-arm-count" min="2" max="6" step="1">
+          <span class="mg-dev-value" id="mg-arm-count-val"></span>
+        </div>
+      </div>
+      <div class="mg-dev-row">
+        <label>Spiral Tightness</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-spiral" min="0.10" max="0.40" step="0.01">
+          <span class="mg-dev-value" id="mg-spiral-val"></span>
+        </div>
+      </div>
+      <div class="mg-dev-row">
+        <label>Disc Radius</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-radius" min="150" max="340" step="1">
+          <span class="mg-dev-value" id="mg-radius-val"></span>
+        </div>
+      </div>
+      <div class="mg-dev-row">
+        <label>Core Thickness</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-thickness" min="10" max="60" step="1">
+          <span class="mg-dev-value" id="mg-thickness-val"></span>
+        </div>
+      </div>
+      <div class="mg-dev-row">
+        <label>Disc Star Density</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-density" min="0.5" max="2.5" step="0.1">
+          <span class="mg-dev-value" id="mg-density-val"></span>
+        </div>
+      </div>
+      <div class="mg-dev-row">
+        <label>Spiral Start Radius</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-spiral-start" min="0" max="120" step="1">
+          <span class="mg-dev-value" id="mg-spiral-start-val"></span>
+        </div>
+      </div>
+      <div class="mg-dev-row">
+        <label>Arm Length (Theta)</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-theta-max" min="4" max="12" step="0.2">
+          <span class="mg-dev-value" id="mg-theta-max-val"></span>
+        </div>
+      </div>
+      <div class="mg-dev-row">
+        <label>Core Fraction</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-core-frac" min="0" max="0.5" step="0.02">
+          <span class="mg-dev-value" id="mg-core-frac-val"></span>
+        </div>
+      </div>
 
-    <div class="mg-dev-row">
-      <label>Twinkle Speed</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-twinkle" min="0" max="4" step="0.05">
-        <span class="mg-dev-value" id="mg-twinkle-val"></span>
+      <hr />
+
+      <div class="mg-dev-row">
+        <label>Twinkle Speed</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-twinkle" min="0" max="4" step="0.05">
+          <span class="mg-dev-value" id="mg-twinkle-val"></span>
+        </div>
       </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Aurora Opacity</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-aurora-opacity" min="0" max="1.2" step="0.05">
-        <span class="mg-dev-value" id="mg-aurora-opacity-val"></span>
+      <div class="mg-dev-row">
+        <label>Aurora Opacity</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-aurora-opacity" min="0" max="1.2" step="0.05">
+          <span class="mg-dev-value" id="mg-aurora-opacity-val"></span>
+        </div>
       </div>
-    </div>
-    <div class="mg-dev-row">
-      <label>Aurora Amplitude</label>
-      <div class="mg-dev-control">
-        <input type="range" id="mg-aurora-amp" min="0" max="2.0" step="0.05">
-        <span class="mg-dev-value" id="mg-aurora-amp-val"></span>
+      <div class="mg-dev-row">
+        <label>Aurora Amplitude</label>
+        <div class="mg-dev-control">
+          <input type="range" id="mg-aurora-amp" min="0" max="2.0" step="0.05">
+          <span class="mg-dev-value" id="mg-aurora-amp-val"></span>
+        </div>
       </div>
     </div>
   `;
+  devPanel.style.top = `${DEV_PANEL_CONFIG.initialTop}px`;
+  devPanel.style.left = `${DEV_PANEL_CONFIG.initialLeft}px`;
+  devPanel.style.width = `${DEV_PANEL_CONFIG.initialWidth}px`;
+  devPanel.style.height = `${initialPanelHeight}px`;
+  devPanel.style.minWidth = `${DEV_PANEL_CONFIG.minWidth}px`;
+  devPanel.style.minHeight = `${DEV_PANEL_CONFIG.minHeight}px`;
   document.body.appendChild(devPanel);
+
+  const devPanelChrome = devPanel.querySelector(".mg-dev-chrome");
+  const devPanelState = {
+    drag: null,
+    resize: null,
+    hoverEdge: "",
+  };
+
+  function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  function getViewportBounds() {
+    const margin = DEV_PANEL_CONFIG.viewportMargin;
+    return {
+      minLeft: margin,
+      minTop: margin,
+      maxRight: window.innerWidth - margin,
+      maxBottom: window.innerHeight - margin,
+    };
+  }
+
+  function removeDevPanelCursorClasses() {
+    DEV_PANEL_CURSOR_CLASSNAMES.forEach((className) => {
+      devPanel.classList.remove(className);
+    });
+  }
+
+  function applyDevPanelCursor(edge) {
+    removeDevPanelCursorClasses();
+    const className = DEV_PANEL_EDGE_CURSORS[edge];
+    if (className) {
+      devPanel.classList.add(className);
+    }
+  }
+
+  function measureDevPanelRect() {
+    return devPanel.getBoundingClientRect();
+  }
+
+  function getResizeEdgeFromEvent(event) {
+    const rect = measureDevPanelRect();
+    const threshold = DEV_PANEL_CONFIG.edgeResizeThreshold;
+    const offsetX = event.clientX - rect.left;
+    const offsetY = event.clientY - rect.top;
+
+    const nearLeft = offsetX >= 0 && offsetX <= threshold;
+    const nearRight = offsetX >= rect.width - threshold && offsetX <= rect.width;
+    const nearTop = offsetY >= 0 && offsetY <= threshold;
+    const nearBottom = offsetY >= rect.height - threshold && offsetY <= rect.height;
+
+    let edge = "";
+    if (nearTop) edge += "n";
+    else if (nearBottom) edge += "s";
+
+    if (nearLeft) edge += "w";
+    else if (nearRight) edge += "e";
+
+    return edge;
+  }
+
+  function clampDevPanelToViewport() {
+    const bounds = getViewportBounds();
+    const maxWidth = Math.max(
+      DEV_PANEL_CONFIG.minWidth,
+      bounds.maxRight - bounds.minLeft
+    );
+    const maxHeight = Math.max(
+      DEV_PANEL_CONFIG.minHeight,
+      bounds.maxBottom - bounds.minTop
+    );
+    const width = clamp(
+      devPanel.offsetWidth,
+      DEV_PANEL_CONFIG.minWidth,
+      maxWidth
+    );
+    const height = clamp(
+      devPanel.offsetHeight,
+      DEV_PANEL_CONFIG.minHeight,
+      maxHeight
+    );
+    const left = clamp(
+      devPanel.offsetLeft,
+      bounds.minLeft,
+      bounds.maxRight - width
+    );
+    const top = clamp(
+      devPanel.offsetTop,
+      bounds.minTop,
+      bounds.maxBottom - height
+    );
+
+    devPanel.style.width = `${Math.round(width)}px`;
+    devPanel.style.height = `${Math.round(height)}px`;
+    devPanel.style.left = `${Math.round(left)}px`;
+    devPanel.style.top = `${Math.round(top)}px`;
+  }
+
+  function stopDevPanelInteraction() {
+    devPanelState.drag = null;
+    devPanelState.resize = null;
+    devPanel.classList.remove("is-dragging", "is-resizing");
+    applyDevPanelCursor(devPanelState.hoverEdge);
+  }
+
+  function startDevPanelDrag(event) {
+    devPanelState.drag = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startLeft: devPanel.offsetLeft,
+      startTop: devPanel.offsetTop,
+      width: devPanel.offsetWidth,
+      height: devPanel.offsetHeight,
+    };
+    devPanel.classList.add("is-dragging");
+  }
+
+  function startDevPanelResize(event, edge) {
+    devPanelState.resize = {
+      pointerId: event.pointerId,
+      edge,
+      startX: event.clientX,
+      startY: event.clientY,
+      startLeft: devPanel.offsetLeft,
+      startTop: devPanel.offsetTop,
+      startWidth: devPanel.offsetWidth,
+      startHeight: devPanel.offsetHeight,
+    };
+    devPanel.classList.add("is-resizing");
+    applyDevPanelCursor(edge);
+  }
+
+  function updateDevPanelDrag(event) {
+    if (!devPanelState.drag || devPanelState.drag.pointerId !== event.pointerId) {
+      return;
+    }
+
+    const bounds = getViewportBounds();
+    const nextLeft = clamp(
+      devPanelState.drag.startLeft + (event.clientX - devPanelState.drag.startX),
+      bounds.minLeft,
+      bounds.maxRight - devPanelState.drag.width
+    );
+    const nextTop = clamp(
+      devPanelState.drag.startTop + (event.clientY - devPanelState.drag.startY),
+      bounds.minTop,
+      bounds.maxBottom - devPanelState.drag.height
+    );
+
+    devPanel.style.left = `${Math.round(nextLeft)}px`;
+    devPanel.style.top = `${Math.round(nextTop)}px`;
+  }
+
+  function updateDevPanelResize(event) {
+    if (!devPanelState.resize || devPanelState.resize.pointerId !== event.pointerId) {
+      return;
+    }
+
+    const resize = devPanelState.resize;
+    const bounds = getViewportBounds();
+    const maxWidth = Math.max(
+      DEV_PANEL_CONFIG.minWidth,
+      bounds.maxRight - bounds.minLeft
+    );
+    const maxHeight = Math.max(
+      DEV_PANEL_CONFIG.minHeight,
+      bounds.maxBottom - bounds.minTop
+    );
+
+    let nextLeft = resize.startLeft;
+    let nextTop = resize.startTop;
+    let nextWidth = resize.startWidth;
+    let nextHeight = resize.startHeight;
+
+    const deltaX = event.clientX - resize.startX;
+    const deltaY = event.clientY - resize.startY;
+
+    if (resize.edge.includes("e")) {
+      nextWidth = clamp(
+        resize.startWidth + deltaX,
+        DEV_PANEL_CONFIG.minWidth,
+        bounds.maxRight - resize.startLeft
+      );
+    }
+
+    if (resize.edge.includes("s")) {
+      nextHeight = clamp(
+        resize.startHeight + deltaY,
+        DEV_PANEL_CONFIG.minHeight,
+        bounds.maxBottom - resize.startTop
+      );
+    }
+
+    if (resize.edge.includes("w")) {
+      const maxLeft = resize.startLeft + resize.startWidth - DEV_PANEL_CONFIG.minWidth;
+      nextLeft = clamp(event.clientX, bounds.minLeft, maxLeft);
+      nextWidth = clamp(
+        resize.startWidth + (resize.startLeft - nextLeft),
+        DEV_PANEL_CONFIG.minWidth,
+        maxWidth
+      );
+      nextLeft = resize.startLeft + resize.startWidth - nextWidth;
+    }
+
+    if (resize.edge.includes("n")) {
+      const maxTop = resize.startTop + resize.startHeight - DEV_PANEL_CONFIG.minHeight;
+      nextTop = clamp(event.clientY, bounds.minTop, maxTop);
+      nextHeight = clamp(
+        resize.startHeight + (resize.startTop - nextTop),
+        DEV_PANEL_CONFIG.minHeight,
+        maxHeight
+      );
+      nextTop = resize.startTop + resize.startHeight - nextHeight;
+    }
+
+    devPanel.style.left = `${Math.round(nextLeft)}px`;
+    devPanel.style.top = `${Math.round(nextTop)}px`;
+    devPanel.style.width = `${Math.round(nextWidth)}px`;
+    devPanel.style.height = `${Math.round(nextHeight)}px`;
+  }
+
+  devPanel.addEventListener("pointermove", (event) => {
+    if (devPanelState.drag || devPanelState.resize) return;
+    const edge = getResizeEdgeFromEvent(event);
+    devPanelState.hoverEdge = edge;
+    applyDevPanelCursor(edge);
+  });
+
+  devPanel.addEventListener("pointerleave", () => {
+    if (devPanelState.drag || devPanelState.resize) return;
+    devPanelState.hoverEdge = "";
+    removeDevPanelCursorClasses();
+  });
+
+  devPanel.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    const edge = getResizeEdgeFromEvent(event);
+    if (!edge) return;
+    event.preventDefault();
+    startDevPanelResize(event, edge);
+  });
+
+  if (devPanelChrome) {
+    devPanelChrome.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      if (getResizeEdgeFromEvent(event)) return;
+      event.preventDefault();
+      startDevPanelDrag(event);
+    });
+  }
+
+  window.addEventListener("pointermove", (event) => {
+    updateDevPanelDrag(event);
+    updateDevPanelResize(event);
+  });
+
+  window.addEventListener("pointerup", stopDevPanelInteraction);
+  window.addEventListener("pointercancel", stopDevPanelInteraction);
+  window.addEventListener("resize", clampDevPanelToViewport);
+
+  clampDevPanelToViewport();
 
   function bindSlider(id, valId, initial, formatFn, onChange) {
     const slider = document.getElementById(id);
