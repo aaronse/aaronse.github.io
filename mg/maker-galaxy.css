@@ -37,7 +37,9 @@
   --mg-dev-panel-scrollbar-safe-right: 10px;
   --mg-dev-panel-scrollbar-safe-bottom: 10px;
   --mg-dev-panel-scrollbar-size: 12px;
-  --mg-dev-panel-scrollbar-radius: 4px;
+  --mg-dev-panel-scrollbar-thumb-radius: 4px;
+  --mg-dev-panel-window-controls-nudge-x: 0.4rem;
+  --mg-dev-panel-window-controls-nudge-y: -1px;
   --mg-dev-panel-scrollbar-track: rgba(255, 255, 255, 0.06);
   --mg-dev-panel-scrollbar-track-hover: rgba(255, 255, 255, 0.08);
   --mg-dev-panel-scrollbar-thumb: rgba(186, 167, 224, 0.56);
@@ -49,8 +51,8 @@
     var(--mg-dev-panel-radius) -
     (var(--mg-dev-panel-edge-hit) * 0.5)
   );
-  --mg-dev-panel-chrome-height: 42px;
-  --mg-dev-panel-chrome-font-size: 14px;
+  --mg-dev-panel-chrome-height: 2.25rem;
+  --mg-dev-panel-chrome-font-size: 1rem;
   --mg-dev-panel-handle-line-light: rgba(244, 240, 255, 0.4);
   --mg-dev-panel-handle-line-dark: rgba(98, 87, 128, 0.4);
   --mg-dev-panel-handle-line-soft-light: rgba(255, 255, 255, 0.12);
@@ -332,6 +334,9 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+  transform: 
+      translateX(var(--mg-dev-panel-window-controls-nudge-x))
+      translateY(var(--mg-dev-panel-window-controls-nudge-y));
 }
 
 .mg-dev-action {
@@ -401,7 +406,6 @@ body {
 
 .mg-dev-body::-webkit-scrollbar-track {
   background: var(--mg-dev-panel-scrollbar-track);
-  border-radius: calc(var(--mg-dev-panel-scrollbar-radius) + 1px);
 }
 
 .mg-dev-body::-webkit-scrollbar-track:hover {
@@ -410,7 +414,7 @@ body {
 
 .mg-dev-body::-webkit-scrollbar-thumb {
   background: var(--mg-dev-panel-scrollbar-thumb);
-  border-radius: var(--mg-dev-panel-scrollbar-radius);
+  border-radius: var(--mg-dev-panel-scrollbar-thumb-radius);
   border: var(--mg-dev-panel-scrollbar-thumb-border) solid transparent;
   background-clip: padding-box;
 }
