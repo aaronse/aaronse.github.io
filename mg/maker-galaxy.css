@@ -26,9 +26,12 @@
   --mg-dev-panel-top: 12px;
   --mg-dev-panel-left: 12px;
   --mg-dev-panel-width: 320px;
-  --mg-dev-panel-height: min(72vh, 640px);
+  --mg-dev-panel-height-fraction: 0.72;
+  --mg-dev-panel-height-max: 640px;
   --mg-dev-panel-min-width: 280px;
   --mg-dev-panel-min-height: 280px;
+  --mg-dev-panel-viewport-margin: 8px;
+  --mg-dev-panel-touch-affordance-ms: 1400;
   --mg-dev-panel-radius: 16px;
   --mg-dev-panel-edge-hit: 14px;
   --mg-dev-panel-corner-hit: 20px;
@@ -262,7 +265,10 @@ body {
   top: var(--mg-dev-panel-top);
   left: var(--mg-dev-panel-left);
   width: var(--mg-dev-panel-width);
-  height: var(--mg-dev-panel-height);
+  height: min(
+    calc(var(--mg-dev-panel-height-fraction) * 100vh),
+    var(--mg-dev-panel-height-max)
+  );
   min-width: var(--mg-dev-panel-min-width);
   min-height: var(--mg-dev-panel-min-height);
   display: none;
@@ -275,11 +281,6 @@ body {
 
 #mg-dev-panel.open {
   display: block;
-}
-
-#mg-dev-panel label {
-  display: block;
-  margin: 6px 0 12px;
 }
 
 .mg-dev-surface {
@@ -395,7 +396,6 @@ body {
   overflow: auto;
   padding: 10px 12px 12px;
   scrollbar-gutter: stable;
-  /* scrollbar-width: thin; */
   scrollbar-color: var(--mg-dev-panel-scrollbar-thumb) var(--mg-dev-panel-scrollbar-track);
 }
 
@@ -629,7 +629,7 @@ body {
   margin: 6px 0 8px;
 }
 
-.mg-dev-row label {
+.mg-dev-row > label {
   display: block;
   margin-bottom: 2px;
   opacity: 0.9;

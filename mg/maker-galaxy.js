@@ -55,6 +55,24 @@
     return Number.isFinite(num) ? num : fallback;
   }
 
+  function getCssLength(varName, fallback) {
+    if (!document.body) {
+      return fallback;
+    }
+
+    const probe = document.createElement("div");
+    probe.style.position = "absolute";
+    probe.style.visibility = "hidden";
+    probe.style.pointerEvents = "none";
+    probe.style.width = `var(${varName})`;
+    document.body.appendChild(probe);
+    const resolvedWidth = probe.getBoundingClientRect().width;
+    probe.remove();
+    return Number.isFinite(resolvedWidth) && resolvedWidth > 0
+      ? resolvedWidth
+      : fallback;
+  }
+
   // These are "let" so the dev panel can tweak them
   let galaxyRotationSpeedBase = getCssNumber(
     "--mg-galaxy-rotation-speed",
@@ -739,18 +757,21 @@
   // ---- Dev panel (Ctrl+.) --------------------------------------------------
 
   const DEV_PANEL_CONFIG = {
-    initialTop: 12,
-    initialLeft: 12,
-    initialWidth: 320,
-    initialHeightFraction: 0.72,
-    initialHeightMax: 640,
-    minWidth: 280,
-    minHeight: 280,
-    collapsedHeight: getCssNumber("--mg-dev-panel-chrome-height", 42),
+    initialTop: getCssLength("--mg-dev-panel-top", 12),
+    initialLeft: getCssLength("--mg-dev-panel-left", 12),
+    initialWidth: getCssLength("--mg-dev-panel-width", 320),
+    initialHeightFraction: getCssNumber("--mg-dev-panel-height-fraction", 0.72),
+    initialHeightMax: getCssLength("--mg-dev-panel-height-max", 640),
+    minWidth: getCssLength("--mg-dev-panel-min-width", 280),
+    minHeight: getCssLength("--mg-dev-panel-min-height", 280),
+    collapsedHeight: getCssLength("--mg-dev-panel-chrome-height", 42),
     openOnLoad: true,
-    edgeResizeThreshold: getCssNumber("--mg-dev-panel-edge-hit", 18),
-    touchAffordanceVisibleMs: 1400,
-    viewportMargin: 8,
+    edgeResizeThreshold: getCssLength("--mg-dev-panel-edge-hit", 18),
+    touchAffordanceVisibleMs: getCssNumber(
+      "--mg-dev-panel-touch-affordance-ms",
+      1400
+    ),
+    viewportMargin: getCssLength("--mg-dev-panel-viewport-margin", 8),
   };
 
   const DEV_PANEL_ACTIONS = {
@@ -807,10 +828,229 @@
     sw: "resize-sw",
   };
 
+  const DEV_PANEL_RESIZE_EDGES = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
+
   const initialPanelHeight = Math.min(
     Math.round(window.innerHeight * DEV_PANEL_CONFIG.initialHeightFraction),
     DEV_PANEL_CONFIG.initialHeightMax
   );
+
+  const DEV_PANEL_CONTROL_GROUPS = [
+    [
+      {
+        id: "mg-rot-speed",
+        label: "Rotation Speed",
+        min: 0,
+        max: 0.6,
+        step: 0.01,
+        format: (value) => value.toFixed(2),
+        getValue: () => galaxyRotationSpeedBase,
+        onChange: (value) => {
+          galaxyRotationSpeedBase = value;
+        },
+      },
+      {
+        id: "mg-cam-x",
+        label: "Camera X",
+        min: -400,
+        max: 400,
+        step: 1,
+        format: (value) => value.toFixed(0),
+        getValue: () => camera.position.x,
+        onChange: (value) => {
+          camera.position.x = value;
+        },
+      },
+      {
+        id: "mg-cam-y",
+        label: "Camera Y",
+        min: -400,
+        max: 400,
+        step: 1,
+        format: (value) => value.toFixed(0),
+        getValue: () => camera.position.y,
+        onChange: (value) => {
+          camera.position.y = value;
+        },
+      },
+      {
+        id: "mg-cam-z",
+        label: "Camera Z",
+        min: 150,
+        max: 900,
+        step: 1,
+        format: (value) => value.toFixed(0),
+        getValue: () => camera.position.z,
+        onChange: (value) => {
+          camera.position.z = value;
+        },
+      },
+      {
+        id: "mg-cam-target-y",
+        label: "Camera Target Y",
+        min: -100,
+        max: 200,
+        step: 1,
+        format: (value) => value.toFixed(0),
+        getValue: () => cameraLookTargetY,
+        onChange: (value) => {
+          cameraLookTargetY = value;
+        },
+      },
+    ],
+    [
+      {
+        id: "mg-arm-count",
+        label: "Arms",
+        min: 2,
+        max: 6,
+        step: 1,
+        format: (value) => value.toFixed(0),
+        getValue: () => galaxyConfig.armCount,
+        onChange: (value) => {
+          galaxyConfig.armCount = value;
+          rebuildGalaxyDisc();
+        },
+      },
+      {
+        id: "mg-spiral",
+        label: "Spiral Tightness",
+        min: 0.1,
+        max: 0.4,
+        step: 0.01,
+        format: (value) => value.toFixed(2),
+        getValue: () => galaxyConfig.spiralTightness,
+        onChange: (value) => {
+          galaxyConfig.spiralTightness = value;
+          rebuildGalaxyDisc();
+        },
+      },
+      {
+        id: "mg-radius",
+        label: "Disc Radius",
+        min: 150,
+        max: 340,
+        step: 1,
+        format: (value) => value.toFixed(0),
+        getValue: () => galaxyConfig.radiusOuter,
+        onChange: (value) => {
+          galaxyConfig.radiusOuter = value;
+          rebuildGalaxyDisc();
+        },
+      },
+      {
+        id: "mg-thickness",
+        label: "Core Thickness",
+        min: 10,
+        max: 60,
+        step: 1,
+        format: (value) => value.toFixed(0),
+        getValue: () => galaxyConfig.thicknessCore,
+        onChange: (value) => {
+          galaxyConfig.thicknessCore = value;
+          rebuildGalaxyDisc();
+        },
+      },
+      {
+        id: "mg-density",
+        label: "Disc Star Density",
+        min: 0.5,
+        max: 2.5,
+        step: 0.1,
+        format: (value) => value.toFixed(2),
+        getValue: () => galaxyConfig.densityScale,
+        onChange: (value) => {
+          galaxyConfig.densityScale = value;
+          rebuildGalaxyDisc();
+        },
+      },
+      {
+        id: "mg-spiral-start",
+        label: "Spiral Start Radius",
+        min: 0,
+        max: 120,
+        step: 1,
+        format: (value) => value.toFixed(0),
+        getValue: () => galaxyConfig.spiralStartRadius,
+        onChange: (value) => {
+          galaxyConfig.spiralStartRadius = value;
+          rebuildGalaxyDisc();
+        },
+      },
+      {
+        id: "mg-theta-max",
+        label: "Arm Length (Theta)",
+        min: 4,
+        max: 12,
+        step: 0.2,
+        format: (value) => value.toFixed(1),
+        getValue: () => galaxyConfig.thetaMax,
+        onChange: (value) => {
+          galaxyConfig.thetaMax = value;
+          rebuildGalaxyDisc();
+        },
+      },
+      {
+        id: "mg-core-frac",
+        label: "Core Fraction",
+        min: 0,
+        max: 0.5,
+        step: 0.02,
+        format: (value) => value.toFixed(2),
+        getValue: () => galaxyConfig.coreFraction,
+        onChange: (value) => {
+          galaxyConfig.coreFraction = value;
+          rebuildGalaxyDisc();
+        },
+      },
+    ],
+    [
+      {
+        id: "mg-twinkle",
+        label: "Twinkle Speed",
+        min: 0,
+        max: 4,
+        step: 0.05,
+        format: (value) => value.toFixed(2),
+        getValue: () => galaxyConfig.twinkleSpeed,
+        onChange: (value) => {
+          galaxyConfig.twinkleSpeed = value;
+        },
+      },
+      {
+        id: "mg-aurora-opacity",
+        label: "Aurora Opacity",
+        min: 0,
+        max: 1.2,
+        step: 0.05,
+        format: (value) => value.toFixed(2),
+        getValue: () => auroraConfig.opacityScale,
+        onChange: (value) => {
+          auroraConfig.opacityScale = value;
+          auroraUniforms.forEach((uniforms, index) => {
+            uniforms.uBaseOpacity.value =
+              auroraBaseOpacity[index] * auroraConfig.opacityScale;
+          });
+        },
+      },
+      {
+        id: "mg-aurora-amp",
+        label: "Aurora Amplitude",
+        min: 0,
+        max: 2,
+        step: 0.05,
+        format: (value) => value.toFixed(2),
+        getValue: () => auroraConfig.amplitudeScale,
+        onChange: (value) => {
+          auroraConfig.amplitudeScale = value;
+          auroraUniforms.forEach((uniforms, index) => {
+            uniforms.uAmplitude.value =
+              auroraBaseAmplitude[index] * auroraConfig.amplitudeScale;
+          });
+        },
+      },
+    ],
+  ];
 
   function createDevPanelActionButton(action, label, iconMarkup) {
     return `
@@ -824,6 +1064,30 @@
         ${iconMarkup}
       </button>
     `;
+  }
+
+  function createDevPanelControlMarkup(control) {
+    return `
+        <div class="mg-dev-row">
+          <label for="${control.id}">${control.label}</label>
+          <div class="mg-dev-control">
+            <input type="range" id="${control.id}" min="${control.min}" max="${control.max}" step="${control.step}">
+            <span class="mg-dev-value" id="${control.id}-val"></span>
+          </div>
+        </div>
+    `;
+  }
+
+  function createDevPanelBodyMarkup() {
+    return DEV_PANEL_CONTROL_GROUPS.map((group, index) => {
+      const groupMarkup = group.map(createDevPanelControlMarkup).join("");
+      return index === 0 ? groupMarkup : `<hr />${groupMarkup}`;
+    }).join("");
+  }
+
+  function createDevPanelResizeHandleMarkup(edge) {
+    return `
+    <div class="mg-dev-resize-handle mg-dev-resize-handle-${edge}" data-dev-panel-edge="${edge}"></div>`;
   }
 
   const devPanel = document.createElement("div");
@@ -855,144 +1119,12 @@
       </div>
 
       <div class="mg-dev-body">
-        <div class="mg-dev-row">
-          <label>Rotation Speed</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-rot-speed" min="0" max="0.6" step="0.01">
-            <span class="mg-dev-value" id="mg-rot-speed-val"></span>
-          </div>
-        </div>
-
-        <div class="mg-dev-row">
-          <label>Camera X</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-cam-x" min="-400" max="400" step="1">
-            <span class="mg-dev-value" id="mg-cam-x-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Camera Y</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-cam-y" min="-400" max="400" step="1">
-            <span class="mg-dev-value" id="mg-cam-y-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Camera Z</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-cam-z" min="150" max="900" step="1">
-            <span class="mg-dev-value" id="mg-cam-z-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Camera Target Y</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-cam-target-y" min="-100" max="200" step="1">
-            <span class="mg-dev-value" id="mg-cam-target-y-val"></span>
-          </div>
-        </div>
-
-        <hr />
-
-        <div class="mg-dev-row">
-          <label>Arms</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-arm-count" min="2" max="6" step="1">
-            <span class="mg-dev-value" id="mg-arm-count-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Spiral Tightness</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-spiral" min="0.10" max="0.40" step="0.01">
-            <span class="mg-dev-value" id="mg-spiral-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Disc Radius</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-radius" min="150" max="340" step="1">
-            <span class="mg-dev-value" id="mg-radius-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Core Thickness</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-thickness" min="10" max="60" step="1">
-            <span class="mg-dev-value" id="mg-thickness-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Disc Star Density</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-density" min="0.5" max="2.5" step="0.1">
-            <span class="mg-dev-value" id="mg-density-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Spiral Start Radius</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-spiral-start" min="0" max="120" step="1">
-            <span class="mg-dev-value" id="mg-spiral-start-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Arm Length (Theta)</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-theta-max" min="4" max="12" step="0.2">
-            <span class="mg-dev-value" id="mg-theta-max-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Core Fraction</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-core-frac" min="0" max="0.5" step="0.02">
-            <span class="mg-dev-value" id="mg-core-frac-val"></span>
-          </div>
-        </div>
-
-        <hr />
-
-        <div class="mg-dev-row">
-          <label>Twinkle Speed</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-twinkle" min="0" max="4" step="0.05">
-            <span class="mg-dev-value" id="mg-twinkle-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Aurora Opacity</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-aurora-opacity" min="0" max="1.2" step="0.05">
-            <span class="mg-dev-value" id="mg-aurora-opacity-val"></span>
-          </div>
-        </div>
-        <div class="mg-dev-row">
-          <label>Aurora Amplitude</label>
-          <div class="mg-dev-control">
-            <input type="range" id="mg-aurora-amp" min="0" max="2.0" step="0.05">
-            <span class="mg-dev-value" id="mg-aurora-amp-val"></span>
-          </div>
-        </div>
-        </div>
+        ${createDevPanelBodyMarkup()}
       </div>
     </div>
 
-    <div class="mg-dev-resize-handle mg-dev-resize-handle-n" data-dev-panel-edge="n"></div>
-    <div class="mg-dev-resize-handle mg-dev-resize-handle-s" data-dev-panel-edge="s"></div>
-    <div class="mg-dev-resize-handle mg-dev-resize-handle-e" data-dev-panel-edge="e"></div>
-    <div class="mg-dev-resize-handle mg-dev-resize-handle-w" data-dev-panel-edge="w"></div>
-    <div class="mg-dev-resize-handle mg-dev-resize-handle-ne" data-dev-panel-edge="ne"></div>
-    <div class="mg-dev-resize-handle mg-dev-resize-handle-nw" data-dev-panel-edge="nw"></div>
-    <div class="mg-dev-resize-handle mg-dev-resize-handle-se" data-dev-panel-edge="se"></div>
-    <div class="mg-dev-resize-handle mg-dev-resize-handle-sw" data-dev-panel-edge="sw"></div>
+    ${DEV_PANEL_RESIZE_EDGES.map(createDevPanelResizeHandleMarkup).join("")}
   `;
-  devPanel.style.top = `${DEV_PANEL_CONFIG.initialTop}px`;
-  devPanel.style.left = `${DEV_PANEL_CONFIG.initialLeft}px`;
-  devPanel.style.width = `${DEV_PANEL_CONFIG.initialWidth}px`;
-  devPanel.style.height = `${initialPanelHeight}px`;
-  devPanel.style.minWidth = `${DEV_PANEL_CONFIG.minWidth}px`;
-  devPanel.style.minHeight = `${DEV_PANEL_CONFIG.minHeight}px`;
   document.body.appendChild(devPanel);
 
   const devPanelChrome = devPanel.querySelector(".mg-dev-chrome");
@@ -1037,7 +1169,26 @@
     }
   }
 
+  function clearDevPanelLayoutStyles() {
+    devPanel.style.top = "";
+    devPanel.style.left = "";
+    devPanel.style.width = "";
+    devPanel.style.height = "";
+    devPanel.style.minHeight = "";
+  }
+
+  function resetDevPanelTransientState() {
+    clearResizeAffordanceTimer();
+    devPanel.classList.remove("show-resize-affordance");
+    devPanelState.hoverEdge = "";
+    stopDevPanelInteraction();
+  }
+
   function showResizeAffordanceTemporarily(durationMs) {
+    if (isDevPanelCollapsed()) {
+      return;
+    }
+
     devPanel.classList.add("show-resize-affordance");
     clearResizeAffordanceTimer();
     devPanelState.affordanceTimer = window.setTimeout(() => {
@@ -1047,11 +1198,16 @@
   }
 
   function setDevPanelOpen(isOpen) {
+    if (!isOpen) {
+      resetDevPanelTransientState();
+    }
+
     devPanel.classList.toggle("open", isOpen);
     if (isOpen) {
       clampDevPanelToViewport();
-      updateCollapseButtonUi();
     }
+
+    updateCollapseButtonUi();
   }
 
   function setDevPanelCollapsed(collapsed) {
@@ -1078,23 +1234,18 @@
   }
 
   function resetDevPanelLayout() {
+    resetDevPanelTransientState();
     devPanel.classList.remove("is-collapsed");
-    devPanel.style.top = `${DEV_PANEL_CONFIG.initialTop}px`;
-    devPanel.style.left = `${DEV_PANEL_CONFIG.initialLeft}px`;
-    devPanel.style.width = `${DEV_PANEL_CONFIG.initialWidth}px`;
-    devPanel.style.height = `${initialPanelHeight}px`;
-    devPanel.style.minHeight = `${DEV_PANEL_CONFIG.minHeight}px`;
+    clearDevPanelLayoutStyles();
     devPanelState.expandedHeight = initialPanelHeight;
     setDevPanelOpen(true);
-    clampDevPanelToViewport();
-    updateCollapseButtonUi();
   }
 
   if (DEV_PANEL_CONFIG.openOnLoad) {
     setDevPanelOpen(true);
+  } else {
+    updateCollapseButtonUi();
   }
-
-  updateCollapseButtonUi();
 
   function getViewportBounds() {
     const margin = DEV_PANEL_CONFIG.viewportMargin;
@@ -1160,13 +1311,20 @@
   }
 
   function clampDevPanelToViewport() {
+    if (!isDevPanelOpen()) {
+      return;
+    }
+
     const bounds = getViewportBounds();
+    const minHeight = isDevPanelCollapsed()
+      ? DEV_PANEL_CONFIG.collapsedHeight
+      : DEV_PANEL_CONFIG.minHeight;
     const maxWidth = Math.max(
       DEV_PANEL_CONFIG.minWidth,
       bounds.maxRight - bounds.minLeft
     );
     const maxHeight = Math.max(
-      DEV_PANEL_CONFIG.minHeight,
+      minHeight,
       bounds.maxBottom - bounds.minTop
     );
     const width = clamp(
@@ -1176,7 +1334,7 @@
     );
     const height = clamp(
       devPanel.offsetHeight,
-      DEV_PANEL_CONFIG.minHeight,
+      minHeight,
       maxHeight
     );
     const left = clamp(
@@ -1417,178 +1575,25 @@
     });
   }
 
+  function bindDevPanelControl(control) {
+    bindSlider(
+      control.id,
+      `${control.id}-val`,
+      control.getValue(),
+      control.format,
+      control.onChange
+    );
+  }
+
   document.addEventListener("keydown", (e) => {
     if (e.ctrlKey && (e.key === "." || e.code === "Period")) {
       setDevPanelOpen(!isDevPanelOpen());
     }
   });
 
-  // Bind sliders
-  bindSlider(
-    "mg-rot-speed",
-    "mg-rot-speed-val",
-    galaxyRotationSpeedBase,
-    (v) => v.toFixed(2),
-    (v) => {
-      galaxyRotationSpeedBase = v;
-    }
-  );
-
-  bindSlider(
-    "mg-cam-x",
-    "mg-cam-x-val",
-    camera.position.x,
-    (v) => v.toFixed(0),
-    (v) => {
-      camera.position.x = v;
-    }
-  );
-  bindSlider(
-    "mg-cam-y",
-    "mg-cam-y-val",
-    camera.position.y,
-    (v) => v.toFixed(0),
-    (v) => {
-      camera.position.y = v;
-    }
-  );
-  bindSlider(
-    "mg-cam-z",
-    "mg-cam-z-val",
-    camera.position.z,
-    (v) => v.toFixed(0),
-    (v) => {
-      camera.position.z = v;
-    }
-  );
-  bindSlider(
-    "mg-cam-target-y",
-    "mg-cam-target-y-val",
-    cameraLookTargetY,
-    (v) => v.toFixed(0),
-    (v) => {
-      cameraLookTargetY = v;
-    }
-  );
-
-  bindSlider(
-    "mg-arm-count",
-    "mg-arm-count-val",
-    galaxyConfig.armCount,
-    (v) => v.toFixed(0),
-    (v) => {
-      galaxyConfig.armCount = v;
-      rebuildGalaxyDisc();
-    }
-  );
-  bindSlider(
-    "mg-spiral",
-    "mg-spiral-val",
-    galaxyConfig.spiralTightness,
-    (v) => v.toFixed(2),
-    (v) => {
-      galaxyConfig.spiralTightness = v;
-      rebuildGalaxyDisc();
-    }
-  );
-  bindSlider(
-    "mg-radius",
-    "mg-radius-val",
-    galaxyConfig.radiusOuter,
-    (v) => v.toFixed(0),
-    (v) => {
-      galaxyConfig.radiusOuter = v;
-      rebuildGalaxyDisc();
-    }
-  );
-  bindSlider(
-    "mg-thickness",
-    "mg-thickness-val",
-    galaxyConfig.thicknessCore,
-    (v) => v.toFixed(0),
-    (v) => {
-      galaxyConfig.thicknessCore = v;
-      rebuildGalaxyDisc();
-    }
-  );
-  bindSlider(
-    "mg-density",
-    "mg-density-val",
-    galaxyConfig.densityScale,
-    (v) => v.toFixed(2),
-    (v) => {
-      galaxyConfig.densityScale = v;
-      rebuildGalaxyDisc();
-    }
-  );
-  bindSlider(
-    "mg-spiral-start",
-    "mg-spiral-start-val",
-    galaxyConfig.spiralStartRadius,
-    (v) => v.toFixed(0),
-    (v) => {
-      galaxyConfig.spiralStartRadius = v;
-      rebuildGalaxyDisc();
-    }
-  );
-  bindSlider(
-    "mg-theta-max",
-    "mg-theta-max-val",
-    galaxyConfig.thetaMax,
-    (v) => v.toFixed(1),
-    (v) => {
-      galaxyConfig.thetaMax = v;
-      rebuildGalaxyDisc();
-    }
-  );
-  bindSlider(
-    "mg-core-frac",
-    "mg-core-frac-val",
-    galaxyConfig.coreFraction,
-    (v) => v.toFixed(2),
-    (v) => {
-      galaxyConfig.coreFraction = v;
-      rebuildGalaxyDisc();
-    }
-  );
-
-  bindSlider(
-    "mg-twinkle",
-    "mg-twinkle-val",
-    galaxyConfig.twinkleSpeed,
-    (v) => v.toFixed(2),
-    (v) => {
-      galaxyConfig.twinkleSpeed = v;
-    }
-  );
-
-  bindSlider(
-    "mg-aurora-opacity",
-    "mg-aurora-opacity-val",
-    auroraConfig.opacityScale,
-    (v) => v.toFixed(2),
-    (v) => {
-      auroraConfig.opacityScale = v;
-      auroraUniforms.forEach((u, idx) => {
-        u.uBaseOpacity.value =
-          auroraBaseOpacity[idx] * auroraConfig.opacityScale;
-      });
-    }
-  );
-
-  bindSlider(
-    "mg-aurora-amp",
-    "mg-aurora-amp-val",
-    auroraConfig.amplitudeScale,
-    (v) => v.toFixed(2),
-    (v) => {
-      auroraConfig.amplitudeScale = v;
-      auroraUniforms.forEach((u, idx) => {
-        u.uAmplitude.value =
-          auroraBaseAmplitude[idx] * auroraConfig.amplitudeScale;
-      });
-    }
-  );
+  DEV_PANEL_CONTROL_GROUPS.forEach((group) => {
+    group.forEach(bindDevPanelControl);
+  });
 
   // ---- Animation loop ------------------------------------------------------
 
