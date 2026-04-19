@@ -30,21 +30,35 @@
   --mg-dev-panel-min-width: 280px;
   --mg-dev-panel-min-height: 280px;
   --mg-dev-panel-radius: 16px;
-  --mg-dev-panel-edge-hit: 8px;
-  --mg-dev-panel-chrome-height: 38px;
+  --mg-dev-panel-edge-hit: 18px;
+  --mg-dev-panel-corner-hit: 28px;
+  --mg-dev-panel-corner-grip-size: 28px;
+  --mg-dev-panel-corner-grip-offset: 0px;
+  --mg-dev-panel-corner-center-offset: calc(
+    var(--mg-dev-panel-corner-hit) -
+    var(--mg-dev-panel-radius) -
+    (var(--mg-dev-panel-edge-hit) * 0.5)
+  );
+  --mg-dev-panel-chrome-height: 42px;
+  --mg-dev-panel-chrome-font-size: 14px;
+  --mg-dev-panel-handle-line-light: rgba(244, 240, 255, 0.4);
+  --mg-dev-panel-handle-line-dark: rgba(98, 87, 128, 0.4);
+  --mg-dev-panel-handle-line-soft-light: rgba(255, 255, 255, 0.12);
+  --mg-dev-panel-handle-line-soft-dark: rgba(44, 36, 68, 0.12);
+  --mg-dev-panel-handle-fade-ms: 180ms;
   --mg-dev-panel-bg:
     linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)),
     linear-gradient(135deg, rgba(151, 97, 255, 0.14), rgba(53, 224, 255, 0.08)),
-    rgba(8, 7, 18, 0.62);
+    rgba(7, 6, 16, 0.72);
   --mg-dev-panel-border: rgba(255, 255, 255, 0.24);
   --mg-dev-panel-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
     0 18px 44px rgba(0, 0, 0, 0.42),
     0 0 24px rgba(53, 224, 255, 0.08);
   --mg-dev-panel-chrome-bg:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.08)),
-    linear-gradient(135deg, rgba(255, 200, 87, 0.18), rgba(214, 139, 255, 0.16)),
-    rgba(255, 255, 255, 0.06);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04)),
+    linear-gradient(135deg, rgba(255, 200, 87, 0.12), rgba(214, 139, 255, 0.12)),
+    rgba(9, 8, 20, 0.84);
 }
 
 /* Global reset-ish */
@@ -240,16 +254,10 @@ body {
   min-width: var(--mg-dev-panel-min-width);
   min-height: var(--mg-dev-panel-min-height);
   display: none;
-  overflow: hidden;
-  background: var(--mg-dev-panel-bg);
-  color: #fdf7ff;
+  overflow: visible;
   border-radius: var(--mg-dev-panel-radius);
-  border: 1px solid var(--mg-dev-panel-border);
   font-size: 11px;
   line-height: 1.4;
-  box-shadow: var(--mg-dev-panel-shadow);
-  backdrop-filter: blur(5px) saturate(160%);
-  -webkit-backdrop-filter: blu(5px) saturate(160%);
   z-index: 9999;
 }
 
@@ -260,6 +268,24 @@ body {
 #mg-dev-panel label {
   display: block;
   margin: 6px 0 12px;
+}
+
+.mg-dev-surface {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #fdf7ff;
+  background: var(--mg-dev-panel-bg);
+  border: 1px solid var(--mg-dev-panel-border);
+  border-radius: inherit;
+  box-shadow: var(--mg-dev-panel-shadow);
+  backdrop-filter: blur(5px) saturate(160%);
+  -webkit-backdrop-filter: blur(5px) saturate(160%);
+}
+
+#mg-dev-panel.is-collapsed .mg-dev-surface {
+  height: var(--mg-dev-panel-chrome-height);
 }
 
 .mg-dev-chrome {
@@ -281,7 +307,7 @@ body {
 
 .mg-dev-header {
   font-weight: 700;
-  font-size: 12px;
+  font-size: var(--mg-dev-panel-chrome-font-size);
   display: flex;
   justify-content: flex-start;
   align-items: baseline;
@@ -298,35 +324,233 @@ body {
   gap: 6px;
 }
 
-.mg-dev-window-dot {
-  width: 9px;
-  height: 9px;
+.mg-dev-action {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+  color: #f5ecff;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
-.mg-dev-window-dot.is-warm {
-  background: rgba(255, 200, 87, 0.85);
+.mg-dev-action:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06));
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.08);
 }
 
-.mg-dev-window-dot.is-cool {
-  background: rgba(53, 224, 255, 0.85);
+.mg-dev-action:active {
+  transform: translateY(1px) scale(0.97);
 }
 
-.mg-dev-window-dot.is-bright {
-  background: rgba(214, 139, 255, 0.9);
+.mg-dev-action svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 1.65;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  transition: transform 0.22s ease;
+}
+
+.mg-dev-action[data-dev-panel-action="toggle-collapse"].is-collapsed svg {
+  transform: rotate(180deg);
 }
 
 .mg-dev-body {
   height: calc(100% - var(--mg-dev-panel-chrome-height));
   overflow: auto;
   padding: 10px 12px 12px;
+  scrollbar-gutter: stable;
+}
+
+#mg-dev-panel.is-collapsed .mg-dev-body {
+  display: none;
 }
 
 .mg-dev-hint {
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 500;
   opacity: 0.7;
+}
+
+.mg-dev-resize-handle {
+  position: absolute;
+  z-index: 4;
+  touch-action: none;
+  background: transparent;
+  opacity: 0;
+  transition: opacity var(--mg-dev-panel-handle-fade-ms) ease;
+}
+
+.mg-dev-resize-handle::before {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--mg-dev-panel-handle-line-light) 0 1.15px,
+    var(--mg-dev-panel-handle-line-soft-light) 1.15px 1.65px,
+    var(--mg-dev-panel-handle-line-dark) 1.65px 2.75px,
+    var(--mg-dev-panel-handle-line-soft-dark) 2.75px 3.25px
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 1px 8px rgba(0, 0, 0, 0.18);
+  opacity: 0.82;
+  filter: blur(0.25px);
+}
+
+#mg-dev-panel.show-resize-affordance .mg-dev-resize-handle,
+#mg-dev-panel.is-resizing .mg-dev-resize-handle,
+#mg-dev-panel.is-dragging .mg-dev-resize-handle,
+#mg-dev-panel:hover .mg-dev-resize-handle {
+  opacity: 1;
+}
+
+.mg-dev-resize-handle-n,
+.mg-dev-resize-handle-s {
+  left: var(--mg-dev-panel-corner-hit);
+  right: var(--mg-dev-panel-corner-hit);
+  height: var(--mg-dev-panel-edge-hit);
+}
+
+.mg-dev-resize-handle-n {
+  top: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+}
+
+.mg-dev-resize-handle-n::before,
+.mg-dev-resize-handle-s::before {
+  left: 50%;
+  top: 50%;
+  width: 52px;
+  height: 8px;
+  transform: translate(-50%, -50%);
+}
+
+.mg-dev-resize-handle-s {
+  bottom: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+}
+
+.mg-dev-resize-handle-e,
+.mg-dev-resize-handle-w {
+  top: var(--mg-dev-panel-corner-hit);
+  bottom: var(--mg-dev-panel-corner-hit);
+  width: var(--mg-dev-panel-edge-hit);
+}
+
+.mg-dev-resize-handle-e {
+  right: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+}
+
+.mg-dev-resize-handle-e::before,
+.mg-dev-resize-handle-w::before {
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 52px;
+  transform: translate(-50%, -50%);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--mg-dev-panel-handle-line-light) 0 1.15px,
+    var(--mg-dev-panel-handle-line-soft-light) 1.15px 1.65px,
+    var(--mg-dev-panel-handle-line-dark) 1.65px 2.75px,
+    var(--mg-dev-panel-handle-line-soft-dark) 2.75px 3.25px
+  );
+}
+
+.mg-dev-resize-handle-w {
+  left: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+}
+
+.mg-dev-resize-handle-ne,
+.mg-dev-resize-handle-nw,
+.mg-dev-resize-handle-se,
+.mg-dev-resize-handle-sw {
+  width: var(--mg-dev-panel-corner-hit);
+  height: var(--mg-dev-panel-corner-hit);
+}
+
+.mg-dev-resize-handle-ne {
+  top: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+  right: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+}
+
+.mg-dev-resize-handle-ne::before,
+.mg-dev-resize-handle-nw::before,
+.mg-dev-resize-handle-se::before,
+.mg-dev-resize-handle-sw::before {
+  width: var(--mg-dev-panel-corner-grip-size);
+  height: var(--mg-dev-panel-corner-grip-size);
+  border-radius: 999px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
+  background-repeat: no-repeat;
+}
+
+.mg-dev-resize-handle-ne::before {
+  left: calc(var(--mg-dev-panel-corner-grip-offset) * -1);
+  bottom: calc(var(--mg-dev-panel-corner-grip-offset) * -1);
+  background:
+    radial-gradient(circle at var(--mg-dev-panel-corner-center-offset) calc(100% - var(--mg-dev-panel-corner-center-offset)), transparent 0 15px, var(--mg-dev-panel-handle-line-light) 15px 16.4px, transparent 16.4px),
+    radial-gradient(circle at var(--mg-dev-panel-corner-center-offset) calc(100% - var(--mg-dev-panel-corner-center-offset)), transparent 0 16px, var(--mg-dev-panel-handle-line-dark) 16px 17.4px, transparent 17.4px),
+    radial-gradient(circle at var(--mg-dev-panel-corner-center-offset) calc(100% - var(--mg-dev-panel-corner-center-offset)), transparent 0 17px, var(--mg-dev-panel-handle-line-light) 17px 18.4px, transparent 18.4px),
+    radial-gradient(circle at var(--mg-dev-panel-corner-center-offset) calc(100% - var(--mg-dev-panel-corner-center-offset)), transparent 0 18px, var(--mg-dev-panel-handle-line-dark) 18px 19.4px, transparent 19.4px);
+}
+
+.mg-dev-resize-handle-nw {
+  top: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+  left: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+}
+
+.mg-dev-resize-handle-nw::before {
+  right: calc(var(--mg-dev-panel-corner-grip-offset) * -1);
+  bottom: calc(var(--mg-dev-panel-corner-grip-offset) * -1);
+  background:
+    radial-gradient(circle at calc(100% - var(--mg-dev-panel-corner-center-offset)) calc(100% - var(--mg-dev-panel-corner-center-offset)), transparent 0 15px, var(--mg-dev-panel-handle-line-light) 15px 16.4px, transparent 16.4px),
+    radial-gradient(circle at calc(100% - var(--mg-dev-panel-corner-center-offset)) calc(100% - var(--mg-dev-panel-corner-center-offset)), transparent 0 16px, var(--mg-dev-panel-handle-line-dark) 16px 17.4px, transparent 17.4px),
+    radial-gradient(circle at calc(100% - var(--mg-dev-panel-corner-center-offset)) calc(100% - var(--mg-dev-panel-corner-center-offset)), transparent 0 17px, var(--mg-dev-panel-handle-line-light) 17px 18.4px, transparent 18.4px),
+    radial-gradient(circle at calc(100% - var(--mg-dev-panel-corner-center-offset)) calc(100% - var(--mg-dev-panel-corner-center-offset)), transparent 0 18px, var(--mg-dev-panel-handle-line-dark) 18px 19.4px, transparent 19.4px);
+}
+
+.mg-dev-resize-handle-se {
+  right: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+  bottom: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+}
+
+.mg-dev-resize-handle-se::before {
+  left: calc(var(--mg-dev-panel-corner-grip-offset) * -1);
+  top: calc(var(--mg-dev-panel-corner-grip-offset) * -1);
+  background:
+    radial-gradient(circle at var(--mg-dev-panel-corner-center-offset) var(--mg-dev-panel-corner-center-offset), transparent 0 15px, var(--mg-dev-panel-handle-line-light) 15px 16.4px, transparent 16.4px),
+    radial-gradient(circle at var(--mg-dev-panel-corner-center-offset) var(--mg-dev-panel-corner-center-offset), transparent 0 16px, var(--mg-dev-panel-handle-line-dark) 16px 17.4px, transparent 17.4px),
+    radial-gradient(circle at var(--mg-dev-panel-corner-center-offset) var(--mg-dev-panel-corner-center-offset), transparent 0 17px, var(--mg-dev-panel-handle-line-light) 17px 18.4px, transparent 18.4px),
+    radial-gradient(circle at var(--mg-dev-panel-corner-center-offset) var(--mg-dev-panel-corner-center-offset), transparent 0 18px, var(--mg-dev-panel-handle-line-dark) 18px 19.4px, transparent 19.4px);
+}
+
+.mg-dev-resize-handle-sw {
+  left: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+  bottom: calc(var(--mg-dev-panel-edge-hit) * -0.5);
+}
+
+.mg-dev-resize-handle-sw::before {
+  right: calc(var(--mg-dev-panel-corner-grip-offset) * -1);
+  top: calc(var(--mg-dev-panel-corner-grip-offset) * -1);
+  background:
+    radial-gradient(circle at calc(100% - var(--mg-dev-panel-corner-center-offset)) var(--mg-dev-panel-corner-center-offset), transparent 0 15px, var(--mg-dev-panel-handle-line-light) 15px 16.4px, transparent 16.4px),
+    radial-gradient(circle at calc(100% - var(--mg-dev-panel-corner-center-offset)) var(--mg-dev-panel-corner-center-offset), transparent 0 16px, var(--mg-dev-panel-handle-line-dark) 16px 17.4px, transparent 17.4px),
+    radial-gradient(circle at calc(100% - var(--mg-dev-panel-corner-center-offset)) var(--mg-dev-panel-corner-center-offset), transparent 0 17px, var(--mg-dev-panel-handle-line-light) 17px 18.4px, transparent 18.4px),
+    radial-gradient(circle at calc(100% - var(--mg-dev-panel-corner-center-offset)) var(--mg-dev-panel-corner-center-offset), transparent 0 18px, var(--mg-dev-panel-handle-line-dark) 18px 19.4px, transparent 19.4px);
 }
 
 .mg-dev-row {
