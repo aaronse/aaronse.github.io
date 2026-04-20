@@ -18,6 +18,13 @@
     return;
   }
 
+  if (!window.MakerGalaxyToolsPanel) {
+    console.error(
+      "[MakerGalaxy] MakerGalaxyToolsPanel is not available. Load maker-galaxy-tools-panel.js before maker-galaxy.js."
+    );
+    return;
+  }
+
   const heroSection = document.getElementById("mg-hero");
   const canvas = document.getElementById("mg-galaxy-canvas");
   const titleEl = document.getElementById("mg-title");
@@ -37,4 +44,5 @@
   }
 
   window.MakerGalaxyDevPanel.createMakerGalaxyDevPanel(sceneApi);
+  window.MakerGalaxyToolsPanel.createMakerGalaxyToolsPanel(sceneApi);
 })();

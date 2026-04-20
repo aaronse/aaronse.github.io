@@ -69,6 +69,13 @@
       amplitudeScale: 1.0,
     };
 
+    const defaultCameraPose = {
+      x: 0,
+      y: -120,
+      z: 340,
+      targetY: 15,
+    };
+    let motionPaused = false;
     let cameraLookTargetY = 15;
 
     const camera = new THREE.PerspectiveCamera(
@@ -77,8 +84,12 @@
       0.1,
       2000
     );
-    camera.position.set(0, -120, 340);
-    camera.lookAt(0, cameraLookTargetY, 0);
+    camera.position.set(
+      defaultCameraPose.x,
+      defaultCameraPose.y,
+      defaultCameraPose.z
+    );
+    camera.lookAt(0, defaultCameraPose.targetY, 0);
 
     function resizeRendererToDisplaySize() {
       const width = heroSection.clientWidth;
@@ -623,6 +634,42 @@
       });
     }
 
+    function getCameraPose() {
+      return {
+        x: camera.position.x,
+        y: camera.position.y,
+        z: camera.position.z,
+        targetY: cameraLookTargetY,
+      };
+    }
+
+    function setCameraPose(pose) {
+      if (Number.isFinite(pose.x)) {
+        camera.position.x = pose.x;
+      }
+      if (Number.isFinite(pose.y)) {
+        camera.position.y = pose.y;
+      }
+      if (Number.isFinite(pose.z)) {
+        camera.position.z = pose.z;
+      }
+      if (Number.isFinite(pose.targetY)) {
+        cameraLookTargetY = pose.targetY;
+      }
+    }
+
+    function resetCameraPose() {
+      setCameraPose(defaultCameraPose);
+    }
+
+    function isMotionPaused() {
+      return motionPaused;
+    }
+
+    function setMotionPaused(value) {
+      motionPaused = Boolean(value);
+    }
+
     function animate() {
       requestAnimationFrame(animate);
 
@@ -630,7 +677,8 @@
       const deltaMs = delta * 1000;
       const lerpFactor = 0.05;
       baseSpeed = baseSpeed + (targetSpeed - baseSpeed) * lerpFactor;
-      const effectiveSpeed = isPageVisible ? baseSpeed : baseSpeed * 0.3;
+      const visibilitySpeed = isPageVisible ? baseSpeed : baseSpeed * 0.3;
+      const effectiveSpeed = motionPaused ? 0 : visibilitySpeed;
 
       resizeRendererToDisplaySize();
 
@@ -660,6 +708,7 @@
       camera,
       galaxyConfig,
       auroraConfig,
+      defaultCameraPose: { ...defaultCameraPose },
       getRotationSpeed() {
         return galaxyRotationSpeedBase;
       },
@@ -672,7 +721,12 @@
       setCameraLookTargetY(value) {
         cameraLookTargetY = value;
       },
+      getCameraPose,
+      setCameraPose,
+      resetCameraPose,
       rebuildGalaxyDisc,
+      isMotionPaused,
+      setMotionPaused,
       setAuroraOpacityScale,
       setAuroraAmplitudeScale,
     };

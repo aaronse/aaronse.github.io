@@ -22,6 +22,14 @@
   /* Layout */
   --mg-hero-padding: 4vw;
 
+  /* Quick actions panel layout */
+  --mg-tools-panel-top: 12px;
+  --mg-tools-panel-left: 356px;
+  --mg-tools-panel-width: 290px;
+  --mg-tools-panel-height: 286px;
+  --mg-tools-panel-min-width: 260px;
+  --mg-tools-panel-min-height: 220px;
+
 }
 
 /* Global reset-ish */
@@ -237,4 +245,97 @@ body {
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: 6px 0 8px;
+}
+
+.mg-tools-panel-content {
+  display: grid;
+  gap: 12px;
+}
+
+.mg-tools-section {
+  display: grid;
+  gap: 8px;
+}
+
+.mg-tools-heading {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.mg-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mg-tools-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.mg-tools-button {
+  min-height: 34px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05)),
+    rgba(16, 13, 30, 0.78);
+  color: #f6eeff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.mg-tools-button:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.08);
+}
+
+.mg-tools-button:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.mg-tools-button.is-active {
+  border-color: rgba(255, 200, 87, 0.42);
+  background:
+    linear-gradient(180deg, rgba(255, 200, 87, 0.2), rgba(214, 139, 255, 0.09)),
+    rgba(22, 15, 30, 0.85);
+}
+
+.mg-tools-button-wide {
+  width: 100%;
+}
+
+.mg-tools-status {
+  padding-top: 2px;
+}
+
+.mg-tools-status-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mg-tools-status-label {
+  font-size: 12px;
+  opacity: 0.68;
+}
+
+.mg-tools-status-value {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  opacity: 0.94;
 }
