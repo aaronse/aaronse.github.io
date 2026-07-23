@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yellow River, Turbulent Flow — Ma Yuan × S&P 500</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="stage">
+    <canvas id="sea"></canvas>
+
+    <!-- calligraphic title, top-left, over the open silk -->
+    <div class="title">
+      <div class="han">黃河逆流</div>
+      <div class="seal">馬<br>遠</div>
+      <div class="subtitle">Yellow River, Turbulent Flow</div>
+      <div class="tagline">after Ma Yuan · driven by S&amp;P 500 volatility</div>
+    </div>
+
+    <!-- floating event caption -->
+    <div id="event-label"></div>
+
+    <!-- market readout -->
+    <div class="readout">
+      <div class="r-date" id="m-date">—</div>
+      <div class="r-main">
+        <span class="r-level" id="m-level">—</span>
+        <span class="chg up" id="m-change">—</span>
+      </div>
+      <div class="r-sea">
+        <span id="m-sea">—</span>
+        <span class="r-vol">vol <b id="m-vol">—</b></span>
+      </div>
+      <div class="volgauge"><div id="vol-bar"></div></div>
+    </div>
+
+    <!-- transport / timeline -->
+    <div class="transport">
+      <button id="play" class="play" aria-label="Play">❚❚</button>
+      <div class="timeline">
+        <canvas id="spark"></canvas>
+        <input id="scrub" type="range" value="0">
+        <div id="playhead"></div>
+      </div>
+      <select id="gran" title="Data granularity — how much time each moment reflects">
+        <option value="day" selected>Day</option>
+        <option value="week">Week</option>
+        <option value="month">Month</option>
+        <option value="quarter">Quarter</option>
+        <option value="year">Year</option>
+      </select>
+    </div>
+
+    <div id="chips" class="chips"></div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/waves.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
