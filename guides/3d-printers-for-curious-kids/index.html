@@ -46,6 +46,71 @@
 .shops small{font-size:.73rem;line-height:1.4;color:#7a8d91;flex-basis:100%}
 @media(max-width:660px){.love-section{padding-top:36px}.love-stage{border-radius:19px}.love-output{grid-template-columns:1fr;gap:8px}.love-buddy{width:54px;height:54px;font-size:30px}.love-ticks{font-size:.66rem}.love-links a,.shop-link{flex:1}.love-reading{margin-top:27px}}
 @media print{.love-section{padding:18px 0}.love-stage{box-shadow:none}.love-range{height:12px}.love-ticks{margin:8px 0 14px}.love-output{padding:12px}.love-links,.shops{display:none!important}}
+
+/* Compact layouts: retain generous tap targets while shortening scroll on phones. */
+@media(max-width:660px){
+  body{font-size:.94rem;line-height:1.46}
+  .wrap{width:calc(100% - 26px)}
+  .hero-inner{padding:20px 0 23px}
+  .hero h1{font-size:clamp(1.8rem,7.2vw,2.35rem);line-height:1.09;margin-bottom:9px}
+  .hero .lede{font-size:.91rem;line-height:1.4;margin:0;max-width:100%;letter-spacing:-.008em}
+  .love-section{padding-top:19px;padding-bottom:23px}
+  .love-stage{padding:16px;border-radius:16px}
+  .love-heading{gap:8px}
+  .love-heading h2{font-size:clamp(1.5rem,6.2vw,1.9rem);line-height:1.17;margin-bottom:7px}
+  .love-heading p{font-size:.89rem;line-height:1.45}
+  .satire{font-size:.63rem;padding:4px 8px}
+  .love-reading{margin:17px 0 11px;gap:6px}
+  .love-reading strong{font-size:2.45rem}
+  .love-reading .love-emoji{font-size:1.6rem}
+  .love-reading span:last-child{font-size:.76rem}
+  .love-stage label[for="love-slider"]{font-size:.85rem;margin-bottom:11px!important}
+  .love-ticks{font-size:.6rem;margin:14px 0 17px;gap:5px}
+  .love-output{padding:14px;gap:9px;border-radius:12px}
+  .love-buddy{width:46px;height:46px;font-size:26px;border-radius:11px}
+  .love-level{font-size:.65rem;letter-spacing:.09em}
+  .love-product{font-size:1.26rem}
+  .love-zinger{font-size:.92rem;margin-bottom:6px}
+  .love-explain{font-size:.87rem;line-height:1.45;margin-bottom:9px}
+  .love-links{gap:7px}
+  .love-links a,.shop-link{min-height:42px;padding:10px 9px;font-size:.77rem}
+  .love-note{font-size:.82rem;line-height:1.46;margin-top:12px}
+  .top-picks{gap:10px;margin-bottom:0}
+  .pick{padding:16px;border-radius:14px}
+  .pick h3{font-size:1.12rem;margin:6px 0}
+  .pick p{font-size:.87rem;line-height:1.45}
+  .section{padding:32px 0}
+  .section h2{font-size:clamp(1.5rem,6vw,1.95rem);line-height:1.16}
+  .section-head{margin-bottom:17px}
+  .section-head p{font-size:.89rem;line-height:1.46;margin-top:6px}
+  .kicker{font-size:.7rem;margin-bottom:7px}
+  .method{padding:15px;gap:10px;border-radius:13px}
+  .method-icon{font-size:19px;padding:8px;border-radius:9px}
+  .method p{font-size:.86rem;line-height:1.44}
+  .controls{gap:6px;margin-bottom:15px}
+  .tab{padding:9px 11px;font-size:.77rem;min-height:40px}
+  .printer{padding:16px;border-radius:15px}
+  .printer h3{font-size:1.3rem}
+  .printer .one-line{font-size:.9rem;margin:9px 0 13px}
+  .printer .procon ul{font-size:.86rem}
+  .printer .procon li{margin:4px 0}
+  .visual{margin-bottom:13px}
+  .micro{font-size:.84rem;margin-top:12px;padding:9px 11px}
+  .tools{margin-top:12px}
+  .shops{margin-top:13px;padding-top:12px;gap:7px}
+  .feature-grid,.steps{gap:11px}
+  .feature,.step{padding:16px;border-radius:13px}
+  .feature h3{margin:7px 0 5px}
+  .feature p,.step p{font-size:.87rem}
+  .compare-panel{padding:16px;border-radius:14px}
+  .quiz{padding:19px;border-radius:16px}
+  .quiz h2{font-size:1.6rem}
+  .quiz-buttons{gap:7px;margin:13px 0}
+  .quiz-buttons button{padding:10px 12px;font-size:.85rem}
+  .quiz-answer{padding:13px}
+  .safety{padding:17px}
+  .footer{padding:20px 0;margin-top:14px}
+}
 </style>
 </head>
 <body>
@@ -53,7 +118,7 @@
   <div class="wrap">
     <div class="topbar"><div class="brand"><span class="brandmark">✳</span> Curious Makers <span style="font-weight:400;opacity:.65">/ family buying guide</span></div><div class="head-actions"><button class="ghost" id="share" type="button">↗ Share guide</button><button class="ghost" onclick="window.print()" type="button">Print / Save PDF</button></div></div>
     <div class="hero-inner">
-      <div><h1>Best 3D Printers for <em>Curious Kids 🚀</em></h1><p class="lede"><strong>Protect and fuel their curious spark. ✨</strong> Less frustration. More creating. Ranked for easy wins, reliability, and room to grow.</p></div>
+      <div><h1>Best 3D Printers for <em>Curious Kids 🚀</em></h1><p class="lede"><strong>Protect &amp; fuel their spark. ✨</strong> Less frustration. More creating.</p></div>
       <div class="hero-art" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="device"><div class="rail"></div><div class="head"></div><div class="plate"></div><div class="model"></div></div><div class="sticker star">🦕</div><div class="sticker bolt">⚙️</div></div>
     </div>
   </div>
